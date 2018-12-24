@@ -55,7 +55,8 @@ elif [ "$1" = "local" ]; then
 		# initializing helm and installing tiller on the cluster
 		# https://docs.helm.sh/using_helm/
 		echo "Installing Tiller"
-		helm init
+		helm init --wait
+		# --wait : block until Tiller is running and ready to receive requests
 		# show where tiller was deployed
 		kubectl get pods --all-namespaces | grep tiller
 	}

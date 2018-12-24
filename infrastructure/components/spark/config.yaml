@@ -1,0 +1,3 @@
+spark:
+  release: spark
+  config_file: spark_config.yaml

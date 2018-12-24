@@ -29,7 +29,7 @@ echo "--------"
 echo ""
 
 # 1. setup K8s cluster
-. ./k8s/setup.sh $1
+. $root_folder/k8s/setup.sh $1
 
 # 2. setup modules on the K8s cluster
 for component in $root_folder/components/*; do
@@ -42,3 +42,4 @@ for component in $root_folder/components/*; do
 	fi
 done
 
+helm ls

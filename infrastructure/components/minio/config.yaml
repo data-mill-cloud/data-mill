@@ -1,0 +1,3 @@
+minio:
+  release: minio-datalake
+  config_file: minio_config.yaml

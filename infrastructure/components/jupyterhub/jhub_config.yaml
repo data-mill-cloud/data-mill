@@ -1,2 +1,18 @@
-proxy:
-  secretToken: cd474fed5406a5179f7ff707422e02dcb03b16bc7354665828d82af5cb399910
+hub:
+  extraConfig: |-
+    c.Spawner.cmd = ['jupyter-labhub']
+
+singleuser:
+  defaultUrl: "/lab"
+  image:
+    # Get the latest image tag at:
+    # https://hub.docker.com/r/jupyter/datascience-notebook/tags/
+    # Inspect the Dockerfile at:
+    # https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook/Dockerfile
+    # More images at: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook
+    # Example processing from the notebook: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/specifics.html#apache-spark
+    name: jupyter/datascience-notebook
+    tag: 177037d09156
+
+# authentication aspects
+# https://z2jh.jupyter.org/en/stable/authentication.html
