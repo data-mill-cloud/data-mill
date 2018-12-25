@@ -1,0 +1,3 @@
+influxdb:
+  release: influxdb
+  config_file: influxdb_config.yaml
