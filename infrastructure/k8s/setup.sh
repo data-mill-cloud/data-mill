@@ -54,12 +54,16 @@ elif [ "$1" = "local" ]; then
 
 		# initializing helm and installing tiller on the cluster
 		# https://docs.helm.sh/using_helm/
-		echo "Installing Tiller"
-		helm init --wait
+		#echo "Installing Tiller"
+		#helm init --wait
 		# --wait : block until Tiller is running and ready to receive requests
 		# show where tiller was deployed
-		kubectl get pods --all-namespaces | grep tiller
+		#kubectl get pods --all-namespaces | grep tiller
 	}
+	# initializing helm
+	echo "initializing helm"
+	helm init --wait
+	kubectl get pods --all-namespaces | grep tiller
 else
 	echo "Setting up remote K8s cluster using Terraform";
 fi

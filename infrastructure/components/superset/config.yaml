@@ -1,0 +1,3 @@
+superset:
+  release: superset
+  config_file: superset_config.yaml

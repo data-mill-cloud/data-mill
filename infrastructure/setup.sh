@@ -42,4 +42,9 @@ for component in $root_folder/components/*; do
 	fi
 done
 
+# show deployed services
 helm ls
+
+# start proxy to connect to K8s API
+kubectl proxy --port=$cfg__project__proxy_port &
+echo "Please access K8s UI at: http://localhost:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy/"
