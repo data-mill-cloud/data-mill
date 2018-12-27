@@ -29,16 +29,16 @@ echo "--------"
 echo ""
 
 # 1. setup K8s cluster
-. $root_folder/k8s/setup.sh $1
+. $root_folder/k8s/setup.sh $LOCATION
 
 # 2. setup modules on the K8s cluster
 for component in $root_folder/components/*; do
 	setup_component="$component/setup.sh"
 	if [ -e "$setup_component" ]; then
-		echo "Setting up component at $setup_component";
-		. $setup_component "install"
+		echo "Running $ACTION for $setup_component";
+		. $setup_component $ACTION
 	else
-		echo "$setup_component does not exist! Skipping"
+		echo "$setup_component unavailable. Skipping!"
 	fi
 done
 
@@ -46,5 +46,7 @@ done
 helm ls
 
 # start proxy to connect to K8s API
-kubectl proxy --port=$cfg__project__proxy_port &
-echo "Please access K8s UI at: http://localhost:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy/"
+if [ $ACTION = "install" ]; then
+	echo "Please access K8s UI at: http://localhost:$cfg__project__proxy_port/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy/"
+	kubectl proxy --port=$cfg__project__proxy_port #&
+fi

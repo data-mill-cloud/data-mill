@@ -6,11 +6,13 @@ file_folder=$(dirname $fullpath)
 # load local yaml config
 eval $(parse_yaml $file_folder/config.yaml "cfg__")
 
+# use if set or a string argument otherwise
+LOCATION=${LOCATION:=$1}
 
-if [ -z "$1" ] || [ "$1" != "local" ] && [ "$1" != "remote" ];then
-	echo "usage: $0 {local | remote}";
+if [ -z "$LOCATION" ] || [ "$LOCATION" != "local" ] && [ "$LOCATION" != "remote" ];then
+	echo "usage: $0 {'local' | 'remote'}";
 	exit 1
-elif [ "$1" = "local" ]; then
+elif [ "$LOCATION" = "local" ]; then
 	echo "Setting up local K8s cluster";
 	# setting up minikube locally
 	# premise: kvm, virtualbox or whatever we are going to use should be already installed
@@ -35,7 +37,7 @@ elif [ "$1" = "local" ]; then
 
 	# starting minikube cluster if not already started (to make sure this whole script is idempotent)
 	kb_status=$(minikube status | grep "host:" | awk '{print $2}' FS=': ')
-	if [ "$kb_status" == "Stopped" ]; then
+	if [ -z "$kb_status" ] || [ "$kb_status" == "Stopped" ]; then
 		# starting minikube
 		echo "Starting minikube"
 		minikube start --cpus $cfg__local__cpus --memory $cfg__local__memory --disk-size=$cfg__local__storage --vm-driver $cfg__local__vm_driver
