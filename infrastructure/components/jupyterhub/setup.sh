@@ -4,7 +4,7 @@ fullpath=$(readlink --canonicalize --no-newline $BASH_SOURCE)
 file_folder=$(dirname $fullpath)
 
 # load local yaml config
-eval $(parse_yaml $file_folder/config.yaml "cfg__")
+eval $(parse_yaml $file_folder/$CONFIG_FILE "cfg__")
 
 # use if set or a string argument otherwise
 ACTION=${ACTION:=$1}
@@ -23,6 +23,7 @@ elif [ "$ACTION" = "install" ]; then
 	  --version $cfg__jhub__version \
 	  --values $file_folder/$cfg__jhub__config_file \
 	  --set proxy.secretToken=$secretToken \
+	  --timeout $cfg__jhub__setup_timeout --wait \
 	  jupyterhub/jupyterhub
 	unset secretToken
 else

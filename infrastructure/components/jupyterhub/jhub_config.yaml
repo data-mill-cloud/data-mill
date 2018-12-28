@@ -11,8 +11,21 @@ singleuser:
     # https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook/Dockerfile
     # More images at: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook
     # Example processing from the notebook: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/specifics.html#apache-spark
-    name: jupyter/datascience-notebook
-    tag: 177037d09156
+    #name: jupyter/datascience-notebook
+    #tag: 177037d09156
+    name: jupyter/pyspark-notebook
+    tag: latest
+
+prePuller:
+  hook:
+    enabled: false
+
+scheduling:
+  userScheduler:
+    enabled: true
+
+debug:
+  enabled: true
 
 # authentication aspects
 # https://z2jh.jupyter.org/en/stable/authentication.html
