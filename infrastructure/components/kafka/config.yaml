@@ -1,3 +1,7 @@
 kafka:
   release: kafka
   config_file: kafka_config.yaml
+
+kmanager:
+  release: kafka_manager
+  config_file: kmanager_config.yaml

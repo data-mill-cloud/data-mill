@@ -18,10 +18,17 @@ elif [ "$ACTION" = "install" ]; then
 	helm repo add confluent https://confluentinc.github.io/cp-helm-charts/
 	helm repo update
 
+	# confluent kafka
 	helm upgrade --install $cfg__kafka__release \
 	 --namespace $cfg__project__k8s_namespace \
 	 -f $file_folder/$cfg__spark__config_file \
 	 confluentinc/cp-helm-charts
+
+	# kafka manager
+        helm upgrade --install $cfg__kmanager__release \
+         --namespace $cfg__project__k8s_namespace \
+         -f $file_folder/$cfg__kmanager__config_file \
+         stable/kafka-manager
 
 	# test the deployment
 	helm test $cfg__kafka__release
