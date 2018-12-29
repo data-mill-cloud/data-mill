@@ -9,6 +9,9 @@ eval $(parse_yaml $file_folder/$CONFIG_FILE "cfg__")
 # use if set or a string argument otherwise
 LOCATION=${LOCATION:=$1}
 
+# Retrieving the OS type
+OS=$(get_os_type)
+
 if [ -z "$LOCATION" ] || [ "$LOCATION" != "local" ] && [ "$LOCATION" != "remote" ];then
 	echo "usage: $0 {'local' | 'remote'}";
 	exit 1
@@ -90,5 +93,7 @@ elif [ "$LOCATION" = "local" ]; then
 		sleep 1
 	done
 else
-	echo "Setting up remote K8s cluster using Terraform";
+	echo "Setting up infrastructure on remote K8s cluster";
+
+
 fi

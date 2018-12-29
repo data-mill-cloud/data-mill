@@ -1,0 +1,8 @@
+monitoring:
+  grafana:
+    release: monitoring_grafana
+    config_file: grafana_config.yaml
+  prometheus:
+    release: monitoring_prometheus
+    config_file: prometheus_config.yaml
+
