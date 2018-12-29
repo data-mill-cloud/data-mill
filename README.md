@@ -13,13 +13,18 @@
 --------
 ```
 
-# Data-Mill: A K8s-based infrastructure for analytics
+# Data-Mill: A K8s-based lambda architecture for analytics
 
 Providing:  
   1. K8s setup  
+    * Local (i.e. Minikube)  
+    * Remote (e.g. VM, K8s Cluster)  
   2. Setup of common components  
     * Ingestion (e.g. kafka)  
     * Persistent storage (e.g. s3)  
     * Processing (e.g. dask, spark)  
     * Dashboarding (e.g. superset)  
     * ML project management (e.g. mlflow)  
+  3. Example Applications  
+    * Batch processing  
+    * Stream processing  
