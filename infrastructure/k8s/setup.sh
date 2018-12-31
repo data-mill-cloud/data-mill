@@ -74,6 +74,7 @@ elif [ "$LOCATION" = "local" ]; then
 		--vm-driver $cfg__local__vm_driver \
 		--mount-string="$root_folder/data:$cfg__local__mnt_data" --mount
 
+		#--host-only-cidr 10.0.0.0/24 \
 		echo "Minikube VM started. Node accessible using 'minikube ssh'"
 
 		# enable add-ons
@@ -102,7 +103,7 @@ elif [ "$LOCATION" = "local" ]; then
 	}
 	# initializing helm and installing tiller on the cluster
 	# https://docs.helm.sh/using_helm/
-	if [[ -z $(kubectl get pods --all-namespaces | grep tiller) ]]; then
+	if [[ -z $(check_if_pod_exists "tiller") ]]; then
 		echo "Installing Tiller"
 		kubectl -n kube-system create sa tiller
 		kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
@@ -110,13 +111,14 @@ elif [ "$LOCATION" = "local" ]; then
 		# 300 seconds (5 mins) is the default waiting time
 		# --wait : block until Tiller is running and ready to receive requests
 	fi
-	# show where tiller was deployed
-	kubectl get pods --all-namespaces | grep tiller
 	# wait for tiller to be up and running (minikube is not respecting --wait)
-	while [[ -z $(kubectl get pods --all-namespaces | grep tiller | grep Running) ]]; do
+	while [[ -z $(check_if_pod_exists "tiller") || $(get_pod_status "tiller") != "Running" ]]; do
 		echo "tiller not yet running, waiting..."
 		sleep 1
 	done
+
+	# show where tiller was deployed
+	echo "Tiller deployed as pod "$(get_pod_name "tiller")
 else
 	echo "Setting up infrastructure on remote K8s cluster";
 

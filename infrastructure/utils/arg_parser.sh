@@ -1,7 +1,7 @@
 # variables to mandatorily return in output
 VARS=(LOCATION ACTION)
 
-OPTIONS=":drliuf:c:"
+OPTIONS=":dsrliuf:c:"
 
 while getopts $OPTIONS opt; do
   case $opt in
@@ -9,6 +9,10 @@ while getopts $OPTIONS opt; do
       echo "-d: debug mode enabled, spawning environment"
       ACTION="debug"
       break
+      ;;
+    s)
+      echo "-s: start existing cluster without installing further dependencies"
+      ACTION="start"
       ;;
     r)
       echo "-r: running to remote cluster"
@@ -55,7 +59,7 @@ if [ "$ACTION" != "debug" ]; then
       echo "    DEBUG: -d"
       echo "  params:"
       echo "    LOCATION: -l (local), -r (remote)"
-      echo "    ACTION: -i (install), -u (uninstall)"
+      echo "    ACTION: -s (start only), -i (install), -u (uninstall)"
       echo "  options:"
       echo "    CONFIG: -f config_file_name.yaml"
       echo "    COMPONENT: -c component_name"

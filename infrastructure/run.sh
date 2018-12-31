@@ -32,12 +32,23 @@ echo ""
 echo "--------"
 echo ""
 
+
 if [ "$ACTION" = "debug" ]; then
 	# start an interactive session using busybox in the cluster namespace
 	debugging_pod_name="debugging-pod-"$(date '+%d-%m-%Y--%H-%M-%S')
 	kubectl run -it $debugging_pod_name --image=busybox --restart=Never --namespace=$cfg__project__k8s_namespace --env="POD_NAMESPACE=$cfg__project__k8s_namespace"
 	echo "Terminating Debug Pod.."
 	kubectl delete pod $debugging_pod_name -n=$cfg__project__k8s_namespace
+elif [ "$ACTION" = "start" ]; then
+	# just start K8s
+	. $root_folder/k8s/setup.sh $LOCATION
+	# show installed components
+	helm ls
+	# connect proxy
+	# start proxy to connect to K8s API
+        echo "Please access K8s UI at: http://localhost:$cfg__project__proxy_port/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy/"
+        kubectl proxy --port=$cfg__project__proxy_port #&
+
 elif [ "$ACTION" = "install" ]; then
 	# 1. ******** Setup K8s ********
 	. $root_folder/k8s/setup.sh $LOCATION
