@@ -13,7 +13,8 @@ Usage: run.sh { [-d] | [params] [options] }
     LOCATION: -l (local), -r (remote)
     ACTION: -i (install), -u (uninstall)
   options:
-    CONFIG: -c config_file_name.yaml
+    CONFIG: -f config_file_name.yaml
+    COMPONENT: -c component_name
 ```
 
 Components are stored at in the *components* subfolder. Each component consists of a setup.sh and a bunch of config_*.yaml files, possibly reflecting different environments or cluster setups.

@@ -2,4 +2,4 @@ jhub:
   release: jhub
   version: 0.7.0
   config_file: jhub_config.yaml
-  setup_timeout: 300
+  setup_timeout: 600

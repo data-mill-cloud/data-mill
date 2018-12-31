@@ -73,14 +73,15 @@ elif [ "$ACTION" = "install" ]; then
 	# 3. ******** MODULES ********
 	# setup modules on the K8s cluster
 	#. $root_folder/components/minio/setup.sh $ACTION
-
-	for component in $root_folder/components/*; do
-		setup_component="$component/setup.sh"
-		if [ -e "$setup_component" ]; then
-			echo "Running $ACTION for $setup_component";
-			. $setup_component $ACTION
-		else
-			echo "$setup_component unavailable. Skipping!"
+	for c in $root_folder/components/*; do
+		if [[ -z $COMPONENT  || ( ! -z $COMPONENT && $c = "$COMPONENT") ]]; then
+			setup_component="$c/setup.sh"
+			if [ -e "$setup_component" ]; then
+				echo "Running $ACTION for $setup_component";
+				. $setup_component $ACTION
+			else
+				echo "$setup_component unavailable. Skipping!"
+			fi
 		fi
 	done
 
@@ -92,7 +93,15 @@ elif [ "$ACTION" = "install" ]; then
 	kubectl proxy --port=$cfg__project__proxy_port #&
 
 elif [ "$ACTION" = "delete" ]; then
-	helm list --short | xargs -L1 helm delete
+	if [ -z $COMPONENT ]; then
+		# run helm delete on all
+		helm list --short | xargs -L1 helm delete
+		# todo: replace on call on each setup script
+	else
+		# run just on component
+		. $root_folder/components/$COMPONENT/setup.sh
+	fi
+	# delete the namespace
 	kubectl delete namespace $cfg__project__k8s_namespace
 else
 	echo "ACTION should be either debug, install or delete"

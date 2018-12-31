@@ -18,7 +18,7 @@ singleuser:
 
 prePuller:
   hook:
-    enabled: false
+    enabled: true
 
 scheduling:
   userScheduler:
@@ -29,3 +29,7 @@ debug:
 
 # authentication aspects
 # https://z2jh.jupyter.org/en/stable/authentication.html
+
+auth:
+  admin:
+    access: false

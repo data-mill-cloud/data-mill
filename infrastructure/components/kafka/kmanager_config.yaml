@@ -23,7 +23,7 @@ image:
 ## the bundled zookeeper chart service url if enabled (see below).
 ## This value can be a template
 ##
-zkHosts: ""
+zkHosts: localhost:2181
 
 ## Clusters to be added through the kafka-manager api
 ##

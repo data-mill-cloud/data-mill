@@ -1,7 +1,7 @@
 # variables to mandatorily return in output
 VARS=(LOCATION ACTION)
 
-OPTIONS=":drliuc:"
+OPTIONS=":drliuf:c:"
 
 while getopts $OPTIONS opt; do
   case $opt in
@@ -26,9 +26,13 @@ while getopts $OPTIONS opt; do
       echo "-u: uninstalling infrastructure"
       ACTION="delete"
       ;;
-    c)
-      echo "-c: overwriting default config.yaml with -$OPTARG" >&2
+    f)
+      echo "-f: overwriting default config.yaml with $OPTARG" >&2
       CONFIG=$OPTARG
+      ;;
+    c)
+      echo "-c: running for the sole component $OPTARG" >&2
+      COMPONENT=$OPTARG
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -53,7 +57,8 @@ if [ "$ACTION" != "debug" ]; then
       echo "    LOCATION: -l (local), -r (remote)"
       echo "    ACTION: -i (install), -u (uninstall)"
       echo "  options:"
-      echo "    CONFIG: -c config_file_name.yaml"
+      echo "    CONFIG: -f config_file_name.yaml"
+      echo "    COMPONENT: -c component_name"
       exit 1
     fi
   done
