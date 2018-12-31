@@ -23,7 +23,7 @@ Providing:
     * Ingestion (e.g. kafka)  
     * Persistent storage (e.g. s3)  
     * Processing (e.g. dask, spark)  
-    * Exploration Environment (e.g. JupyterHub)
+    * Exploration Environment (e.g. JupyterHub)  
     * BI Dashboarding (e.g. superset)  
     * ML model benchmarking and project management (e.g. mlflow)  
     * ML model serving (e.g. Seldon-core)  
