@@ -34,9 +34,10 @@ echo ""
 
 if [ "$ACTION" = "debug" ]; then
 	# start an interactive session using busybox in the cluster namespace
-	kubectl run -it busybox --image=busybox --restart=Never --namespace=$cfg__project__k8s_namespace --env="POD_NAMESPACE=$cfg__project__k8s_namespace"
+	debugging_pod_name="debugging-pod-"$(date '+%d-%m-%Y--%H-%M-%S')
+	kubectl run -it $debugging_pod_name --image=busybox --restart=Never --namespace=$cfg__project__k8s_namespace --env="POD_NAMESPACE=$cfg__project__k8s_namespace"
 	echo "Terminating Debug Pod.."
-	kubectl delete pod busybox -n=$cfg__project__k8s_namespace
+	kubectl delete pod $debugging_pod_name -n=$cfg__project__k8s_namespace
 elif [ "$ACTION" = "install" ]; then
 	# 1. ******** Setup K8s ********
 	. $root_folder/k8s/setup.sh $LOCATION
@@ -74,7 +75,7 @@ elif [ "$ACTION" = "install" ]; then
 	# setup modules on the K8s cluster
 	#. $root_folder/components/minio/setup.sh $ACTION
 	for c in $root_folder/components/*; do
-		if [[ -z $COMPONENT  || ( ! -z $COMPONENT && $c = "$COMPONENT") ]]; then
+		if [[ -z "$COMPONENT"  || ( ! -z "$COMPONENT" && $(basename $c) = "$COMPONENT") ]]; then
 			setup_component="$c/setup.sh"
 			if [ -e "$setup_component" ]; then
 				echo "Running $ACTION for $setup_component";

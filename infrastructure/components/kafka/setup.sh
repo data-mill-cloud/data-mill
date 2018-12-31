@@ -21,10 +21,10 @@ elif [ "$ACTION" = "install" ]; then
 	helm repo update
 
 	# confluent kafka
-	#helm upgrade $cfg__kafka__release confluent/cp-helm-charts \
-	# --namespace $cfg__project__k8s_namespace \
-	# --values $file_folder/$cfg__kafka__config_file \
-	# --install --force
+	helm upgrade $cfg__kafka__release confluent/cp-helm-charts \
+	 --namespace $cfg__project__k8s_namespace \
+	 --values $file_folder/$cfg__kafka__config_file \
+	 --install --force
 
 	# kafka manager
 	echo "helm upgrade $cfg__kmanager__release stable/kafka-manager --namespace $cfg__project__k8s_namespace --values $file_folder/$cfg__kmanager__config_file --install --force"
