@@ -23,8 +23,11 @@ Providing:
     * Ingestion (e.g. kafka)  
     * Persistent storage (e.g. s3)  
     * Processing (e.g. dask, spark)  
-    * Dashboarding (e.g. superset)  
-    * ML project management (e.g. mlflow)  
+    * Exploration Environment (e.g. JupyterHub)
+    * BI Dashboarding (e.g. superset)  
+    * ML model benchmarking and project management (e.g. mlflow)  
+    * ML model serving (e.g. Seldon-core)  
+    * Monitoring (e.g. prometheus, Grafana)  
   3. Example Applications  
     * Batch processing  
     * Stream processing  

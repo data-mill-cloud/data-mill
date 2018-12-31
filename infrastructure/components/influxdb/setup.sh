@@ -14,9 +14,10 @@ if [ -z "$ACTION" ] || [ "$ACTION" != "install" ] && [ "$ACTION" != "delete" ];t
         exit 1
 elif [ "$ACTION" = "install" ]; then
 	# https://github.com/helm/charts/tree/master/stable/superset
-	helm upgrade --install $cfg__influxdb__release \
+	helm upgrade $cfg__influxdb__release stable/influxdb \
 	 --namespace $cfg__project__k8s_namespace \
-	 -f $file_folder/$cfg__influxdb__config_file stable/influxdb
+	 --values $file_folder/$cfg__influxdb__config_file \
+	 --install --force
 else
 	helm delete $cfg__influxdb__release --purge
 fi

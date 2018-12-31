@@ -6,10 +6,12 @@
 * CONFIG: the default config file for each component is config.yaml, -c [filename] to overwrite
 
 ```
-Usage: ./setup.sh [params] [mass-args]
+Usage: run.sh { [-d] | [params] [options] }
+  debug mode:
+    DEBUG: -d
   params:
     LOCATION: -l (local), -r (remote)
-    ACTION: -i (install), -d (delete)
+    ACTION: -i (install), -u (uninstall)
   options:
     CONFIG: -c config_file_name.yaml
 ```
@@ -37,5 +39,8 @@ The projects is structured over the following folders:
 * k8s - contain the cluster setup and configuration data
 
 ## 2. Common functions
+
+### 2.1 Debugging environment
+A debugging environment (i.e., a pod within the namespace providing an interactive session) can be spawned using `run.sh -d`.
 
 ## 3. Developing applications

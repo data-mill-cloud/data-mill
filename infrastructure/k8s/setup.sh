@@ -19,6 +19,23 @@ elif [ "$LOCATION" = "local" ]; then
 	echo "Setting up local K8s cluster";
 	# setting up minikube locally
 	# premise: kvm, virtualbox or whatever we are going to use should be already installed
+	# https://github.com/kubernetes/minikube/blob/master/docs/drivers.md
+	# the VM driver installs at /usr/bin/docker-machine-driver-* or /usr/local/bin/docker-machine-driver-*
+	drivers=(kvm kvm2 hyperkit xhyve)
+	available=false
+	for d in "${drivers[@]}"
+	do
+		if [ -f /usr/bin/docker-machine-driver-$d ] || [ -f /usr/bin/docker-machine-driver-$d ]; then
+			available=true
+			echo "Found the $d driver"
+			break
+		fi
+	done
+
+	if [ ! $available ]; then
+		echo "No VM driver found, please install one first: https://github.com/kubernetes/minikube/blob/master/docs/drivers.md"
+		exit 1
+	fi
 
 	command -v minikube >/dev/null 2>&1 || {
                 echo >&2 "minikube not available... installing";
@@ -57,6 +74,8 @@ elif [ "$LOCATION" = "local" ]; then
 		--vm-driver $cfg__local__vm_driver \
 		--mount-string="$root_folder/data:$cfg__local__mnt_data" --mount
 
+		echo "Minikube VM started. Node accessible using 'minikube ssh'"
+
 		# enable add-ons
 		# https://github.com/kubernetes/minikube/blob/master/docs/addons.md
 		minikube addons enable metrics-server
@@ -67,6 +86,10 @@ elif [ "$LOCATION" = "local" ]; then
 		kubectl create namespace $cfg__project__k8s_namespace
 	else
 		echo "Minikube is already running. Enjoy!"
+	fi
+
+	if [ -z $(kubectl get pods -o=name --all-namespaces | grep flannel) ];then 
+		. $file_folder/overlay/setup.sh
 	fi
 
 	# installing helm client
@@ -81,7 +104,9 @@ elif [ "$LOCATION" = "local" ]; then
 	# https://docs.helm.sh/using_helm/
 	if [[ -z $(kubectl get pods --all-namespaces | grep tiller) ]]; then
 		echo "Installing Tiller"
-		helm init --wait --tiller-connection-timeout 300
+		kubectl -n kube-system create sa tiller
+		kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+		helm init --service-account tiller --wait --tiller-connection-timeout 300
 		# 300 seconds (5 mins) is the default waiting time
 		# --wait : block until Tiller is running and ready to receive requests
 	fi

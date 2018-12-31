@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+#set -ex
+
 fullpath=$(readlink --canonicalize --no-newline $BASH_SOURCE)
 file_folder=$(dirname $fullpath)
 
@@ -19,16 +21,17 @@ elif [ "$ACTION" = "install" ]; then
 	helm repo update
 
 	# confluent kafka
-	helm upgrade --install $cfg__kafka__release \
-	 --namespace $cfg__project__k8s_namespace \
-	 -f $file_folder/$cfg__spark__config_file \
-	 confluentinc/cp-helm-charts
+	#helm upgrade $cfg__kafka__release confluent/cp-helm-charts \
+	# --namespace $cfg__project__k8s_namespace \
+	# --values $file_folder/$cfg__kafka__config_file \
+	# --install --force
 
 	# kafka manager
-        helm upgrade --install $cfg__kmanager__release \
+	echo "helm upgrade $cfg__kmanager__release stable/kafka-manager --namespace $cfg__project__k8s_namespace --values $file_folder/$cfg__kmanager__config_file --install --force"
+        helm upgrade $cfg__kmanager__release stable/kafka-manager \
          --namespace $cfg__project__k8s_namespace \
-         -f $file_folder/$cfg__kmanager__config_file \
-         stable/kafka-manager
+         --values $file_folder/$cfg__kmanager__config_file \
+	 --install --force --debug
 
 	# test the deployment
 	helm test $cfg__kafka__release
@@ -46,4 +49,5 @@ elif [ "$ACTION" = "install" ]; then
 	# kubectl exec -it kafka-client -- /bin/bash
 else
 	helm delete $cfg__kafka__release --purge
+	helm delete $cfg__kmanager__release --purge
 fi

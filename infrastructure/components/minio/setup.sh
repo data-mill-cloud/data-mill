@@ -21,11 +21,11 @@ elif [ "$ACTION" = "install" ]; then
 	echo "- Mounting volume named $cfg__minio__volume_name"
 	# https://github.com/helm/charts/tree/master/stable/minio#configuration	
 	#helm install --set accessKey=$random_key,secretKey=$random_secret stable/minio
-	helm upgrade --install $cfg__minio__release \
+	helm upgrade $cfg__minio__release stable/minio \
 	 --namespace $cfg__project__k8s_namespace \
-	 -f $file_folder/$cfg__minio__config_file \
+	 --values $file_folder/$cfg__minio__config_file \
 	 --set accessKey=$random_key,secretKey=$random_secret,persistence.existingClaim=$cfg__minio__volume_name \
-	 stable/minio
+	 --install --force
 	unset random_key
 	unset random_secret
 else

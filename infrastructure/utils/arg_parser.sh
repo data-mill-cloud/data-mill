@@ -1,10 +1,15 @@
 # variables to mandatorily return in output
 VARS=(LOCATION ACTION)
 
-OPTIONS=":rlidc:"
+OPTIONS=":drliuc:"
 
 while getopts $OPTIONS opt; do
   case $opt in
+    d)
+      echo "-d: debug mode enabled, spawning environment"
+      ACTION="debug"
+      break
+      ;;
     r)
       echo "-r: running to remote cluster"
       LOCATION="remote"
@@ -17,8 +22,8 @@ while getopts $OPTIONS opt; do
       echo "-i: installing infrastructure"
       ACTION="install"
       ;;
-    d)
-      echo "-d: deleting infrastructure"
+    u)
+      echo "-u: uninstalling infrastructure"
       ACTION="delete"
       ;;
     c)
@@ -37,15 +42,19 @@ while getopts $OPTIONS opt; do
 done
 
 # print usage if any of the variables is not set
-for var in "${VARS[@]}"
-do
-  if [ -z ${!var} ]; then
-    echo "Usage: $0 [params] [mass-args]"
-    echo "  params:"
-    echo "    LOCATION: -l (local), -r (remote)"
-    echo "    ACTION: -i (install), -d (delete)"
-    echo "  options:"
-    echo "    CONFIG: -c config_file_name.yaml"
-    exit 1
-  fi
-done
+if [ "$ACTION" != "debug" ]; then
+  for var in "${VARS[@]}"
+  do
+    if [ -z ${!var} ]; then
+      echo "Usage: $0 [debug-mode] [params] [options]"
+      echo "  debug mode:"
+      echo "    DEBUG: -d"
+      echo "  params:"
+      echo "    LOCATION: -l (local), -r (remote)"
+      echo "    ACTION: -i (install), -u (uninstall)"
+      echo "  options:"
+      echo "    CONFIG: -c config_file_name.yaml"
+      exit 1
+    fi
+  done
+fi

@@ -14,9 +14,10 @@ if [ -z "$ACTION" ] || [ "$ACTION" != "install" ] && [ "$ACTION" != "delete" ];t
         exit 1
 elif [ "$ACTION" = "install" ]; then
 	# https://github.com/helm/charts/tree/master/stable/superset
-	helm upgrade --install $cfg__superset__release \
+	helm upgrade $cfg__superset__release stable/superset \
 	 --namespace $cfg__project__k8s_namespace \
-	 -f $file_folder/$cfg__superset__config_file stable/superset
+	 --values $file_folder/$cfg__superset__config_file \
+	 --install --force
 else
 	helm delete $cfg__superset__release --purge
 fi
