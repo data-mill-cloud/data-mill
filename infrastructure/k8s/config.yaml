@@ -4,7 +4,6 @@ local:
   storage: 40g
   #vm_driver: virtualbox
   vm_driver: kvm2
-  mnt_data: /data/minio
 
 remote:
   type: aws
