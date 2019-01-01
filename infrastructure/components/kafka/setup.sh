@@ -16,38 +16,15 @@ if [ -z "$ACTION" ] || [ "$ACTION" != "install" ] && [ "$ACTION" != "delete" ];t
         exit 1
 elif [ "$ACTION" = "install" ]; then
 
-	# https://docs.confluent.io/current/installation/installing_cp/cp-helm-charts/docs/index.html
-	helm repo add confluent https://confluentinc.github.io/cp-helm-charts/
-	helm repo update
+	# https://strimzi.io/quickstarts/minikube/
+	helm repo add strimzi http://strimzi.io/charts/ 
+    helm install strimzi/strimzi-kafka-operator --name $cfg__kafka__release --namespace $cfg__project__k8s_namespace
+	latest_strimzi=$(get_latest_github_release "strimzi/strimzi-kafka-operator")
+	kubectl apply -f https://raw.githubusercontent.com/strimzi/strimzi-kafka-operator/$latest_strimzi/examples/kafka/kafka-persistent.yaml \
+	 --namespace $cfg__project__k8s_namespace
 
-	# confluent kafka
-	helm upgrade $cfg__kafka__release confluent/cp-helm-charts \
-	 --namespace $cfg__project__k8s_namespace \
-	 --values $file_folder/$cfg__kafka__config_file \
-	 --install --force
-
-	# kafka manager
-	echo "helm upgrade $cfg__kmanager__release stable/kafka-manager --namespace $cfg__project__k8s_namespace --values $file_folder/$cfg__kmanager__config_file --install --force"
-        helm upgrade $cfg__kmanager__release stable/kafka-manager \
-         --namespace $cfg__project__k8s_namespace \
-         --values $file_folder/$cfg__kmanager__config_file \
-	 --install --force --debug
-
-	# test the deployment
-	helm test $cfg__kafka__release
-
-	# producer test
-	echo "Producer test:"
-	echo "kubectl exec -c cp-kafka-broker -it $cfg__kafka__release""-cp-kafka-0 -- /bin/bash /usr/bin/kafka-console-producer --broker-list localhost:9092 --topic test"
-
-	# consumer test
-	echo "Consumer test:"
-	echo "kubectl exec -c cp-kafka-broker -it $cfg__kafka__release""-cp-kafka-0 -- /bin/bash /usr/bin/kafka-console-consumer --bootstrap-server localhost:9092 --topic test --from-beginning"
-
-	echo "Deploy a client Pod for test purposes: https://docs.confluent.io/current/installation/installing_cp/cp-helm-charts/docs/index.html#kafka"
-	# kubectl apply -f cp-helm-charts/examples/kafka-client.yaml
-	# kubectl exec -it kafka-client -- /bin/bash
 else
-	helm delete $cfg__kafka__release --purge
-	helm delete $cfg__kmanager__release --purge
+    helm delete --purge $cfg__kafka__release
+	kubectl delete -f https://raw.githubusercontent.com/strimzi/strimzi-kafka-operator/$latest_strimzi/examples/kafka/kafka-persistent.yaml \
+	 --namespace $cfg__project__k8s_namespace
 fi
