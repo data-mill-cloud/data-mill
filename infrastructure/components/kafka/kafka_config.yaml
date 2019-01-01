@@ -1,140 +1,88 @@
-## ------------------------------------------------------
-## Zookeeper
-## ------------------------------------------------------
-cp-zookeeper:
-  enabled: true
-  servers: 3
-  image: confluentinc/cp-zookeeper
-  imageTag: 5.0.1
-  ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
-  ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
-  imagePullSecrets:
-  #  - name: "regcred"
-  heapOptions: "-Xms512M -Xmx512M"
-  persistence:
-    enabled: true
-    ## The size of the PersistentVolume to allocate to each Zookeeper Pod in the StatefulSet. For
-    ## production servers this number should likely be much larger.
-    ##
-    ## Size for Data dir, where ZooKeeper will store the in-memory database snapshots.
-    dataDirSize: 5Gi
-    # dataDirStorageClass: ""
+# Default values for strimzi-kafka-operator.
 
-    ## Size for data log dir, which is a dedicated log device to be used, and helps avoid competition between logging and snaphots.
-    dataLogDirSize: 5Gi
-    # dataLogDirStorageClass: ""
-  resources: {}
-  ## If you do want to specify resources, uncomment the following lines, adjust them as necessary,
-  ## and remove the curly braces after 'resources:'
-  #  limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  #  requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+watchNamespaces: []
 
-## ------------------------------------------------------
-## Kafka
-## ------------------------------------------------------
-cp-kafka:
-  enabled: true
-  brokers: 3
-  image: confluentinc/cp-kafka
-  imageTag: 5.0.1
-  ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
-  ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
-  imagePullSecrets:
-  #  - name: "regcred"
-  heapOptions: "-Xms512M -Xmx512M"
-  persistence:
-    enabled: true
-    # storageClass: ""
-    size: 5Gi
-    disksPerBroker: 1
-  resources: {}
-  ## If you do want to specify resources, uncomment the following lines, adjust them as necessary,
-  ## and remove the curly braces after 'resources:'
-  #  limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  #  requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+image:
+  repository: strimzi
+  name: cluster-operator
+  tag: latest
+  imagePullPolicy: IfNotPresent
+logLevel: INFO
+fullReconciliationIntervalMs: 120000
+operationTimeoutMs: 300000
+# Docker images that operator uses to provision various components of Strimzi.  To use your own registry prefix the
+# repository name with your registry URL.
+# Ex) repository: registry.xyzcorp.com/strimzi/zookeeper
+zookeeper:
+  image:
+    repository: strimzi
+    name: zookeeper
+    tag: latest
+kafka:
+  image:
+    repository: strimzi
+    name: kafka
+    tagPrefix: latest
+kafkaConnect:
+  image:
+    repository: strimzi
+    name: kafka-connect
+    tagPrefix: latest
+kafkaConnects2i:
+  image:
+    repository: strimzi
+    name: kafka-connect-s2i
+    tagPrefix: latest
+topicOperator:
+  image:
+    repository: strimzi
+    name: topic-operator
+    tag: latest
+userOperator:
+  image:
+    repository: strimzi
+    name: user-operator
+    tag: latest
+kafkaInit:
+  image:
+    repository: strimzi
+    name: kafka-init
+    tag: latest
+tlsSidecarZookeeper:
+  image:
+    repository: strimzi
+    name: zookeeper-stunnel
+    tag: latest
+tlsSidecarKafka:
+  image:
+    repository: strimzi
+    name: kafka-stunnel
+    tag: latest
+tlsSidecarEntityOperator:
+  image:
+    repository: strimzi
+    name: entity-operator-stunnel
+    tag: latest
+kafkaMirrorMaker:
+  image:
+    repository: strimzi
+    name: kafka-mirror-maker
+    tagPrefix: latest
+resources:
+  limits:
+    memory: 256Mi
+    cpu: 1000m
+  requests:
+    memory: 256Mi
+    cpu: 200m
+livenessProbe:
+  initialDelaySeconds: 10
+  periodSeconds: 30
+readinessProbe:
+  initialDelaySeconds: 10
+  periodSeconds: 30
 
-## ------------------------------------------------------
-## Schema Registry
-## ------------------------------------------------------
-cp-schema-registry:
-  enabled: true
-  image: confluentinc/cp-schema-registry
-  imageTag: 5.0.1
-  ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
-  ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
-  imagePullSecrets:
-  #  - name: "regcred"
-  heapOptions: "-Xms512M -Xmx512M"
-  resources: {}
-  ## If you do want to specify resources, uncomment the following lines, adjust them as necessary,
-  ## and remove the curly braces after 'resources:'
-  #  limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  #  requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-## ------------------------------------------------------
-## REST Proxy
-## ------------------------------------------------------
-cp-kafka-rest:
-  enabled: true
-  image: confluentinc/cp-kafka-rest
-  imageTag: 5.0.1
-  ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
-  ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
-  imagePullSecrets:
-  #  - name: "regcred"
-  resources: {}
-  ## If you do want to specify resources, uncomment the following lines, adjust them as necessary,
-  ## and remove the curly braces after 'resources:'
-  #  limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  #  requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-## ------------------------------------------------------
-## Kafka Connect
-## ------------------------------------------------------
-cp-kafka-connect:
-  enabled: true
-  image: confluentinc/cp-kafka-connect
-  imageTag: 5.0.1
-  ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
-  ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
-  imagePullSecrets:
-  #  - name: "regcred"
-  resources: {}
-  ## If you do want to specify resources, uncomment the following lines, adjust them as necessary,
-  ## and remove the curly braces after 'resources:'
-  #  limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  #  requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-## ------------------------------------------------------
-## KSQL Server
-## ------------------------------------------------------
-cp-ksql-server:
-  enabled: true
-  image: confluentinc/cp-ksql-server
-  imageTag: 5.0.1
-  ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
-  ## https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
-  imagePullSecrets:
-  #  - name: "regcred"
-  ksql:
-    headless: false
+# Override the docker image repository used by all Strimzi images
+# imageRepositoryOverride: foobar
+# Override the docker image tag used by all Strimzi images
+# imageTagOverride: latest
