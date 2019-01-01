@@ -91,7 +91,8 @@ elif [ "$LOCATION" = "local" ]; then
 		echo "Minikube is already running. Enjoy!"
 	fi
 
-	if [ -z $(kubectl get pods -o=name --all-namespaces | grep flannel) ];then 
+	# add an overlay network
+	if [ -z $(check_if_pod_exists "flannel") ];then
 		. $file_folder/overlay/setup.sh
 	fi
 
