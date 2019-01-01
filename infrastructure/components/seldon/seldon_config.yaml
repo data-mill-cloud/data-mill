@@ -1,0 +1,21 @@
+# https://github.com/SeldonIO/seldon-core/blob/master/docs/helm.md
+
+apife:
+  # (default true) set to false if you have installed Ambassador
+  enabled: true
+
+rbac:
+  # (default true) set to false if running an old Kubernetes cluster without RBAC
+  enabled: true
+  rolebinding:
+    create: true
+  service_account:
+    create: true
+    name: seldon
+
+ambassador:
+  # (default false) set to true if you want to run with an Ambassador reverse proxy
+  enabled: false
+
+# (default true) whether to run all components local to a namespace. If false, then a single Seldon Core installation can control deployments across all namespaces
+single_namespace: true

@@ -1,0 +1,7 @@
+seldon:
+  release: seldon
+  config_file: seldon_config.yaml
+
+seldon_crd:
+  release: seldon-crd
+  config_file: seldon_crd_config.yaml

@@ -92,7 +92,7 @@ elif [ "$LOCATION" = "local" ]; then
 	fi
 
 	# add an overlay network
-	if [ -z $(check_if_pod_exists "flannel") ];then
+	if [[ -z $(check_if_pod_exists "flannel") ]];then
 		. $file_folder/overlay/setup.sh
 	fi
 
