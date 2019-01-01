@@ -15,22 +15,20 @@ if [ -z "$ACTION" ] || [ "$ACTION" != "install" ] && [ "$ACTION" != "delete" ];t
 elif [ "$ACTION" = "install" ]; then
 	helm repo update
 
-	# installing prometheus
-	helm upgrade $cfg__monitoring__prometheus__release stable/prometheus \
-	--namespace $cfg__project__k8s_namespace \
-	--values $file_folder/$cfg__monitoring__prometheus__config_file \
-	--install --force
-
+	# adding prometheus operator crd's
+	kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/alertmanager.crd.yaml
+	kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheus.crd.yaml
+	kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheusrule.crd.yaml
+	kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/servicemonitor.crd.yaml
 	random_secret=$(get_random_secret_key)
-	echo "Installing Grafana: admin/$random_secret"
-	# installing grafana
-	helm upgrade $cfg__monitoring__grafana__release stable/grafana \
+	# installing prometheus operator
+	helm upgrade $cfg__monitoring__prometheus__release stable/prometheus-operator \
 	--namespace $cfg__project__k8s_namespace \
-	--values $file_folder/$cfg__monitoring__grafana__config_file \
-	--set adminUser:admin,adminPassword:$random_secret \
+	--set prometheusOperator.createCustomResource=false,grafana.adminPassword=$random_secret \
 	--install --force
-	unset random_secret
+	
+	echo "kubectl port-forward -n $cfg__project__k8s_namespace svc/""$cfg__monitoring__prometheus__release-grafana 3000:80"
+	echo "http://localhost:3000 admin:$random_secret"
 else
 	helm delete $cfg__monitoring__prometheus__release --purge
-	helm delete $cfg__monitoring__grafana__release --purge
 fi
