@@ -7,7 +7,7 @@ spec:
   # It's necessary to specify "" as the storageClassName
   # so that the default storage class won't be used, see
   # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#class-1
-  storageClassName: ""
+  storageClassName: "standard"
   volumeName: pv-data-minio
   accessModes:
     - ReadWriteOnce
