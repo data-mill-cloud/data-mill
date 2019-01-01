@@ -61,6 +61,7 @@ elif [ "$LOCATION" = "local" ]; then
 		# starting minikube
 		echo "Starting minikube.."
 		echo "minikube start --cpus $cfg__local__cpus --memory $cfg__local__memory --disk-size=$cfg__local__storage --vm-driver $cfg__local__vm_driver"
+		cfg__local__mnt_data="/mnt/vda1/data/storage/"
 		echo "Mounting $root_folder/data as $cfg__local__mnt_data"
 		# in case of issues with mounting, it may be due to the vm driver (they behave differently) or more probably to a firewall issue on the host
 		# https://github.com/kubernetes/minikube/issues/2379
@@ -74,9 +75,9 @@ elif [ "$LOCATION" = "local" ]; then
 		--vm-driver $cfg__local__vm_driver
 
 		echo "Minikube VM started. Node accessible using 'minikube ssh'"
-		echo "Creating data dir /mnt/vda1/data/storage/"
-		minikube ssh 'sudo mkdir -p /mnt/vda1/data/storage/'
-		minikube ssh 'sudo chown rkt:rkt /mnt/vda1/data/storage/'
+		echo "Creating data dir $cfg__local__mnt_data"
+		minikube ssh 'sudo mkdir -p $cfg__local__mnt_data'
+		minikube ssh 'sudo chown rkt:rkt $cfg__local__mnt_data'
 
 		# enable add-ons
 		# https://github.com/kubernetes/minikube/blob/master/docs/addons.md

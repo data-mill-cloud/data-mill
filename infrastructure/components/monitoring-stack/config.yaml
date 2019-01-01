@@ -1,8 +1,4 @@
 monitoring:
-  grafana:
-    release: monitoring-grafana
-    config_file: grafana_config.yaml
-  prometheus:
-    release: monitoring-prometheus
-    config_file: prometheus_config.yaml
+  release: monitoring-stack
+  config_file: monitoring_config.yaml
 

@@ -24,14 +24,14 @@ elif [ "$ACTION" = "install" ]; then
 	random_secret=$(get_random_secret_key)
 
 	# installing prometheus operator
-	helm upgrade $cfg__monitoring__prometheus__release stable/prometheus-operator \
+	helm upgrade $cfg__monitoring__release stable/prometheus-operator \
 	--namespace $cfg__project__k8s_namespace \
 	--set prometheusOperator.createCustomResource=false,grafana.adminPassword=$random_secret \
 	--install --force
 
-	echo "kubectl port-forward -n $cfg__project__k8s_namespace svc/""$cfg__monitoring__prometheus__release-grafana 3000:80"
+	echo "kubectl port-forward -n $cfg__project__k8s_namespace svc/""$cfg__monitoring__release-grafana 3000:80"
 	echo "http://localhost:3000 admin:$random_secret"
 	unset random_secret
 else
-	helm delete $cfg__monitoring__prometheus__release --purge
+	helm delete $cfg__monitoring__release --purge
 fi
