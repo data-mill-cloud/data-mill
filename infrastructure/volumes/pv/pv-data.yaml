@@ -9,4 +9,4 @@ spec:
     - ReadWriteOnce
   storageClassName: standard 
   hostPath:
-          path: "/mnt/vda1/data/storage/"
+    path: "/mnt/vda1/data/storage/"
