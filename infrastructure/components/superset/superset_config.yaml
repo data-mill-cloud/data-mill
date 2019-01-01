@@ -54,7 +54,7 @@ persistence:
   ## If true, superset server will create/use a Persistent Volume Claim
     ## If false, use emptyDir
     ##
-  enabled: false
+  enabled: true
 
   ## superset data Persistent Volume access modes
   ## Must match those of existing PV or dynamic provisioner
@@ -65,7 +65,7 @@ persistence:
 
   ## superset data Persistent Volume size
   ##
-  size: 8Gi
+  size: 1Gi
 
   ## superset server data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>

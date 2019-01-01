@@ -44,4 +44,17 @@ The projects is structured over the following folders:
 ### 2.1 Debugging environment
 A debugging environment (i.e., a pod within the namespace providing an interactive session) can be spawned using `run.sh -d`.
 
+### 2.2 Installing local helm charts
+We provide a subfolder to collect a few helm-chart that were not yet offered at the time of development.   
+To install a helm chart from the infrastructure folder you would normally run something like:
+```
+helm install --dry-run --debug --name mlflow-test --namespace data-mill helm-charts/mlflow/
+helm install --name mlflow-test --namespace data-mill helm-charts/mlflow/
+```
+with the first command testing the chart and the second actually deploying it on the default data-mill namespace.
+
+Alternatively, just add our Git Repo as Helm repo too:
+```
+helm repo add data-mill https://data-mill-cloud.github.io/data-mill/helm-charts/
+```
 ## 3. Developing applications

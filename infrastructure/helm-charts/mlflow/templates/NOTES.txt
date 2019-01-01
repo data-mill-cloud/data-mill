@@ -1,0 +1,5 @@
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "mlflow.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o 
+jsonpath="$
+  echo "Visit http://127.0.0.1:{{ .Values.service.port }} to use your application"
+  kubectl port-forward $POD_NAME {{ .Values.service.port }}:{{ .Values.service.port }}
