@@ -105,16 +105,23 @@ elif [ "$ACTION" = "install" ]; then
 	kubectl proxy --port=$cfg__project__proxy_port #&
 
 elif [ "$ACTION" = "delete" ]; then
-	if [ -z $COMPONENT ]; then
-		# run helm delete on all
-		helm list --short | xargs -L1 helm delete
-		# todo: replace on call on each setup script
-	else
-		# run just on component
-		. $root_folder/components/$COMPONENT/setup.sh
+	# run action delete either on all or only on a specified component
+	for c in $root_folder/components/*; do
+                if [[ -z "$COMPONENT"  || ( ! -z "$COMPONENT" && $(basename $c) = "$COMPONENT") ]]; then
+                        setup_component="$c/setup.sh"
+                        if [ -e "$setup_component" ]; then
+                                echo "Running $ACTION for $setup_component";
+                                . $setup_component $ACTION
+                        else
+                                echo "$setup_component unavailable. Skipping!"
+                        fi
+                fi
+        done
+
+	# delete the namespace only if we removed all components
+	if [ -z "$COMPONENT" ]; then
+		kubectl delete namespace $cfg__project__k8s_namespace
 	fi
-	# delete the namespace
-	kubectl delete namespace $cfg__project__k8s_namespace
 else
 	echo "ACTION should be either debug, install or delete"
 fi

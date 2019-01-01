@@ -71,9 +71,8 @@ elif [ "$LOCATION" = "local" ]; then
 		--cpus $cfg__local__cpus \
 		--memory $cfg__local__memory \
 		--disk-size=$cfg__local__storage \
-		--vm-driver $cfg__local__vm_driver 
+		--vm-driver $cfg__local__vm_driver
 
-		#--host-only-cidr 10.0.0.0/24 \
 		echo "Minikube VM started. Node accessible using 'minikube ssh'"
 		echo "Creating data dir /mnt/vda1/data/storage/"
 		minikube ssh 'sudo mkdir -p /mnt/vda1/data/storage/'
@@ -92,9 +91,7 @@ elif [ "$LOCATION" = "local" ]; then
 	fi
 
 	# add an overlay network
-	if [[ -z $(check_if_pod_exists "flannel") ]];then
-		. $file_folder/overlay/setup.sh
-	fi
+	#. $file_folder/overlay/setup.sh
 
 	# installing helm client
 	command -v helm >/dev/null 2>&1 || {

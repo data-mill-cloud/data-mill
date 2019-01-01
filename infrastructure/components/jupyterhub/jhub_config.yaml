@@ -13,7 +13,8 @@ singleuser:
     # Example processing from the notebook: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/specifics.html#apache-spark
     #name: jupyter/datascience-notebook
     #tag: 177037d09156
-    name: jupyter/pyspark-notebook
+    #name: jupyter/pyspark-notebook
+    name: jupyter/scipy-notebook
     tag: latest
 
 prePuller:

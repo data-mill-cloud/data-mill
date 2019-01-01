@@ -20,15 +20,18 @@ elif [ "$ACTION" = "install" ]; then
 	kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheus.crd.yaml
 	kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/prometheusrule.crd.yaml
 	kubectl apply -f https://raw.githubusercontent.com/coreos/prometheus-operator/master/example/prometheus-operator-crd/servicemonitor.crd.yaml
+
 	random_secret=$(get_random_secret_key)
+
 	# installing prometheus operator
 	helm upgrade $cfg__monitoring__prometheus__release stable/prometheus-operator \
 	--namespace $cfg__project__k8s_namespace \
 	--set prometheusOperator.createCustomResource=false,grafana.adminPassword=$random_secret \
 	--install --force
-	
+
 	echo "kubectl port-forward -n $cfg__project__k8s_namespace svc/""$cfg__monitoring__prometheus__release-grafana 3000:80"
 	echo "http://localhost:3000 admin:$random_secret"
+	unset random_secret
 else
 	helm delete $cfg__monitoring__prometheus__release --purge
 fi

@@ -28,4 +28,5 @@ elif [ "$ACTION" = "install" ]; then
          --install --force
 else
         helm delete $cfg__seldon__release --purge
+	helm delete $cfg__seldon_crd__release --purge
 fi
