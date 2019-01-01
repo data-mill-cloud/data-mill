@@ -1,0 +1,49 @@
+ /* Slideshow container */
+.slideshow-container {
+  position: relative;
+  /*background: #f1f1f1f1;*/
+}
+
+/* Slides */
+.technologies_slides {
+  display: none;
+  padding: 80px;
+  text-align: center;
+
+  transition: 1s;
+  left: 0;
+}
+
+/* Next & previous buttons */
+.slide_prev, .slide_next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  margin-top: -30px;
+  padding: 16px;
+  color: #888;
+  font-weight: bold;
+  font-size: 20px;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.slide_next {
+  position: absolute;
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.slide_prev:hover, .slide_next:hover {
+  background-color: rgba(0,0,0,0.8);
+  color: white;
+}
+
+/* Add an italic font style to all quotes */
+q {font-style: italic;}
+
+/* Add a blue color to the author */
+.slide_author {color: cornflowerblue;} 
