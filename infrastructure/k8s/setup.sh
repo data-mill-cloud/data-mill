@@ -76,8 +76,8 @@ elif [ "$LOCATION" = "local" ]; then
 
 		echo "Minikube VM started. Node accessible using 'minikube ssh'"
 		echo "Creating data dir $cfg__local__mnt_data"
-		minikube ssh 'sudo mkdir -p $cfg__local__mnt_data'
-		minikube ssh 'sudo chown rkt:rkt $cfg__local__mnt_data'
+		minikube ssh "sudo mkdir -p $cfg__local__mnt_data"
+		minikube ssh "sudo chown rkt:rkt $cfg__local__mnt_data"
 
 		# enable add-ons
 		# https://github.com/kubernetes/minikube/blob/master/docs/addons.md
