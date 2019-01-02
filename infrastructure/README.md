@@ -6,12 +6,12 @@
 * CONFIG: the default config file for each component is config.yaml, -c [filename] to overwrite
 
 ```
-Usage: run.sh { [-d] | [params] [options] }
+Usage: ./run.sh [debug-mode] [params] [options]
   debug mode:
     DEBUG: -d
   params:
     LOCATION: -l (local), -r (remote)
-    ACTION: -i (install), -u (uninstall)
+    ACTION: -s (start only), -i (install), -u (uninstall)
   options:
     CONFIG: -f config_file_name.yaml
     COMPONENT: -c component_name
@@ -36,6 +36,7 @@ project:
 The projects is structured over the following folders:
 * volumes - contains the persistent volumes and the persistent volume claims to be mounted at startup (e.g. to mount a partition with static files).
 * data - is mounted as PV and PVC and eventually available in the Minio S3 data lake, it can be used to provide example code
+* helm-charts - contains the code used to develop helm charts that were not available to us at time of development
 * utils - contain bash utility functions (e.g. arg parsing)
 * k8s - contain the cluster setup and configuration data
 
@@ -57,4 +58,5 @@ Alternatively, just add our Git Repo as Helm repo too:
 ```
 helm repo add data-mill https://data-mill-cloud.github.io/data-mill/helm-charts/
 ```
+
 ## 3. Developing applications
