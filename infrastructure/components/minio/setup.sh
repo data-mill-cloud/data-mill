@@ -25,10 +25,12 @@ elif [ "$ACTION" = "install" ]; then
 	 --namespace $cfg__project__k8s_namespace \
 	 --values $file_folder/$cfg__minio__config_file \
 	 --set accessKey=$random_key,secretKey=$random_secret,persistence.existingClaim=$cfg__minio__volume_name \
-	 --install --force --wait
+	 --install --force
 	unset random_key
 	unset random_secret
 	MINIO_POD_NAME=$(kubectl get pods --namespace $cfg__project__k8s_namespace -l "release=$cfg__minio__release" -o jsonpath="{.items[0].metadata.name}")
+	echo "waiting for pod $MINIO_POD_NAME to be up and running"
+	kubectl wait -n data-mill  --for=condition=Ready --timeout=600s pod $MINIO_POD_NAME
 	echo "copying data to $MINIO_POD_NAME pod into /export folder"
 	kubectl -n $cfg__project__k8s_namespace cp data/ ${MINIO_POD_NAME}:/export
 else
