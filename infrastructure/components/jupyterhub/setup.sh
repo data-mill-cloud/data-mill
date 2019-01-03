@@ -15,8 +15,13 @@ if [ -z "$ACTION" ] || [ "$ACTION" != "install" ] && [ "$ACTION" != "delete" ];t
 elif [ "$ACTION" = "install" ]; then
 	# build the datascience image
 	if [ "$cfg__jhub__ds_image__use_local_image" = true ];then
-		echo "Building $cfg__jhub__ds_image__use_local_image__name:$cfg__jhub__ds_image__use_local_image__tag from $file_folder/ds_environments/$cfg__jhub__ds_image__use_local_image__name/Dockerfile"
-		docker build -t $cfg__project__k8s_namespace/$cfg__jhub__ds_image__use_local_image__name:$cfg__jhub__ds_image__use_local_image__tag -f $file_folder/ds_environments/$cfg__jhub__ds_image__use_local_image__name/Dockerfile .
+		folder_name=`basename $cfg__jhub__ds_image__name`
+		echo "Building $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag from $file_folder/ds_environments/$folder_name/Dockerfile"
+		docker build -t $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag -f $file_folder/ds_environments/$folder_name/Dockerfile .
+		docker push $cfg__jhub__ds_image__name
+		unset folder_name
+	else
+		echo "Using community image $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag"
 	fi
 
 	# following https://z2jh.jupyter.org/en/stable/setup-jupyterhub.html
@@ -28,7 +33,7 @@ elif [ "$ACTION" = "install" ]; then
 	  --namespace $cfg__project__k8s_namespace \
 	  --version $cfg__jhub__version \
 	  --values $file_folder/$cfg__jhub__config_file \
-	  --set proxy.secretToken=$secretToken,singleuser.image.name=$cfg__project__k8s_namespace/$cfg__jhub__ds_image__use_local_image__name,singleuser.image.tag=$cfg__jhub__ds_image__use_local_image__tag \
+	  --set proxy.secretToken=$secretToken,singleuser.image.name=$cfg__jhub__ds_image__name,singleuser.image.tag=$cfg__jhub__ds_image__tag \
 	  --install --force
 	#--timeout $cfg__jhub__setup_timeout -- wait
 	unset secretToken
