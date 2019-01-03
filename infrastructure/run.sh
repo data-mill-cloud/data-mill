@@ -14,7 +14,16 @@ CONFIG_FILE=${CONFIG_FILE:="config.yaml"}
 eval $(parse_yaml $root_folder/$CONFIG_FILE "cfg__")
 
 # for debugging config var names:
-# ( set -o posix ; set ) | more
+#( set -o posix ; set ) | more
+
+declare -a flavour;
+if [ -z "$cfg__project__flavour" ] || [ "$cfg__project__flavour" = "all" ]; then
+	# echo "adding all components"
+	flavour=($(ls $root_folder/components))
+else
+	# read the list of components to include in "${flavour[@]}"
+	IFS=', ' read -r -a flavour <<< "$cfg__project__flavour"
+fi
 
 
 echo ""
@@ -85,9 +94,9 @@ elif [ "$ACTION" = "install" ]; then
 	# 3. ******** MODULES ********
 	# setup modules on the K8s cluster
 	#. $root_folder/components/minio/setup.sh $ACTION
-	for c in $root_folder/components/*; do
-		if [[ -z "$COMPONENT"  || ( ! -z "$COMPONENT" && $(basename $c) = "$COMPONENT") ]]; then
-			setup_component="$c/setup.sh"
+	for c in "${flavour[@]}"; do
+		if [[ -z "$COMPONENT"  || ( ! -z "$COMPONENT" &&  $c = "$COMPONENT") ]]; then
+			setup_component="$root_folder/components/$c/setup.sh"
 			if [ -e "$setup_component" ]; then
 				echo "Running $ACTION for $setup_component";
 				. $setup_component $ACTION
@@ -106,9 +115,9 @@ elif [ "$ACTION" = "install" ]; then
 
 elif [ "$ACTION" = "delete" ]; then
 	# run action delete either on all or only on a specified component
-	for c in $root_folder/components/*; do
-                if [[ -z "$COMPONENT"  || ( ! -z "$COMPONENT" && $(basename $c) = "$COMPONENT") ]]; then
-                        setup_component="$c/setup.sh"
+	for c in "${flavour[@]}"; do
+		if [[ -z "$COMPONENT"  || ( ! -z "$COMPONENT" &&  $c = "$COMPONENT") ]]; then
+			setup_component="$root_folder/components/$c/setup.sh"
                         if [ -e "$setup_component" ]; then
                                 echo "Running $ACTION for $setup_component";
                                 . $setup_component $ACTION

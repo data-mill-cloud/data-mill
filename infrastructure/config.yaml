@@ -1,3 +1,4 @@
 project:
   k8s_namespace: data-mill
   proxy_port: 8088
+  flavour: all
