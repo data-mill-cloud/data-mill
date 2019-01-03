@@ -4,7 +4,7 @@ FROM jupyter/scipy-notebook
 # adding missing packages
 RUN pip install -U s3fs \
     # dask distributed is not installed by default
-    && pip install --yes dask[complete] distributed --upgrade \
+    && pip install dask[complete] distributed --upgrade \
     # install hdf5 support, livelossplot and seldon-core to serve models
     && pip install -U livelossplot tables seldon-core \
     # installing java
