@@ -1,8 +1,6 @@
 #https://z2jh.jupyter.org/en/latest/user-environment.html#customize-an-existing-docker-image
 FROM jupyter/scipy-notebook
 
-MANTAINER Andrea Monacchi
-
 # adding missing packages
 RUN pip install -U s3fs \
     # dask distributed is not installed by default

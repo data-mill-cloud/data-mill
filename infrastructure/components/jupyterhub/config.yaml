@@ -3,3 +3,13 @@ jhub:
   version: 0.7.0
   config_file: jhub_config.yaml
   setup_timeout: 600
+
+  ds_image:
+    use_local_image: true
+    name: python_env
+    tag: 0.1
+
+  #ds_image:
+  #  use_local_image: false
+  #  name: jupyter/scipy-notebook
+  #  tag: latest
