@@ -31,7 +31,10 @@ The project-wide configuration is stored in the infrastructure root folder in co
 project:
   k8s_namespace: data-mill
   proxy_port: 8088
+  flavour: all
 ```
+The flavour indicates which components are to be included in the project the default is related to.
+You can use `flavour: all` or list the component names e.g. `flavour: spark, jupyterhub`.
 
 The projects is structured over the following folders:
 * volumes - contains the persistent volumes and the persistent volume claims to be mounted at startup (e.g. to mount a partition with static files).
