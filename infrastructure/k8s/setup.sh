@@ -68,11 +68,18 @@ elif [ "$LOCATION" = "local" ]; then
 		# https://github.com/kubernetes/minikube/issues/1548
 		# please run minikube mount -v10 $root_folder/data:$cfg__local__mnt_data
 		# https://kubernetes.io/docs/setup/minikube/#mounted-host-folders
+		# starting registry mirror on host
+		docker start registry-mirror || docker run -d --restart=always -p 5000:5000 --name registry-mirror \
+		-v $PWD/registry/data/:/var/lib/registry/ \
+		-v $PWD/registry/config/:/etc/docker/registry/ registry:2
+		echo "starting minikube"
 		minikube start \
 		--cpus $cfg__local__cpus \
 		--memory $cfg__local__memory \
 		--disk-size=$cfg__local__storage \
-		--vm-driver $cfg__local__vm_driver
+		--vm-driver $cfg__local__vm_driver \
+		--registry-mirror http://192.168.122.1:5000 \
+		--insecure-registry http://192.168.122.1:5000
 
 		echo "Minikube VM started. Node accessible using 'minikube ssh'"
 		echo "Creating data dir $cfg__local__mnt_data"
