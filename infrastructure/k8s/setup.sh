@@ -57,7 +57,7 @@ elif [ "$LOCATION" = "local" ]; then
 
 	# starting minikube cluster if not already started (to make sure this whole script is idempotent)
 	kb_status=$(minikube status | grep "host:" | awk '{print $2}' FS=': ')
-	if [ -z "$kb_status" ] || [ "$kb_status" == "Stopped" ]; then
+	if [ -z "$kb_status" ] || [ "$kb_status" = "Stopped" ]; then
 		# starting minikube
 		echo "Starting minikube.."
 		echo "minikube start --cpus $cfg__local__cpus --memory $cfg__local__memory --disk-size=$cfg__local__storage --vm-driver $cfg__local__vm_driver"
@@ -88,9 +88,10 @@ elif [ "$LOCATION" = "local" ]; then
 		# enable add-ons
 		# https://github.com/kubernetes/minikube/blob/master/docs/addons.md
 		minikube addons enable metrics-server
-		#minikube addons enable nvidia-driver-installer
-		#minikube addons enable nvidia-gpu-device-plugin
-
+		if [ ! -z "$cfg__project__gpu_support" ] && [ "$cfg__project__gpu_support" = true ]; then
+			minikube addons enable nvidia-driver-installer
+			minikube addons enable nvidia-gpu-device-plugin
+		fi
 		# create a namespace for us
 		kubectl create namespace $cfg__project__k8s_namespace
 	else

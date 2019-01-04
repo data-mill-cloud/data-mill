@@ -25,6 +25,6 @@ elif [ "$ACTION" = "install" ]; then
     echo "Then access UI: https://localhost:8529"
 
 else
-	helm delete --purge $cfg__arangodb__release
+    helm delete --purge $cfg__arangodb__release
     helm delete --purge ${cfg__arangodb__release}-crd
 fi

@@ -15,6 +15,7 @@ eval $(parse_yaml $root_folder/$CONFIG_FILE "cfg__")
 
 # for debugging config var names:
 #( set -o posix ; set ) | more
+#exit 1
 
 declare -a flavour;
 if [ -z "$cfg__project__flavour" ] || [ "$cfg__project__flavour" = "all" ]; then

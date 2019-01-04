@@ -5,6 +5,11 @@ jhub:
   setup_timeout: 600
 
   ds_image:
-    use_local_image: false
-    name: jupyter/scipy-notebook
-    tag: latest
+    use_local_image: true
+    name: data-mill/python_env
+    tag: 0.1
+
+#  ds_image:
+#    use_local_image: false
+#    name: jupyter/scipy-notebook
+#    tag: latest

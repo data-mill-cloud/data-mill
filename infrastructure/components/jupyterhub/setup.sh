@@ -18,7 +18,7 @@ elif [ "$ACTION" = "install" ]; then
 		folder_name=`basename $cfg__jhub__ds_image__name`
 		echo "Building $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag from $file_folder/ds_environments/$folder_name/Dockerfile"
 		eval $(minikube docker-env)
-		docker docker build -t $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag -f $file_folder/ds_environments/$folder_name/Dockerfile .
+		docker build -t $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag -f $file_folder/ds_environments/$folder_name/Dockerfile .
 		unset folder_name
 	else
 		echo "Using community image $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag"
