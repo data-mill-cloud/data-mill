@@ -60,7 +60,7 @@ elif [ "$LOCATION" = "local" ]; then
 	if [ -z "$kb_status" ] || [ "$kb_status" = "Stopped" ]; then
 		# starting minikube
 		echo "Starting minikube.."
-		echo "minikube start --cpus $cfg__local__cpus --memory $cfg__local__memory --disk-size=$cfg__local__storage --vm-driver $cfg__local__vm_driver "$( (( "$cfg__project__gpu_support" == true )) && printf %s '--gpu' )
+		echo "minikube start --cpus $cfg__local__cpus --memory $cfg__local__memory --disk-size=$cfg__local__storage --vm-driver $cfg__local__vm_driver "$( ( "$cfg__project__gpu_support" = true ) && printf %s '--gpu' )
 		cfg__local__mnt_data="/mnt/vda1/data/storage/"
 		# in case of issues with mounting, it may be due to the vm driver (they behave differently) or more probably to a firewall issue on the host
 		# https://github.com/kubernetes/minikube/issues/2379
@@ -78,7 +78,7 @@ elif [ "$LOCATION" = "local" ]; then
 		--disk-size=$cfg__local__storage \
 		--vm-driver $cfg__local__vm_driver \
 		--registry-mirror http://192.168.122.1:5000 \
-		--insecure-registry http://192.168.122.1:5000 $( (( "$cfg__project__gpu_support" == true )) && printf %s '--gpu' )
+		--insecure-registry http://192.168.122.1:5000 $( ( "$cfg__project__gpu_support" = true ) && printf %s '--gpu' )
 
 		echo "Minikube VM started. Node accessible using 'minikube ssh'"
 		echo "Creating data dir $cfg__local__mnt_data"
