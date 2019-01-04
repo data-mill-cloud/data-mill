@@ -62,7 +62,6 @@ elif [ "$LOCATION" = "local" ]; then
 		echo "Starting minikube.."
 		echo "minikube start --cpus $cfg__local__cpus --memory $cfg__local__memory --disk-size=$cfg__local__storage --vm-driver $cfg__local__vm_driver"
 		cfg__local__mnt_data="/mnt/vda1/data/storage/"
-		echo "Mounting $root_folder/data as $cfg__local__mnt_data"
 		# in case of issues with mounting, it may be due to the vm driver (they behave differently) or more probably to a firewall issue on the host
 		# https://github.com/kubernetes/minikube/issues/2379
 		# https://github.com/kubernetes/minikube/issues/1548

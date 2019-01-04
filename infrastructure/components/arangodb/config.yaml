@@ -1,0 +1,3 @@
+arangodb:
+  release: arangodb
+  mode: single-server
