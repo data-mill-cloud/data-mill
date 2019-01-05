@@ -14,15 +14,15 @@ if [ -z "$ACTION" ] || [ "$ACTION" != "install" ] && [ "$ACTION" != "delete" ];t
         exit 1
 elif [ "$ACTION" = "install" ]; then
 	# build the datascience image
-	if [ "$cfg__jhub__ds_image__use_local_image" = true ];then
-		folder_name=`basename $cfg__jhub__ds_image__name`
-		echo "Building $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag from $file_folder/ds_environments/$folder_name/Dockerfile"
-		eval $(minikube docker-env)
-		docker build -t $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag -f $file_folder/ds_environments/$folder_name/Dockerfile .
-		unset folder_name
-	else
-		echo "Using community image $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag"
-	fi
+	#if [ "$cfg__jhub__ds_image__use_local_image" = true ];then
+	#	folder_name=`basename $cfg__jhub__ds_image__name`
+	#	echo "Building $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag from $file_folder/ds_environments/$folder_name/Dockerfile"
+	#	eval $(minikube docker-env)
+	#	docker build -t $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag -f $file_folder/ds_environments/$folder_name/Dockerfile .
+	#	unset folder_name
+	#else
+	#	echo "Using community image $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag"
+	#fi
 
 	# following https://z2jh.jupyter.org/en/stable/setup-jupyterhub.html
 	helm repo add jupyterhub https://jupyterhub.github.io/helm-chart/
@@ -33,8 +33,9 @@ elif [ "$ACTION" = "install" ]; then
 	  --namespace $cfg__project__k8s_namespace \
 	  --version $cfg__jhub__version \
 	  --values $file_folder/$cfg__jhub__config_file \
-	  --set proxy.secretToken=$secretToken,singleuser.image.name=$cfg__jhub__ds_image__name,singleuser.image.tag=$cfg__jhub__ds_image__tag \
+	  --set proxy.secretToken=$secretToken \
 	  --install --force
+	#--set proxy.secretToken=$secretToken,singleuser.image.name=$cfg__jhub__ds_image__name,singleuser.image.tag=$cfg__jhub__ds_image__tag \
 	#--timeout $cfg__jhub__setup_timeout -- wait
 	unset secretToken
 else
