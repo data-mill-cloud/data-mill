@@ -15,7 +15,7 @@
 
 # Data-Mill: A K8s-based lambda architecture for analytics
 
-![Architecture sketch](https://raw.githubusercontent.com/data-mill-cloud/data-mill/master/docs/img/architecture.svg)
+![Architecture sketch](https://raw.githubusercontent.com/data-mill-cloud/data-mill/master/docs/img/architecture.png)
 
 
 Providing:  
