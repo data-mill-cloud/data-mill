@@ -85,3 +85,6 @@ debug:
 auth:
   admin:
     access: false
+proxy:
+  service:
+    type: ClusterIP
