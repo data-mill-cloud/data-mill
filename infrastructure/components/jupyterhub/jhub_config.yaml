@@ -8,50 +8,46 @@ hub:
         'description': 'An extension of the scipy-notebook with S3, Dask distributed, Spark and few more basic libraries',
         'default': True,
         'kubespawner_override': {
-            'image': 'data-mill/python_env:0.1',
+            'singleuser_image_spec': 'data-mill/python_env:0.1',
             'cpu_limit': 1,
             'mem_limit': '1G',
         }
       }, {
-        'display_name': 'Community jupyter/scipy-notebook:latest',
+        'display_name': 'Community jupyter/scipy-notebook',
         'description': 'A fully fledged scientific python environment from the jupyter community',
         'kubespawner_override': {
-            'image': 'jupyter/scipy-notebook:latest',
+            'singleuser_image_spec': 'jupyter/scipy-notebook:latest',
             'cpu_limit': 1,
             'mem_limit': '1G',
         }
       },{
-        'display_name': 'Community jupyter/pyspark-notebook:latest',
+        'display_name': 'Community jupyter/pyspark-notebook',
         'description': 'A fully fledged scientific python environment from the jupyter community',
         'kubespawner_override': {
-            'image': 'jupyter/pyspark-notebook:latest',
+            'singleuser_image_spec': 'jupyter/pyspark-notebook:latest',
             'cpu_limit': 1,
             'mem_limit': '1G',
         }
       },{
-        'display_name': 'Community jupyter/tensorflow-notebook:latest',
+        'display_name': 'Community jupyter/tensorflow-notebook',
         'description': 'A fully fledged scientific python environment from the jupyter community',
         'kubespawner_override': {
-            'image': 'jupyter/tensorflow-notebook:latest',
+            'singleuser_image_spec': 'jupyter/tensorflow-notebook:latest',
             'cpu_limit': 1,
             'mem_limit': '1G',
         }
       }
     ]
 
+
 singleuser:
   defaultUrl: "/lab"
-  #image:
     # Get the latest image tag at:
     # https://hub.docker.com/r/jupyter/datascience-notebook/tags/
     # Inspect the Dockerfile at:
     # https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook/Dockerfile
     # More images at: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook
-    # Example processing from the notebook: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/specifics.html#apache-spark
-    #name: jupyter/pyspark-notebook
-    #name: jupyter/scipy-notebook
-    #tag: latest
-  # please check: https://jupyterhub-kubespawner.readthedocs.io/en/latest/spawner.html#kubespawner.KubeSpawner
+    # please check: https://jupyterhub-kubespawner.readthedocs.io/en/latest/spawner.html#kubespawner.KubeSpawner
 
 prePuller:
   hook:
