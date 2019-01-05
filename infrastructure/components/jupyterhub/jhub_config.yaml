@@ -1,10 +1,31 @@
 hub:
   extraConfig: |-
     c.Spawner.cmd = ['jupyter-labhub']
+    c.JupyterHub.spawner_class = 'kubespawner.KubeSpawner'
+    c.KubeSpawner.profile_list = [
+      {
+        'display_name': 'Default python_env environment',
+        'description': 'An extension of the scipy-notebook with S3, Dask distributed, Spark and few more basic libraries',
+        'default': True,
+        'kubespawner_override': {
+            'image': 'data-mill/python_env:0.1',
+            'cpu_limit': 1,
+            'mem_limit': '1G',
+        }
+      }, {
+        'display_name': 'Community jupyter/scipy-notebook',
+        'description': 'A fully fledged scientific python environment from the jupyter community',
+        'kubespawner_override': {
+            'image': 'jupyter/scipy-notebook:latest',
+            'cpu_limit': 1,
+            'mem_limit': '1G',
+        }
+      }
+    ]
 
 singleuser:
   defaultUrl: "/lab"
-  image:
+  #image:
     # Get the latest image tag at:
     # https://hub.docker.com/r/jupyter/datascience-notebook/tags/
     # Inspect the Dockerfile at:
@@ -14,8 +35,19 @@ singleuser:
     #name: jupyter/datascience-notebook
     #tag: 177037d09156
     #name: jupyter/pyspark-notebook
-    name: jupyter/scipy-notebook
-    tag: latest
+    #name: jupyter/scipy-notebook
+    #tag: latest
+  # please check: https://jupyterhub-kubespawner.readthedocs.io/en/latest/spawner.html#kubespawner.KubeSpawner
+  profileList:
+    - display_name: "Default jupyter/scipy-notebook"
+      description: "A fully fledged scientific python environment from the jupyter community"
+      kubespawner_override:
+        'image': 'jupyter/scipy-notebook:latest'
+    - display_name: "Default python_env environment"
+      description: "An extension of the scipy-notebook with S3, Dask distributed, Spark and few more basic libraries"
+      default: true
+      kubespawner_override:
+        'image': 'data-mill/python_env:0.1'
 
 prePuller:
   hook:

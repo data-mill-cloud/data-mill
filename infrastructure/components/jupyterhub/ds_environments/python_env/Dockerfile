@@ -1,5 +1,5 @@
 #https://z2jh.jupyter.org/en/latest/user-environment.html#customize-an-existing-docker-image
-FROM jupyter/scipy-notebook
+FROM jupyter/scipy-notebook:latest
 
 ENV SPARK_VERSION=2.4.0
 ENV HADOOP_VERSION=2.7

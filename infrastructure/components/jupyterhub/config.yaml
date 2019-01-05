@@ -7,7 +7,12 @@ jhub:
   ds_image:
     use_local_image: true
     name: data-mill/python_env
-    tag: 0.1
+    tag: 0.1.1
+
+#  ds_image:
+#    use_local_image: true
+#    name: data-mill/python_env
+#    tag: 0.1
 
 #  ds_image:
 #    use_local_image: false
