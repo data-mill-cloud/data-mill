@@ -1,5 +1,5 @@
 #https://z2jh.jupyter.org/en/latest/user-environment.html#customize-an-existing-docker-image
-FROM jupyter/scipy-notebook:latest
+FROM jupyter/tensorflow-notebook:latest
 
 ENV USE_SUDO=yes
 USER root
