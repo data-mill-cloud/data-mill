@@ -6,7 +6,8 @@ fullpath=$(readlink --canonicalize --no-newline $BASH_SOURCE)
 file_folder=$(dirname $fullpath)
 
 # load local yaml config
-eval $(parse_yaml $file_folder/$CONFIG_FILE "cfg__")
+COMPONENT_CONFIG=$(file_exists $file_folder/$CONFIG_FILE $file_folder/"config.yaml")
+eval $(parse_yaml $COMPONENT_CONFIG "cfg__")
 
 # use if set or a string argument otherwise
 ACTION=${ACTION:=$1}

@@ -5,6 +5,12 @@ get_value() {
 }
 
 
+file_exists(){
+	(ls $1 >> /dev/null 2>&1 && echo $1) || echo $2
+}
+
+
+
 check_if_pod_exists(){
 	kubectl get pods --all-namespaces | grep $1
 }

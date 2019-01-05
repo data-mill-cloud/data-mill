@@ -1,0 +1,3 @@
+rabbitmq:
+  release: rabbitmq
+  config_file: rabbitmq_config.yaml

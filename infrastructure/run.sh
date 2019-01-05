@@ -10,6 +10,8 @@ done
 
 # by default we fetch config.yaml, unless specified differently in the CONFIG_FILE variable
 CONFIG_FILE=${CONFIG_FILE:="config.yaml"}
+echo "Using config file $CONFIG_FILE"
+
 # include global configs
 eval $(parse_yaml $root_folder/$CONFIG_FILE "cfg__")
 
