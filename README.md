@@ -15,6 +15,9 @@
 
 # Data-Mill: A K8s-based lambda architecture for analytics
 
+![Architecture sketch](https://raw.githubusercontent.com/data-mill-cloud/data-mill/master/docs/img/architecture.svg =800x)
+
+
 Providing:  
   1. K8s setup  
     * Local (i.e. Minikube)  
