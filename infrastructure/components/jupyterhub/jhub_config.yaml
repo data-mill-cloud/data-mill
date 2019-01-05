@@ -13,10 +13,26 @@ hub:
             'mem_limit': '1G',
         }
       }, {
-        'display_name': 'Community jupyter/scipy-notebook',
+        'display_name': 'Community jupyter/scipy-notebook:latest',
         'description': 'A fully fledged scientific python environment from the jupyter community',
         'kubespawner_override': {
             'image': 'jupyter/scipy-notebook:latest',
+            'cpu_limit': 1,
+            'mem_limit': '1G',
+        }
+      },{
+        'display_name': 'Community jupyter/pyspark-notebook:latest',
+        'description': 'A fully fledged scientific python environment from the jupyter community',
+        'kubespawner_override': {
+            'image': 'jupyter/pyspark-notebook:latest',
+            'cpu_limit': 1,
+            'mem_limit': '1G',
+        }
+      },{
+        'display_name': 'Community jupyter/tensorflow-notebook:latest',
+        'description': 'A fully fledged scientific python environment from the jupyter community',
+        'kubespawner_override': {
+            'image': 'jupyter/tensorflow-notebook:latest',
             'cpu_limit': 1,
             'mem_limit': '1G',
         }
@@ -32,26 +48,29 @@ singleuser:
     # https://github.com/jupyter/docker-stacks/tree/master/datascience-notebook/Dockerfile
     # More images at: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-datascience-notebook
     # Example processing from the notebook: https://jupyter-docker-stacks.readthedocs.io/en/latest/using/specifics.html#apache-spark
-    #name: jupyter/datascience-notebook
-    #tag: 177037d09156
     #name: jupyter/pyspark-notebook
     #name: jupyter/scipy-notebook
     #tag: latest
   # please check: https://jupyterhub-kubespawner.readthedocs.io/en/latest/spawner.html#kubespawner.KubeSpawner
-  profileList:
-    - display_name: "Default jupyter/scipy-notebook"
-      description: "A fully fledged scientific python environment from the jupyter community"
-      kubespawner_override:
-        'image': 'jupyter/scipy-notebook:latest'
-    - display_name: "Default python_env environment"
-      description: "An extension of the scipy-notebook with S3, Dask distributed, Spark and few more basic libraries"
-      default: true
-      kubespawner_override:
-        'image': 'data-mill/python_env:0.1'
 
 prePuller:
   hook:
     enabled: true
+  continuous:
+    enabled: true
+  extraImages:
+    pythonds:
+      name: jupyter/scipy-notebook
+      tag: latest
+      policy: IfNotPresent
+    pyspark:
+      name: jupyter/pyspark-notebook
+      tag: latest
+      policy: IfNotPresent
+    pytensor:
+      name: jupyter/tensorflow-notebook
+      tag: latest
+      policy: IfNotPresent
 
 scheduling:
   userScheduler:
