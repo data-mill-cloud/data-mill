@@ -34,9 +34,8 @@ elif [ "$ACTION" = "install" ]; then
 	  --version $cfg__jhub__version \
 	  --values $file_folder/$cfg__jhub__config_file \
 	  --set proxy.secretToken=$secretToken \
-	  --install --force
+	  --install --force --timeout $cfg__jhub__setup_timeout --wait
 	#--set proxy.secretToken=$secretToken,singleuser.image.name=$cfg__jhub__ds_image__name,singleuser.image.tag=$cfg__jhub__ds_image__tag \
-	#--timeout $cfg__jhub__setup_timeout -- wait
 	unset secretToken
 else
 	helm delete $cfg__jhub__release --purge

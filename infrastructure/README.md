@@ -63,3 +63,11 @@ helm repo add data-mill https://data-mill-cloud.github.io/data-mill/helm-charts/
 ```
 
 ## 3. Developing applications
+
+
+## 4. Debugging utils
+
+List containers running in each pod:
+```
+kubectl get pods --all-namespaces -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' | sort
+```
