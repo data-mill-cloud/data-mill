@@ -1,0 +1,4 @@
+pachyderm:
+  release: pachyderm
+  config_file: pachyderm_config.yaml
+  version: 0.1.8
