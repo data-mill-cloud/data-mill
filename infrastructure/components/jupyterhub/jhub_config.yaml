@@ -4,35 +4,29 @@ hub:
     c.JupyterHub.spawner_class = 'kubespawner.KubeSpawner'
     c.KubeSpawner.profile_list = [
       {
-        'display_name': 'Default python_env environment',
-        'description': 'An extension of the scipy-notebook with S3, Dask distributed, Spark and few more basic libraries',
+        'display_name': 'Enhanced scipy environment (default)',
+        'description': 'An extension of the scipy-notebook with S3, Dask distributed and a few more client libraries',
         'default': True,
         'kubespawner_override': {
-            'singleuser_image_spec': 'data-mill/python_env:0.1',
+            'singleuser_image_spec': 'datamillcloud/python_env:0.1',
             'cpu_limit': 1,
             'mem_limit': '1G',
         }
-      }, {
-        'display_name': 'Community jupyter/scipy-notebook',
-        'description': 'A fully fledged scientific python environment from the jupyter community',
+      },
+      {
+        'display_name': 'Enhanced pyspark-notebook environment',
+        'description': 'An extension of the pyspark-notebook with S3, Dask distributed and a few more client libraries',
         'kubespawner_override': {
-            'singleuser_image_spec': 'jupyter/scipy-notebook:latest',
+            'singleuser_image_spec': 'datamillcloud/pyspark_env:0.1',
             'cpu_limit': 1,
             'mem_limit': '1G',
         }
-      },{
-        'display_name': 'Community jupyter/pyspark-notebook',
-        'description': 'A fully fledged scientific python environment from the jupyter community',
+      },
+      {
+        'display_name': 'Enhanced tensorflow-notebook environment',
+        'description': 'An extension of the tensorflow-notebook with S3, Dask distributed and few more client libraries',
         'kubespawner_override': {
-            'singleuser_image_spec': 'jupyter/pyspark-notebook:latest',
-            'cpu_limit': 1,
-            'mem_limit': '1G',
-        }
-      },{
-        'display_name': 'Community jupyter/tensorflow-notebook',
-        'description': 'A fully fledged scientific python environment from the jupyter community',
-        'kubespawner_override': {
-            'singleuser_image_spec': 'jupyter/tensorflow-notebook:latest',
+            'singleuser_image_spec': 'datamillcloud/pydl_env:0.1',
             'cpu_limit': 1,
             'mem_limit': '1G',
         }
@@ -56,15 +50,15 @@ prePuller:
     enabled: true
   extraImages:
     pythonds:
-      name: jupyter/scipy-notebook
+      name: datamillcloud/python_env
       tag: latest
       policy: IfNotPresent
     pyspark:
-      name: jupyter/pyspark-notebook
+      name: datamillcloud/pyspark_env
       tag: latest
       policy: IfNotPresent
     pytensor:
-      name: jupyter/tensorflow-notebook
+      name: datamillcloud/pydl_env
       tag: latest
       policy: IfNotPresent
 
