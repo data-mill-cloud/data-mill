@@ -4,10 +4,10 @@ jhub:
   config_file: jhub_config.yaml
   setup_timeout: 3600
 
-#  ds_image:
-#    use_local_image: true
-#    name: data-mill/python_env
-#    tag: 0.1.1
+  ds_image:
+    use_local_image: true
+    name: python_env
+    tag: 0.1
 
 #  ds_image:
 #    use_local_image: true

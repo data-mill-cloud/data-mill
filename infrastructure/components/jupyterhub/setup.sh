@@ -14,16 +14,20 @@ if [ -z "$ACTION" ] || [ "$ACTION" != "install" ] && [ "$ACTION" != "delete" ];t
         echo "usage: $0 {'install' | 'delete'}";
         exit 1
 elif [ "$ACTION" = "install" ]; then
+	REGISTRY_IP=$(kubectl -n kube-system get svc registry -o jsonpath="{.spec.clusterIP}")
 	# build the datascience image
-	#if [ "$cfg__jhub__ds_image__use_local_image" = true ];then
-	#	folder_name=`basename $cfg__jhub__ds_image__name`
-	#	echo "Building $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag from $file_folder/ds_environments/$folder_name/Dockerfile"
-	#	eval $(minikube docker-env)
-	#	docker build -t $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag -f $file_folder/ds_environments/$folder_name/Dockerfile .
-	#	unset folder_name
-	#else
-	#	echo "Using community image $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag"
-	#fi
+	if [ "$cfg__jhub__ds_image__use_local_image" = true ];then
+		folder_name=`basename $cfg__jhub__ds_image__name`
+		echo "Building $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag from $file_folder/ds_environments/$folder_name/Dockerfile"
+		eval $(minikube docker-env)
+		docker pull $REGISTRY_IP:80/""$cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag \
+		|| docker build -t $REGISTRY_IP:80/""$cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag \
+		-f $file_folder/ds_environments/$folder_name/Dockerfile . \
+		&& docker push $REGISTRY_IP:80/""$cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag
+		unset folder_name
+	else
+		echo "Using community image $cfg__jhub__ds_image__name:$cfg__jhub__ds_image__tag"
+	fi
 
 	# following https://z2jh.jupyter.org/en/stable/setup-jupyterhub.html
 	helm repo add jupyterhub https://jupyterhub.github.io/helm-chart/

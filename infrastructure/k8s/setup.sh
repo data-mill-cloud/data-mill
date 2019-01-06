@@ -81,6 +81,7 @@ elif [ "$LOCATION" = "local" ]; then
 		--insecure-registry http://192.168.122.1:5000 $( ( "$cfg__project__gpu_support" = true ) && printf %s '--gpu' )
 
 		echo "Minikube VM started. Node accessible using 'minikube ssh'"
+		minikube addons enable registry
 		echo "Creating data dir $cfg__local__mnt_data"
 		minikube ssh "sudo mkdir -p $cfg__local__mnt_data"
 		minikube ssh "sudo chown rkt:rkt $cfg__local__mnt_data"
