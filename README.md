@@ -1,5 +1,6 @@
 <img src="https://raw.githubusercontent.com/data-mill-cloud/data-mill/master/docs/img/logos/logo_data_mill_2.png" width="200">
 
+---
 # Data-Mill: A K8s-based lambda architecture for analytics
 
 ![Architecture sketch](https://raw.githubusercontent.com/data-mill-cloud/data-mill/master/docs/img/architecture.png)
