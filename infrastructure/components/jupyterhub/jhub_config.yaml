@@ -4,29 +4,29 @@ hub:
     c.JupyterHub.spawner_class = 'kubespawner.KubeSpawner'
     c.KubeSpawner.profile_list = [
       {
-        'display_name': 'Enhanced scipy environment (default)',
+        'display_name': 'Enhanced scipy environment (datamillcloud/python_env:latest)',
         'description': 'An extension of the scipy-notebook with S3, Dask distributed and a few more client libraries',
         'default': True,
         'kubespawner_override': {
-            'singleuser_image_spec': 'datamillcloud/python_env:0.1',
+            'singleuser_image_spec': 'datamillcloud/python_env:latest',
             'cpu_limit': 1,
             'mem_limit': '1G',
         }
       },
       {
-        'display_name': 'Enhanced pyspark-notebook environment',
+        'display_name': 'Enhanced pyspark-notebook environment (datamillcloud/pyspark_env:latest)',
         'description': 'An extension of the pyspark-notebook with S3, Dask distributed and a few more client libraries',
         'kubespawner_override': {
-            'singleuser_image_spec': 'datamillcloud/pyspark_env:0.1',
+            'singleuser_image_spec': 'datamillcloud/pyspark_env:latest',
             'cpu_limit': 1,
             'mem_limit': '1G',
         }
       },
       {
-        'display_name': 'Enhanced tensorflow-notebook environment',
+        'display_name': 'Enhanced tensorflow-notebook environment (datamillcloud/pydl_env:latest)',
         'description': 'An extension of the tensorflow-notebook with S3, Dask distributed and few more client libraries',
         'kubespawner_override': {
-            'singleuser_image_spec': 'datamillcloud/pydl_env:0.1',
+            'singleuser_image_spec': 'datamillcloud/pydl_env:latest',
             'cpu_limit': 1,
             'mem_limit': '1G',
         }
