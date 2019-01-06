@@ -8,14 +8,19 @@ Providing:
     * Local (i.e. Minikube)  
     * Remote (e.g. VM, K8s Cluster)  
   2. Setup of common components  
-    * Ingestion (e.g. kafka)  
+    * Ingestion (e.g. kafka, RabbitMQ)  
     * Persistent storage (e.g. s3)  
+    * Data Versioning (e.g. Pachyderm)  
     * Processing (e.g. dask, spark)  
     * Exploration Environment (e.g. JupyterHub)  
     * BI Dashboarding (e.g. superset)  
-    * ML model benchmarking and project management (e.g. mlflow)  
+    * ML model versioning and benchmarking, as well as project management (e.g. mlflow)  
     * ML model serving (e.g. Seldon-core)  
     * Monitoring (e.g. prometheus, Grafana)  
-  3. Example Applications  
+  3. Data Science Environments  
+    * Scientific Python Environment  
+    * PySpark Environment  
+    * Keras/Tensorflow Environment  
+  4. Example Applications  
     * Batch processing  
     * Stream processing  

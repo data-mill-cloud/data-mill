@@ -9,4 +9,4 @@ RUN pip install -U s3fs \
     # dask distributed is not installed by default
     && pip install dask[complete] distributed --upgrade \
     # install hdf5 support, livelossplot and seldon-core to serve models
-    && pip install -U livelossplotn tqdm tables seldon-core
+    && pip install -U livelossplot tqdm tables seldon-core
