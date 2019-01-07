@@ -10,7 +10,7 @@ hub:
         'kubespawner_override': {
             'singleuser_image_spec': 'datamillcloud/python_env:latest',
             'cpu_limit': 1,
-            'mem_limit': '1G',
+            'mem_limit': '4G',
         }
       },
       {
@@ -19,7 +19,7 @@ hub:
         'kubespawner_override': {
             'singleuser_image_spec': 'datamillcloud/pyspark_env:latest',
             'cpu_limit': 1,
-            'mem_limit': '1G',
+            'mem_limit': '4G',
         }
       },
       {
