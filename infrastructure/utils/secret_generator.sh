@@ -12,6 +12,6 @@ get_random_secret_key(){
 
 
 get_existing_secret(){
-	kubectl -n $1 get secrets $2 -o jsonpath="{.data.accesskey}" | base64 -d
-	# e.g. echo "MINIO:"$(get_existing_secret $cfg__project__k8s_namespace "minio-datalake")
+	kubectl -n $1 get secrets $2 -o jsonpath=$3 | base64 -d
+	# e.g. echo "MINIO:"$(get_existing_secret $cfg__project__k8s_namespace "minio-datalake" "{.data.accesskey}")
 }
