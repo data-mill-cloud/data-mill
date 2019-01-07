@@ -65,7 +65,7 @@ helm repo add data-mill https://data-mill-cloud.github.io/data-mill/helm-charts/
 ```
 
 ## 3. Developing applications
-
+Please check the `data` folder for examples on how to connect to services, such as S3, Spark, Dask, Keras/Tensorflow.
 
 ## 4. Debugging utils
 
