@@ -3,7 +3,8 @@
 ## 1. Infrastructure setup
 * LOCATION: local (-l) to the node by installing minikube, remote (-r) to a VM or a Cluster
 * ACTION: install (-i) the components or delete them (-d) using Helm
-* CONFIG: the default config file for each component is config.yaml, -c [filename] to overwrite
+* CONFIG: the default config file for each component is config.yaml, -f [filename] defines a different project config file
+* COMPONENT: runs the ACTION only for the specific component, regardless of the project flavour
 
 ```
 Usage: ./run.sh [debug-mode] [params] [options]
@@ -35,6 +36,7 @@ project:
 ```
 The flavour indicates which components are to be included in the project the default is related to.
 You can use `flavour: all` or list the component names e.g. `flavour: spark, jupyterhub`.
+When using `flavour: all` the components are taken in alphabetical order, so it is necessary to list them if you have dependencies across them.
 
 The projects is structured over the following folders:
 * volumes - contains the persistent volumes and the persistent volume claims to be mounted at startup (e.g. to mount a partition with static files).

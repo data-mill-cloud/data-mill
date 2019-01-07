@@ -21,13 +21,13 @@ eval $(parse_yaml $root_folder/$CONFIG_FILE "cfg__")
 
 declare -a flavour;
 if [ -z "$cfg__project__flavour" ] || [ "$cfg__project__flavour" = "all" ]; then
-	# echo "adding all components"
 	flavour=($(ls $root_folder/components))
+	echo "Using all components ${flavour[@]}"
 else
 	# read the list of components to include in "${flavour[@]}"
 	IFS=', ' read -r -a flavour <<< "$cfg__project__flavour"
+	echo "Using user-defined flavour: ${flavour[@]}"
 fi
-
 
 echo ""
 echo "--------"
