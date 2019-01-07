@@ -28,7 +28,7 @@ hub:
         'kubespawner_override': {
             'singleuser_image_spec': 'datamillcloud/pydl_env:latest',
             'cpu_limit': 1,
-            'mem_limit': '1G',
+            'mem_limit': '4G',
         }
       }
     ]
