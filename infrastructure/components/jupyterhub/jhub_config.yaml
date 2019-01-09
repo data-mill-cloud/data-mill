@@ -38,7 +38,8 @@ hub:
             'singleuser_image_spec': 'datamillcloud/pydl_gpu_env:latest',
             'cpu_limit': 1,
             'mem_limit': '4G',
-            'extra_resource_guarantees': {"nvidia.com/gpu": "1"}
+            'extra_resource_guarantees': {'nvidia.com/gpu': '1'},
+            'extra_resource_limits': {'nvidia.com/gpu': '1'}
         }
       }
     ]

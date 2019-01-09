@@ -2,7 +2,7 @@ jhub:
   release: jhub
   version: 0.7.0
   config_file: jhub_config.yaml
-  setup_timeout: 3600
+  setup_timeout: 7200
 
 #  ds_image:
 #    use_local_image: true
