@@ -3,7 +3,8 @@ repo=datamillcloud
 version=0.1
 env_path=ds_environments/*
 
-docker login --username=$repo
+docker login
+# --username=$repo
 
 get_tags_from_dh_repo(){
   curl -s "https://hub.docker.com/v2/repositories/$1/tags/" | \
