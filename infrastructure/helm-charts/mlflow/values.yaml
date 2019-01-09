@@ -1,12 +1,16 @@
 replicaCount: 1
 
 image:
-  repository: "danielvdende/docker-mlflow"
+  repository: "datamillcloud/mlflow"
   tag: latest
   pullPolicy: IfNotPresent
 
 service:
   port: 5000
+
+mount:
+  path: /mnt/mlflow_data
+  pvc: mlflow-pvc
 
 resources: {}
 nodeSelector: {}

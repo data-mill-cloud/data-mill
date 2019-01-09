@@ -38,13 +38,13 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-          - mountPath: /mnt/mlflow_data
+          - mountPath: {{ .Values.mount.path }}
             name: mlflow-data
       restartPolicy: Always
       volumes:
       - name: mlflow-data
         persistentVolumeClaim:
-          claimName: mlflow-pvc
+          claimName: {{ .Values.mount.pvc }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
