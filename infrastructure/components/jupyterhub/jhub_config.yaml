@@ -30,9 +30,18 @@ hub:
             'cpu_limit': 1,
             'mem_limit': '4G',
         }
+      },
+      {
+        'display_name': 'Enhanced tensorflow-notebook environment with GPU support (datamillcloud/pydl_gpu_env:latest)',
+        'description': 'Extends nvidia/cuda:9.0 to provide Keras on tensorflow-gpu and all the other client libraries',
+        'kubespawner_override': {
+            'singleuser_image_spec': 'datamillcloud/pydl_gpu_env:latest',
+            'cpu_limit': 1,
+            'mem_limit': '4G',
+            'extra_resource_guarantees': {"nvidia.com/gpu": "1"}
+        }
       }
     ]
-
 
 singleuser:
   defaultUrl: "/lab"
