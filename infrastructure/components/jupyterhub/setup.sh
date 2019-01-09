@@ -19,6 +19,7 @@ elif [ "$ACTION" = "install" ]; then
 	helm repo update
 	secretToken=$(get_random_secret_key)
 	echo "JupyterHub secret token: $secretToken"
+	echo "Deploying JupyterHub: it might take long as the images are being pulled..."
 	helm upgrade $cfg__jhub__release jupyterhub/jupyterhub \
 	  --namespace $cfg__project__k8s_namespace \
 	  --version $cfg__jhub__version \

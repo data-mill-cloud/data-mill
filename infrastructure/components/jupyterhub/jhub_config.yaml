@@ -70,6 +70,10 @@ prePuller:
       name: datamillcloud/pydl_env
       tag: latest
       policy: IfNotPresent
+    pygpu:
+      name: datamillcloud/pydl_gpu_env
+      tag: latest
+      policy: IfNotPresent
 
 scheduling:
   userScheduler:
