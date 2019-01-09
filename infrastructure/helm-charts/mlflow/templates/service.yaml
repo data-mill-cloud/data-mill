@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "mlflow.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "mlflow.name" . }}
+    helm.sh/chart: {{ include "mlflow.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.containerport }}
+      protocol: TCP
+      name: mlflowui
+  selector:
+    app.kubernetes.io/name: {{ include "mlflow.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

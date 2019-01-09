@@ -3,11 +3,11 @@ entries:
   mlflow:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-01-09T19:16:39.014174855+01:00
+    created: 2019-01-09T19:55:09.498050322+01:00
     description: A Helm chart for MLflow
-    digest: b8267141f3ae733856eb808857d6b50f00b1f25c6fc417e19bbe5b5098f59a3a
+    digest: 86930d2203132d242c2dcde9c4e4c1afbb1a8f4e49a5920634c44c4ea4ce0479
     name: mlflow
     urls:
     - https://data-mill-cloud.github.io/data-mill/helm-charts/mlflow-0.1.0.tgz
     version: 0.1.0
-generated: 2019-01-09T19:16:39.013858763+01:00
+generated: 2019-01-09T19:55:09.497719963+01:00
