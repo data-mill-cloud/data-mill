@@ -1,10 +1,11 @@
+#!/bin/bash
+
 # building the DS environments
 repo=datamillcloud
 version=0.1
 env_path=ds_environments/*
 
 docker login
-# --username=$repo
 
 get_tags_from_dh_repo(){
   curl -s "https://hub.docker.com/v2/repositories/$1/tags/" | \
@@ -28,7 +29,7 @@ for e in $env_path; do
   if [[ "$(docker images -q $t:$version 2> /dev/null)" == "" ]]; then
     echo "Building DS Environment $n ($t) at $e"
     echo "docker build -t $t:$version -f $e/Dockerfile ."
-    #docker build -t $t:$version -f $e/Dockerfile .
+    docker build -t $t:$version -f $e/Dockerfile .
   else
     echo "Image $t:$version already exists in the local repository"
   fi
@@ -41,13 +42,13 @@ for e in $env_path; do
     echo "$t:$version already exists on DockerHub! Skipping!"
   else
     echo "-> docker tag $commit_tag $t:$version"
-    #docker tag $commit_tag $t:$version
+    docker tag $commit_tag $t:$version
     echo "-> docker push $t"
-    #docker push $t
+    docker push $t
     echo "-> docker tag $commit_tag $t:latest"
-    #docker tag $commit_tag $t:latest
+    docker tag $commit_tag $t:latest
     echo "-> docker push $t"
-    #docker push $t
+    docker push $t
   fi
 
   echo "--"
