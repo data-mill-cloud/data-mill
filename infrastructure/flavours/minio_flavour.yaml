@@ -1,0 +1,7 @@
+# this flavour is used for minimal datalake setup
+# for instance when testing the gpu support on the cluster
+project:
+  k8s_namespace: data-mill
+  proxy_port: 8088
+  flavour: minio
+  gpu_support: true

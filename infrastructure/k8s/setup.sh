@@ -79,6 +79,7 @@ elif [ "$LOCATION" = "local" ]; then
 		--vm-driver $cfg__local__vm_driver \
 		--registry-mirror http://192.168.122.1:5000 \
 		--insecure-registry http://192.168.122.1:5000 $( ( "$cfg__project__gpu_support" = true ) && printf %s '--gpu --feature-gates=DevicePlugins=true --feature-gates=Accelerators=true' )
+		# GPU setup explained at https://github.com/kubernetes/minikube/blob/master/docs/gpu.md
 
 		echo "Minikube VM started. Node accessible using 'minikube ssh'"
 		echo "Creating data dir $cfg__local__mnt_data"

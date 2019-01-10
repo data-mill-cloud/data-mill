@@ -9,11 +9,13 @@ for filename in $root_folder/utils/*.sh; do
 done
 
 # by default we fetch config.yaml, unless specified differently in the CONFIG_FILE variable
-CONFIG_FILE=${CONFIG_FILE:="config.yaml"}
-echo "Using config file $CONFIG_FILE"
+CONFIG_FILE=${CONFIG_FILE:="default.yaml"}
+# make sure we only get the filename and not a path (for error or simplicity passed in)
+CONFIG_FILE=$(basename "$CONFIG_FILE")
+echo "Retrieving config file $CONFIG_FILE from $root_folder/flavours"
 
 # include global configs
-eval $(parse_yaml $root_folder/$CONFIG_FILE "cfg__")
+eval $(parse_yaml $root_folder/flavours/$CONFIG_FILE "cfg__")
 
 # for debugging config var names:
 #( set -o posix ; set ) | more

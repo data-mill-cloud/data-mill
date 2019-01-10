@@ -32,7 +32,7 @@ while getopts $OPTIONS opt; do
       ;;
     f)
       echo "-f: overwriting default config.yaml with $OPTARG" >&2
-      CONFIG=$OPTARG
+      CONFIG_FILE=$OPTARG
       ;;
     c)
       echo "-c: running for the sole component $OPTARG" >&2
@@ -61,7 +61,7 @@ if [ "$ACTION" != "debug" ]; then
       echo "    LOCATION: -l (local), -r (remote)"
       echo "    ACTION: -s (start only), -i (install), -u (uninstall)"
       echo "  options:"
-      echo "    CONFIG: -f config_file_name.yaml"
+      echo "    CONFIG_FILE: -f config_file_name.yaml"
       echo "    COMPONENT: -c component_name"
       exit 1
     fi
