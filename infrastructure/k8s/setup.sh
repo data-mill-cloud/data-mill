@@ -4,8 +4,11 @@ fullpath=$(readlink --canonicalize --no-newline $BASH_SOURCE)
 file_folder=$(dirname $fullpath)
 
 # load local yaml config
-COMPONENT_CONFIG=$(file_exists "$file_folder/$CONFIG_FILE" "$file_folder/config.yaml")
-eval $(parse_yaml $COMPONENT_CONFIG "cfg__")
+# if -t was not passed we stick to the default config
+TARGET_FILE=${TARGET_FILE:="$cfg__project__k8s_default_config"}
+# if the target file was specified but does not exist, we fall back to the default config
+TARGET_CONFIG=$(file_exists "$file_folder/$TARGET_FILE" "$file_folder/$cfg__project__k8s_default_config")
+eval $(parse_yaml $TARGET_CONFIG "cfg__")
 
 # use if set or a string argument otherwise
 LOCATION=${LOCATION:=$1}
@@ -61,7 +64,7 @@ elif [ "$LOCATION" = "local" ]; then
 	if [ -z "$kb_status" ] || [ "$kb_status" = "Stopped" ]; then
 		# starting minikube
 		echo "Starting minikube.."
-		echo "minikube start --cpus $cfg__local__cpus --memory $cfg__local__memory --disk-size=$cfg__local__storage --vm-driver $cfg__local__vm_driver "$( ( "$cfg__project__gpu_support" = true ) && printf %s '--gpu' )
+		echo "minikube start --cpus $cfg__local__cpus --memory $cfg__local__memory --disk-size=$cfg__local__storage --vm-driver $cfg__local__vm_driver "$( ( "$cfg__local__gpu_support" = true ) && printf %s '--gpu' )
 		cfg__local__mnt_data="/mnt/vda1/data/storage/"
 		# in case of issues with mounting, it may be due to the vm driver (they behave differently) or more probably to a firewall issue on the host
 		# https://github.com/kubernetes/minikube/issues/2379
@@ -79,7 +82,7 @@ elif [ "$LOCATION" = "local" ]; then
 		--disk-size=$cfg__local__storage \
 		--vm-driver $cfg__local__vm_driver \
 		--registry-mirror http://192.168.122.1:5000 \
-		--insecure-registry http://192.168.122.1:5000 $( ( "$cfg__project__gpu_support" = true ) && printf %s '--gpu' )
+		--insecure-registry http://192.168.122.1:5000 $( ( "$cfg__local__gpu_support" = true ) && printf %s '--gpu' )
 		# GPU setup explained at https://github.com/kubernetes/minikube/blob/master/docs/gpu.md
 
 		echo "Minikube VM started. Node accessible using 'minikube ssh'"
@@ -90,7 +93,7 @@ elif [ "$LOCATION" = "local" ]; then
 		# enable add-ons
 		# https://github.com/kubernetes/minikube/blob/master/docs/addons.md
 		minikube addons enable metrics-server
-		if [ ! -z "$cfg__project__gpu_support" ] && [ "$cfg__project__gpu_support" = true ]; then
+		if [ ! -z "$cfg__local__gpu_support" ] && [ "$cfg__local__gpu_support" = true ]; then
 			minikube addons enable nvidia-driver-installer
 			minikube addons enable nvidia-gpu-device-plugin
 		fi
@@ -101,7 +104,9 @@ elif [ "$LOCATION" = "local" ]; then
 	fi
 
 	# add an overlay network
-	#. $file_folder/overlay/setup.sh
+	if [ ! -z "$cfg__local__use_overlay" ] && [ "$cfg__local__use_overlay" = true ]; then
+		. $file_folder/overlay/setup.sh
+	fi
 
 	# installing helm client
 	command -v helm >/dev/null 2>&1 || {

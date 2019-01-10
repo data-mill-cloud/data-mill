@@ -2,6 +2,8 @@ local:
   cpus: 8
   memory: 16192
   storage: 40g
+  gpu_support: true
+  use_overlay: false
   #vm_driver: virtualbox
   vm_driver: kvm2
 

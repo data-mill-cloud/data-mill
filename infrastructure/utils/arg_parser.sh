@@ -1,7 +1,7 @@
 # variables to mandatorily return in output
 VARS=(LOCATION ACTION)
 
-OPTIONS=":dsrliuf:c:"
+OPTIONS=":dsrliut:f:c:"
 
 while getopts $OPTIONS opt; do
   case $opt in
@@ -30,8 +30,12 @@ while getopts $OPTIONS opt; do
       echo "-u: uninstalling infrastructure"
       ACTION="delete"
       ;;
+    t)
+      echo "-t: overwriting target cluster configuration filename with $OPTARG" >&2
+      TARGET_FILE=$OPTARG
+      ;;
     f)
-      echo "-f: overwriting default config.yaml with $OPTARG" >&2
+      echo "-f: overwriting default component configuration filename with $OPTARG" >&2
       CONFIG_FILE=$OPTARG
       ;;
     c)
@@ -58,10 +62,13 @@ if [ "$ACTION" != "debug" ]; then
       echo "  debug mode:"
       echo "    DEBUG: -d"
       echo "  params:"
-      echo "    LOCATION: -l (local), -r (remote)"
+      echo "    LOCATION: -l (local cluster), -r (remote cluster)"
       echo "    ACTION: -s (start only), -i (install), -u (uninstall)"
       echo "  options:"
-      echo "    CONFIG_FILE: -f config_file_name.yaml"
+      echo "    CONFIG_FILE: -f filename.yaml"
+      echo "      -> overwrites the default component configuration filename"
+      echo "    TARGET_FILE: -t filename.yaml"
+      echo "      -> overwrites the default k8s configuration filename"
       echo "    COMPONENT: -c component_name"
       exit 1
     fi

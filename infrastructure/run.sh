@@ -8,7 +8,7 @@ for filename in $root_folder/utils/*.sh; do
     . $filename
 done
 
-# by default we fetch config.yaml, unless specified differently in the CONFIG_FILE variable
+# we fetch the default config, unless specified differently in the CONFIG_FILE variable (-f)
 CONFIG_FILE=${CONFIG_FILE:="default.yaml"}
 # make sure we only get the filename and not a path (for error or simplicity passed in)
 CONFIG_FILE=$(basename "$CONFIG_FILE")

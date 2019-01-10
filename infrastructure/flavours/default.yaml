@@ -1,5 +1,11 @@
 project:
+  # namespace
   k8s_namespace: data-mill
+  # the port on which the K8s UI is exposed
   proxy_port: 8088
+  # the flavour is used to list all the components to be used in the project
   flavour: all
-  gpu_support: true
+  # k8s default config, can be overwritten with -t filename
+  k8s_default_config: default.yaml
+  # component default config, can be overwritten with -f filename
+  component_default_config: config.yaml
