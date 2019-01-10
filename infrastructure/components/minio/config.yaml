@@ -1,4 +1,5 @@
 minio:
   release: minio-datalake
   config_file: minio_config.yaml
-  volume_name: pvc-data-minio
+  pv_name: pv-data-minio
+  pvc_name: pvc-data-minio

@@ -1,7 +1,8 @@
 #!/bin/sh
 
 get_value() {
-	cat $1 | grep "name: " | awk -F": " '{ print $2 }'
+	#cat $1 | grep "name: " | awk -F": " '{ print $2 }'
+	cat $1 | grep $2 | awk -F": " '{ print $2 }'
 }
 
 
