@@ -26,6 +26,6 @@ Providing:
     * [Keras/Tensorflow Environment](https://github.com/data-mill-cloud/data-mill/blob/master/infrastructure/components/jupyterhub/ds_environments/pydl_env/Dockerfile)  
     * [Keras/Tensorflow GPU Environment](https://github.com/data-mill-cloud/data-mill/blob/master/infrastructure/components/jupyterhub/ds_environments/pydl_gpu_env/Dockerfile)  
   4. Example Applications  
-    * Access to services - [notebooks](https://github.com/data-mill-cloud/data-mill/tree/master/infrastructure/data)
+    * Access to services - [notebooks](https://github.com/data-mill-cloud/data-mill/tree/master/infrastructure/data)  
     * Batch processing  
     * Stream processing  
