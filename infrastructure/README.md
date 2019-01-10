@@ -11,10 +11,13 @@ Usage: ./run.sh [debug-mode] [params] [options]
   debug mode:
     DEBUG: -d
   params:
-    LOCATION: -l (local), -r (remote)
+    LOCATION: -l (local cluster), -r (remote cluster)
     ACTION: -s (start only), -i (install), -u (uninstall)
   options:
-    CONFIG: -f config_file_name.yaml
+    CONFIG_FILE: -f filename.yaml
+      -> overwrites the default component configuration filename
+    TARGET_FILE: -t filename.yaml
+      -> overwrites the default k8s configuration filename
     COMPONENT: -c component_name
 ```
 
@@ -27,16 +30,28 @@ kafka:
   config_file: kafka_config.yaml
 ```
 
-The project-wide configuration is stored in the infrastructure root folder in config.yaml:
+The project-wide configuration is stored in the infrastructure flavours folder as `default.yaml`:
 ```
 project:
+  # namespace
   k8s_namespace: data-mill
+  # the port on which the K8s UI is exposed
   proxy_port: 8088
+  # the flavour is used to list all the components to be used in the project
   flavour: all
+  # k8s default config, can be overwritten with -t filename
+  k8s_default_config: default.yaml
+  # component default config, can be overwritten with -f filename
+  component_default_config: config.yaml
 ```
+
 The flavour indicates which components are to be included in the project the default is related to.
 You can use `flavour: all` or list the component names e.g. `flavour: spark, jupyterhub`.
 When using `flavour: all` the components are taken in alphabetical order, so it is necessary to list them if you have dependencies across them.
+The `k8s_default_config` is used to specify the default filename for cluster configuration, this can be overwritten with `-t filename`.
+The `component_default_config` is used to specify the default configuration filename for each component, and can be overwritten with `-f filename`.
+With `-f filename` we can specify a different flavour than the default one, and overwrite the config of each file (if `filename` exists, or fallback to `component_default_config` where it 
+doesn't).
 
 The projects is structured over the following folders:
 * volumes - contains the persistent volumes and the persistent volume claims to be mounted at startup (e.g. to mount a partition with static files).
