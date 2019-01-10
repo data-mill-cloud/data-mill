@@ -21,32 +21,39 @@ if [ -z "$LOCATION" ] || [ "$LOCATION" != "local" ] && [ "$LOCATION" != "remote"
 	exit 1
 elif [ "$LOCATION" = "local" ]; then
 	echo "Setting up local K8s cluster";
-	# setting up minikube locally
-	# premise: kvm, virtualbox or whatever we are going to use should be already installed
-	# https://github.com/kubernetes/minikube/blob/master/docs/drivers.md
-	# the VM driver installs at /usr/bin/docker-machine-driver-* or /usr/local/bin/docker-machine-driver-*
-	drivers=(kvm kvm2 hyperkit xhyve)
-	available=false
-	for d in "${drivers[@]}"
-	do
-		if [ -f /usr/bin/docker-machine-driver-$d ] || [ -f /usr/bin/docker-machine-driver-$d ]; then
-			available=true
-			echo "Found the $d driver"
-			break
+
+	if [ "$cfg__local__provider" = "minikube" ]; then
+		# setting up minikube locally
+		# premise: kvm, virtualbox or whatever we are going to use should be already installed
+		# https://github.com/kubernetes/minikube/blob/master/docs/drivers.md
+		# the VM driver installs at /usr/bin/docker-machine-driver-* or /usr/local/bin/docker-machine-driver-*
+		drivers=(kvm kvm2 hyperkit xhyve)
+		available=false
+		for d in "${drivers[@]}"
+		do
+			if [ -f /usr/bin/docker-machine-driver-$d ] || [ -f /usr/bin/docker-machine-driver-$d ]; then
+				available=true
+				echo "Found the $d driver"
+				break
+			fi
+		done
+
+		if [ ! $available ]; then
+			echo "No VM driver found, please install one first: https://github.com/kubernetes/minikube/blob/master/docs/drivers.md"
+			exit 1
 		fi
-	done
 
-	if [ ! $available ]; then
-		echo "No VM driver found, please install one first: https://github.com/kubernetes/minikube/blob/master/docs/drivers.md"
-		exit 1
+		command -v minikube >/dev/null 2>&1 || {
+                	echo >&2 "minikube not available... installing";
+			latest_minikube=$(get_latest_github_release "kubernetes/minikube")
+			echo  "latest minikube version available is $latest_minikube"
+			curl -Lo minikube https://storage.googleapis.com/minikube/releases/$latest_minikube/minikube-linux-amd64 && chmod +x minikube && sudo cp minikube /usr/local/bin/ && rm minikube
+        	}
+	elif [ "$cfg__local__provider" = "mikrok8s" ]; then
+		echo "Setting up Mikrok8s cluster"
+	else
+		echo "Local K8s provider $cfg__local__provider not supported!"
 	fi
-
-	command -v minikube >/dev/null 2>&1 || {
-                echo >&2 "minikube not available... installing";
-		latest_minikube=$(get_latest_github_release "kubernetes/minikube")
-		echo  "latest minikube version available is $latest_minikube"
-		curl -Lo minikube https://storage.googleapis.com/minikube/releases/$latest_minikube/minikube-linux-amd64 && chmod +x minikube && sudo cp minikube /usr/local/bin/ && rm minikube
-        }
 
 	# installing kubectl if not available
 	command -v kubectl >/dev/null 2>&1 || {
@@ -59,51 +66,58 @@ elif [ "$LOCATION" = "local" ]; then
 		mv ./kubectl /usr/local/bin/kubectl
 	}
 
-	# starting minikube cluster if not already started (to make sure this whole script is idempotent)
-	kb_status=$(minikube status | grep "host:" | awk '{print $2}' FS=': ')
-	if [ -z "$kb_status" ] || [ "$kb_status" = "Stopped" ]; then
-		# starting minikube
-		echo "Starting minikube.."
-		echo "minikube start --cpus $cfg__local__cpus --memory $cfg__local__memory --disk-size=$cfg__local__storage --vm-driver $cfg__local__vm_driver "$( ( "$cfg__local__gpu_support" = true ) && printf %s '--gpu' )
-		cfg__local__mnt_data="/mnt/vda1/data/storage/"
-		# in case of issues with mounting, it may be due to the vm driver (they behave differently) or more probably to a firewall issue on the host
-		# https://github.com/kubernetes/minikube/issues/2379
-		# https://github.com/kubernetes/minikube/issues/1548
-		# please run minikube mount -v10 $root_folder/data:$cfg__local__mnt_data
-		# https://kubernetes.io/docs/setup/minikube/#mounted-host-folders
-		# starting registry mirror on host
-		docker start registry-mirror || docker run -d --restart=always -p 5000:5000 --name registry-mirror \
-		-v $PWD/registry/data/:/var/lib/registry/ \
-		-v $PWD/registry/config/:/etc/docker/registry/ registry:2
-		echo "starting minikube"
-		minikube start \
-		--cpus $cfg__local__cpus \
-		--memory $cfg__local__memory \
-		--disk-size=$cfg__local__storage \
-		--vm-driver $cfg__local__vm_driver \
-		--registry-mirror http://192.168.122.1:5000 \
-		--insecure-registry http://192.168.122.1:5000 $( ( "$cfg__local__gpu_support" = true ) && printf %s '--gpu' )
-		# GPU setup explained at https://github.com/kubernetes/minikube/blob/master/docs/gpu.md
+	if [ "$cfg__local__provider" = "minikube" ]; then
+		# starting minikube cluster if not already started (to make sure this whole script is idempotent)
+		kb_status=$(minikube status | grep "host:" | awk '{print $2}' FS=': ')
+		if [ -z "$kb_status" ] || [ "$kb_status" = "Stopped" ]; then
+			# starting minikube
+			echo "Starting minikube.."
+			echo "minikube start --cpus $cfg__local__cpus --memory $cfg__local__memory --disk-size=$cfg__local__storage --vm-driver $cfg__local__vm_driver "$( ( "$cfg__local__gpu_support" = true ) && printf %s '--gpu' )
+			cfg__local__mnt_data="/mnt/vda1/data/storage/"
+			# in case of issues with mounting, it may be due to the vm driver (they behave differently) or more probably to a firewall issue on the host
+			# https://github.com/kubernetes/minikube/issues/2379
+			# https://github.com/kubernetes/minikube/issues/1548
+			# please run minikube mount -v10 $root_folder/data:$cfg__local__mnt_data
+			# https://kubernetes.io/docs/setup/minikube/#mounted-host-folders
+			# starting registry mirror on host
+			docker start registry-mirror || docker run -d --restart=always -p 5000:5000 --name registry-mirror \
+			-v $PWD/registry/data/:/var/lib/registry/ \
+			-v $PWD/registry/config/:/etc/docker/registry/ registry:2
 
-		echo "Minikube VM started. Node accessible using 'minikube ssh'"
-		echo "Creating data dir $cfg__local__mnt_data"
-		minikube ssh "sudo mkdir -p $cfg__local__mnt_data"
-		minikube ssh "sudo chown rkt:rkt $cfg__local__mnt_data"
+			echo "starting minikube"
+			minikube start \
+			--cpus $cfg__local__cpus \
+			--memory $cfg__local__memory \
+			--disk-size=$cfg__local__storage \
+			--vm-driver $cfg__local__vm_driver \
+			--registry-mirror http://192.168.122.1:5000 \
+			--insecure-registry http://192.168.122.1:5000 $( ( "$cfg__local__gpu_support" = true ) && printf %s '--gpu' )
+			# GPU setup explained at https://github.com/kubernetes/minikube/blob/master/docs/gpu.md
 
-		# enable add-ons
-		# https://github.com/kubernetes/minikube/blob/master/docs/addons.md
-		minikube addons enable metrics-server
-		if [ ! -z "$cfg__local__gpu_support" ] && [ "$cfg__local__gpu_support" = true ]; then
-			minikube addons enable nvidia-driver-installer
-			minikube addons enable nvidia-gpu-device-plugin
+			echo "Minikube VM started. Node accessible using 'minikube ssh'"
+			echo "Creating data dir $cfg__local__mnt_data"
+			minikube ssh "sudo mkdir -p $cfg__local__mnt_data"
+			minikube ssh "sudo chown rkt:rkt $cfg__local__mnt_data"
+
+			# enable add-ons
+			# https://github.com/kubernetes/minikube/blob/master/docs/addons.md
+			minikube addons enable metrics-server
+			if [ ! -z "$cfg__local__gpu_support" ] && [ "$cfg__local__gpu_support" = true ]; then
+				minikube addons enable nvidia-driver-installer
+				minikube addons enable nvidia-gpu-device-plugin
+			fi
+			# create a namespace for us
+			kubectl create namespace $cfg__project__k8s_namespace
+		else
+			echo "Minikube is already running. Enjoy!"
 		fi
-		# create a namespace for us
-		kubectl create namespace $cfg__project__k8s_namespace
-	else
-		echo "Minikube is already running. Enjoy!"
-	fi
+	elif [ "$cfg__local__provider" = "mikrok8s" ]; then
+		echo "Starting mikrok8s cluster"
+        else
+                echo "Local K8s provider $cfg__local__provider not supported!"
+        fi
 
-	# add an overlay network
+	# add an overlay network if required
 	if [ ! -z "$cfg__local__use_overlay" ] && [ "$cfg__local__use_overlay" = true ]; then
 		. $file_folder/overlay/setup.sh
 	fi
