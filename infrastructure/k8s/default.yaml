@@ -4,7 +4,8 @@ local:
   storage: 40g
   gpu_support: true
   use_overlay: false
-  provider: minikube
+  #provider: minikube
+  provider: mikrok8s
   #vm_driver: virtualbox
   vm_driver: kvm2
 

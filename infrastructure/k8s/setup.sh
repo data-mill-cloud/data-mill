@@ -51,6 +51,12 @@ elif [ "$LOCATION" = "local" ]; then
         	}
 	elif [ "$cfg__local__provider" = "mikrok8s" ]; then
 		echo "Setting up Mikrok8s cluster"
+		command -v snap >/dev/null 2>&1 || {
+			echo "snap package manager is missing and required to install mikrok8s! Exiting.."
+			exit 1
+		}
+		echo "ok snap is there"
+		exit 1
 	else
 		echo "Local K8s provider $cfg__local__provider not supported!"
 	fi
