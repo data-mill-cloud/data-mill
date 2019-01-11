@@ -50,7 +50,10 @@ echo ""
 if [ "$ACTION" = "debug" ]; then
 	# start an interactive session using busybox in the cluster namespace
 	debugging_pod_name="debugging-pod-"$(date '+%d-%m-%Y--%H-%M-%S')
-	kubectl run -it $debugging_pod_name --image=busybox --restart=Never --namespace=$cfg__project__k8s_namespace --env="POD_NAMESPACE=$cfg__project__k8s_namespace"
+	#--image=busybox
+	kubectl run -it $debugging_pod_name \
+	--image=ubuntu \
+	--restart=Never --namespace=$cfg__project__k8s_namespace --env="POD_NAMESPACE=$cfg__project__k8s_namespace"
 	echo "Terminating Debug Pod.."
 	kubectl delete pod $debugging_pod_name -n=$cfg__project__k8s_namespace
 elif [ "$ACTION" = "start" ]; then

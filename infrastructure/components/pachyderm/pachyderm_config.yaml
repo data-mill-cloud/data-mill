@@ -1,10 +1,10 @@
 rbac:
  # Specifies whether RBAC resources should be created
  #create: true
- create: false
+ create: true
 
 ## Set default credentials for object store
-credentials: "local"
+credentials: "s3"
 
 ## S3 endpoint (i.e: Minio server) credentials
 s3:
