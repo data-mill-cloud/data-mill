@@ -54,11 +54,13 @@ With `-f filename` we can specify a different flavour than the default one, and 
 doesn't).
 
 The projects is structured over the following folders:
-* volumes - contains the persistent volumes and the persistent volume claims to be mounted at startup (e.g. to mount a partition with static files).
+* components - containing the installable components
 * data - is mounted as PV and PVC and eventually available in the Minio S3 data lake, it can be used to provide example code
+* flavours - where configurations are stored. A file define the project details, and a flavour, i.e. a group of components to be used in the project
 * helm-charts - contains the code used to develop helm charts that were not available to us at time of development
-* utils - contain bash utility functions (e.g. arg parsing)
-* k8s - contain the cluster setup and configuration data
+* k8s - contains the cluster setup and configuration data
+* registry - contains the details to manage a local docker registry
+* utils - contains bash utility functions (e.g. arg parsing)
 
 ## 2. Common functions
 
