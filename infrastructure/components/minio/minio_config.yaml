@@ -148,7 +148,7 @@ resources:
 defaultBucket:
   enabled: false
   ## If enabled, must be a string with length > 0
-  name: bucket
+  name: default
   ## Can be one of none|download|upload|public
   policy: none
   ## Purge if bucket exists already

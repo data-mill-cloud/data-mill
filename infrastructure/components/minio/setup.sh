@@ -41,7 +41,7 @@ elif [ "$ACTION" = "install" ]; then
 	# copy code examples to minio pod
 	MINIO_POD_NAME=$(kubectl get pods --namespace $cfg__project__k8s_namespace -l "release=$cfg__minio__release" -o jsonpath="{.items[0].metadata.name}")
 	echo "waiting for pod $MINIO_POD_NAME to be up and running"
-	kubectl wait -n data-mill  --for=condition=Ready --timeout=600s pod $MINIO_POD_NAME
+	kubectl wait -n $cfg__project__k8s_namespace  --for=condition=Ready --timeout=600s pod $MINIO_POD_NAME
 	echo "copying data to $MINIO_POD_NAME pod into /export folder"
 	kubectl -n $cfg__project__k8s_namespace cp data/ ${MINIO_POD_NAME}:/export
 else
