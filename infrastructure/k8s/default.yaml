@@ -1,12 +1,12 @@
 local:
   cpus: 8
-  memory: 16192
+  memory: 12288
   storage: 40g
-  gpu_support: true
+  gpu_support: false
   use_overlay: false
-  provider: minikube
   #vm_driver: virtualbox
   vm_driver: kvm2
+  provider: minikube
 
 remote:
   type: aws
@@ -15,4 +15,4 @@ remote:
   region: "us-east1"
   zones: "us-east1a"
   no_nodes: 2
-  node_size=t2.medium
+  node_size: t2.medium
