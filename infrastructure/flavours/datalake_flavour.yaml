@@ -1,0 +1,10 @@
+# this flavour is used for minimal datalake setup
+# for instance when testing the gpu support on the cluster
+project:
+  k8s_namespace: data-mill
+  proxy_port: 8088
+  flavour: minio pachyderm
+  # k8s default config, can be overwritten with -t filename
+  k8s_default_config: default.yaml
+  # component default config, can be overwritten with -f filename
+  component_default_config: config.yaml
