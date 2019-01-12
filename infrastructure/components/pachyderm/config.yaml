@@ -3,4 +3,6 @@ pachyderm:
   config_file: pachyderm_config.yaml
   version: 0.1.8
   bucket: pachyderm
+  # using the default data bucket, a pach folder will be created there
+  # bucket: pachyderm
   minio: minio-datalake

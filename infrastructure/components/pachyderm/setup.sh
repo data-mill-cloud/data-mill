@@ -18,6 +18,9 @@ elif [ "$ACTION" = "install" ]; then
 	MINIO_ACCESS_KEY=$(kubectl -n $cfg__project__k8s_namespace get secrets $cfg__pachyderm__minio -o jsonpath="{.data.accesskey}" | base64 -d)
 	MINIO_SECRET_KEY=$(kubectl -n $cfg__project__k8s_namespace get secrets $cfg__pachyderm__minio -o jsonpath="{.data.secretkey}" | base64 -d)
 	MINIO_ENDPOINT=$(kubectl -n $cfg__project__k8s_namespace  get endpoints $cfg__pachyderm__minio | awk 'NR==2 {print $2}')
+	# before installing pachyderm, make sure a bucket named $cfg__pachyderm__bucket is available on minio
+	echo $(datalake_run_command "$cfg__project__k8s_namespace" "mc config host add minio http://minio-datalake:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY --api S3v4 && mc mb minio/$cfg__pachyderm__bucket --ignore-existing")
+
 	# https://hub.helm.sh/charts/stable/pachyderm
 	helm upgrade $cfg__pachyderm__release stable/pachyderm \
 	 --version $cfg__pachyderm__version \

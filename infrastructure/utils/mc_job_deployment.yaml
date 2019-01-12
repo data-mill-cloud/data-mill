@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pod-name
+spec:
+  ttlSecondsAfterFinished: 10
+  template:
+    spec:
+      containers:
+      - name: container-name
+        image: minio/mc
+        command: ["/bin/sh"]
+        args: ["-c", "container-command"]
+      restartPolicy: Never
