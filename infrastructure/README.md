@@ -84,7 +84,20 @@ helm repo add data-mill https://data-mill-cloud.github.io/data-mill/helm-charts/
 ## 3. Developing applications
 Please check the `data` folder for examples on how to connect to services, such as S3, Spark, Dask, Keras/Tensorflow.
 
-## 4. Data versioning
+## 4. Accessing the Data Lake and Data versioning
+We use minio as local S3 datalake service. Code examples are directly copied to the minio pod and exposed as a bucket.
+Within the cluster, Minio can be accessed at <minio-release>.<namespace>.svc.cluster.local on port 9000 (or http://<minio-release>:9000).
+Minio can also be managed from it minio/mc client, using port forwarding to the pod:
+```
+export POD_NAME=$(kubectl get pods --namespace <namespace> -l "release=<minio-release>" -o jsonpath="{.items[0].metadata.name}")
+kubectl port-forward $POD_NAME 9000 --namespace <namespace>
+```
+You can follow [this guide](https://docs.minio.io/docs/minio-client-quickstart-guide) to install the mc client. For instance:
+```
+mc config host add <ALIAS> <YOUR-S3-ENDPOINT> <YOUR-ACCESS-KEY> <YOUR-SECRET-KEY> <API-SIGNATURE>
+```
+Now we can manage the objects on the datalake, for instance create (`mc mb minio/mybucket`), list (`mc ls minio/mybucket`), delete (`mc rm minio/mybucket/myfile`).
+
 Pachyderm is provided for code versioning purposes. This component is using the default minio datalake, where it creates a specific bucket.
 The utility pachctl can be installed to interact with Pachyderm, see the guide [here](http://docs.pachyderm.io/en/latest/getting_started/local_installation.html), for instance:
 Once pachctl is available, we can point it to the cluster's master node, or in case of a single node setup like minikube or mikrok8s to the sole node available:

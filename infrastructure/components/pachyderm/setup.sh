@@ -33,12 +33,12 @@ elif [ "$ACTION" = "install" ]; then
 	fi
 
 	# https://hub.helm.sh/charts/stable/pachyderm
-	#helm upgrade $cfg__pachyderm__release stable/pachyderm \
-	# --version $cfg__pachyderm__version \
-	# --namespace $cfg__project__k8s_namespace \
-	# --values $file_folder/$cfg__pachyderm__config_file \
-	# --set s3.accessKey=$ACCESS_KEY,s3.secretKey=$SECRET_KEY,s3.bucketName=$cfg__pachyderm__datalake__bucket,s3.endpoint=$ENDPOINT \
-	# --install --force
+	helm upgrade $cfg__pachyderm__release stable/pachyderm \
+	 --version $cfg__pachyderm__version \
+	 --namespace $cfg__project__k8s_namespace \
+	 --values $file_folder/$cfg__pachyderm__config_file \
+	 --set s3.accessKey=$ACCESS_KEY,s3.secretKey=$SECRET_KEY,s3.bucketName=$cfg__pachyderm__datalake__bucket,s3.endpoint=$ENDPOINT \
+	 --install --force
 else
 	helm delete $cfg__pachyderm__release --purge
 fi
