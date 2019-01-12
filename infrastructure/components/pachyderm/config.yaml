@@ -2,7 +2,11 @@ pachyderm:
   release: pachyderm
   config_file: pachyderm_config.yaml
   version: 0.1.8
-  bucket: pachyderm
-  # using the default data bucket, a pach folder will be created there
-  # bucket: pachyderm
-  minio: minio-datalake
+  datalake:
+    type: minio
+    bucket: pachyderm
+    minio_release: minio-datalake
+    bucket: pachyderm
+    #access_key: ""
+    #secret_key: ""
+    #endpoint: ""

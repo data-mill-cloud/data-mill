@@ -86,11 +86,8 @@ Please check the `data` folder for examples on how to connect to services, such 
 
 ## 4. Data versioning
 Pachyderm is provided for code versioning purposes. This component is using the default minio datalake, where it creates a specific bucket.
-The utility pachctl can be installed to interact with Pachyderm, for instance:
-```
-curl -o /tmp/pachctl.tar.gz -L https://github.com/pachyderm/pachyderm/releases/download/v1.8.2/pachctl_1.8.2_linux_amd64.tar.gz && tar -xvf /tmp/pachctl.tar.gz -C /tmp && sudo cp /tmp/pachctl_1.8.2_linux_amd64/pachctl /usr/local/bin
-```
-The utility pachctl should be now available, we can then point it to the cluster's master node, or in case of a single node setup like minikube or mikrok8s to the sole node available:
+The utility pachctl can be installed to interact with Pachyderm, see the guide [here](http://docs.pachyderm.io/en/latest/getting_started/local_installation.html), for instance:
+Once pachctl is available, we can point it to the cluster's master node, or in case of a single node setup like minikube or mikrok8s to the sole node available:
 ```
 export ADDRESS=$(minikube ip)":30650"
 ```
@@ -102,6 +99,13 @@ pachctl             1.8.2
 pachd               1.7.3
 ```
 This shows that both the client and server were correctly setup. You can now go on with the official tutorial, [here](https://pachyderm.readthedocs.io/en/latest/getting_started/beginner_tutorial.html).
+The example below creates a new repo called images and lists its content, both before and after uploading an image from the web.
+```
+pachctl create-repo images
+pachctl list-repo
+pachctl put-file images master liberty.png -f http://imgur.com/46Q8nDz.png
+pachctl list-repo
+```
 
 ## 5. Debugging utils
 
