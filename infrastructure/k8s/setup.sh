@@ -53,13 +53,14 @@ elif [ "$LOCATION" = "local" ]; then
 		echo "Setting up Microk8s cluster"
 		command -v snap >/dev/null 2>&1 || {
 			echo "snap package manager is missing and required to install mikrok8s! Exiting.."
+			echo "Please install snapd and enable the service (e.g. from systemctl)"
+			echo "In case you get an error like the following please run 'sudo ln -s /var/lib/snapd/snap /snap':"
+			echo "    error: cannot install 'microk8s': classic confinement requires snaps under /snap or symlink from /snap to /var/lib/snapd/snap"
 			exit 1
 		}
-		echo "ok, snap is there"
-		echo "checking microk8s installation"
 		snap list microk8s || {
-			echo "microk8s is missing, trying to install it now"
-			snap install microk8s --classic
+			echo "microk8s is missing, installing it now"
+			sudo snap install microk8s --classic
 		}
 	else
 		echo "Local K8s provider $cfg__local__provider not supported!"
@@ -73,7 +74,7 @@ elif [ "$LOCATION" = "local" ]; then
 		curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
 		# making executable and moving to bin
 		chmod +x ./kubectl
-		mv ./kubectl /usr/local/bin/kubectl
+		sudo mv ./kubectl /usr/local/bin/kubectl
 	}
 	if [ "$cfg__local__provider" = "minikube" ]; then
 		# starting minikube cluster if not already started (to make sure this whole script is idempotent)
@@ -117,7 +118,7 @@ elif [ "$LOCATION" = "local" ]; then
 			echo "Minikube is already running. Enjoy!"
 		fi
 	elif [ "$cfg__local__provider" = "microk8s" ]; then
-	    echo "checking install"
+		echo "checking install"
 		microk8s.status
 		status=$?
 		if [ $status -eq 1 ]; then
