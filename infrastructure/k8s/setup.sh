@@ -20,8 +20,10 @@ check_multipass(){
         	# if lsb_release check the OS version
 		if [ $(lsb_release -sr | cut -f1 -d ".") -ge $MIN_VERSION ]; then
 			echo "USE_MULTIPASS=false"
+		else
+			echo "USE_MULTIPASS=true"
                 fi
-	}
+	} || echo "USE_MULTIPASS=true"
 }
 
 run_multipass(){
@@ -45,7 +47,7 @@ if [ "$ACTION" = "delete" ]; then
 			minikube stop
 			minikube delete
 		elif [ "$cfg__local__provider" = "microk8s" ]; then
-			$(check_multipass)
+			eval $(check_multipass)
 			if [ $USE_MULTIPASS = true ]; then
 				multipass stop $VM_NAME
 				multipass delete $VM_NAME
@@ -106,9 +108,8 @@ else
 
 			# use raw snap only if we are on a ubuntu/debian distro and after a certain version
 			# by default use multipass, we tried it on other linux distro and snap was very messy
-			USE_MULTIPASS=true
-			$(check_multipass)
-			MIN_VERSION=18
+			#USE_MULTIPASS=true
+			eval $(check_multipass)
 			VM_NAME=${cfg__local__provider}-vm
 			# todo: make vm_name configurable so that we can run multiple clusters
 
