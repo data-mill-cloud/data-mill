@@ -18,7 +18,7 @@ check_multipass(){
 	# use raw snap only if we are on a ubuntu/debian distro and after a certain version
 	lsb_release -sr >/dev/null 2>&1 && {
         	# if lsb_release check the OS version
-		if [ $(lsb_release -sr | cut -f1 -d) -ge $MIN_VERSION ]; then
+		if [ $(lsb_release -sr | cut -f1 -d ".") -ge $MIN_VERSION ]; then
 			echo "USE_MULTIPASS=false"
                 fi
 	}
