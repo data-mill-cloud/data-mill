@@ -218,14 +218,15 @@ else
 				$(run_multipass "/snap/bin/microk8s.enable gpu")
 			fi
 
-			# create a cluster context for our local kubectl tool
-			$(run_multipass "/snap/bin/microk8s.config") > $file_folder/${cfg__local__provider}.config
+			if [ $USE_MULTIPASS = true ]; then
+				# create a cluster context for our local kubectl tool
+				$(run_multipass "/snap/bin/microk8s.config") > $file_folder/${cfg__local__provider}.config
 
-			# switch to this config file
-			#export KUBECONFIG=$KUBECONFIG:$file_path/${cfg__local__provider}.config
-			export KUBECONFIG=$KUBECONFIG:$file_path/${cfg__local__provider}.config
-			kubectl --kubeconfig=$KUBECONFIG config view --flatten
-
+				# switch to this config file
+				export KUBECONFIG="$file_folder/${cfg__local__provider}.config"
+				#echo "KUBECONFIG is $KUBECONFIG"
+				kubectl config view --flatten
+			fi
 			# switch context
 			kubectl config use-context $cfg__local__provider
 			# create a namespace for us
