@@ -107,16 +107,10 @@ else
 			# use raw snap only if we are on a ubuntu/debian distro and after a certain version
 			# by default use multipass, we tried it on other linux distro and snap was very messy
 			USE_MULTIPASS=true
+			$(check_multipass)
 			MIN_VERSION=18
 			VM_NAME=${cfg__local__provider}-vm
 			# todo: make vm_name configurable so that we can run multiple clusters
-			# use raw snap only if we are on a ubuntu/debian distro and after a certain version
-			lsb_release -sr >/dev/null 2>&1 && {
-				# if lsb_release check the OS version
-				if [ $(lsb_release -sr | cut -f1 -d) -ge $MIN_VERSION ]; then
-					USE_MULTIPASS=false
-				fi
-			}
 
 			# check the needed dependencies
 			if [ $USE_MULTIPASS = true ]; then
