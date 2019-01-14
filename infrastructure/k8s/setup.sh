@@ -51,17 +51,60 @@ elif [ "$LOCATION" = "local" ]; then
         	}
 	elif [ "$cfg__local__provider" = "microk8s" ]; then
 		echo "Setting up Microk8s cluster"
-		command -v snap >/dev/null 2>&1 || {
-			echo "snap package manager is missing and required to install mikrok8s! Exiting.."
-			echo "Please install snapd and enable the service (e.g. from systemctl)"
-			echo "In case you get an error like the following please run 'sudo ln -s /var/lib/snapd/snap /snap':"
-			echo "    error: cannot install 'microk8s': classic confinement requires snaps under /snap or symlink from /snap to /var/lib/snapd/snap"
-			exit 1
+		# use raw snap only if we are on a ubuntu/debian distro and after a certain version
+		# by default use multipass, we tried it on other linux distro and snap was very messy
+		USE_MULTIPASS=true
+		VM_NAME="microk8s-vm"
+		MIN_VERSION=18
+		# use raw snap only if we are on a ubuntu/debian distro and after a certain version
+		lsb_release -sr >/dev/null 2>&1 && {
+			# if lsb_release check the OS version
+			if [ $(lsb_release -sr | cut -f1 -d) -ge $MIN_VERSION ]; then
+				USE_MULTIPASS=false
+			fi
 		}
+
+		# check the needed dependencies
+		if [ $USE_MULTIPASS = true ]; then
+			# multipass is necessary to create the VM
+			command -v multipass >/dev/null 2>&1 || {
+				# if we are on a linux machine we can use snap to install it
+				case "$OS" in
+					Linux)
+					   echo "Multipass not available, installing using snap"
+					   sudo snap install multipass --beta --classic
+					   # make sure we have read write access to the multipass folder /run/multipass_socket
+					   sudo chmod a+rw /run/multipass_socket;;
+					Mac)
+					   echo "Multipass is necessary to run microk8s. Please visit: https://github.com/CanonicalLtd/multipass/releases"
+					   exit 1;;
+					*)
+					   echo "$OS is not supported"
+					   exit 1;;
+				esac
+			}
+			# launch a VM
+			# the exit 1 is needed in case the VM fails to start, e.g. when "launch failed: multipass socket access denied"
+			multipass launch --name $VM_NAME --mem $cfg__local__storage --disk $cfg__local__storage -c $cfg__local__cpus || exit 1
+			# ssh in the VM, or exit otherwise as all following commands are expected to be ran there
+			multipass shell $VM_NAME || exit 1
+		else
+			# snap is necessary to install the cluster
+			command -v snap >/dev/null 2>&1 || {
+				echo "snap package manager is missing and required to install mikrok8s! Exiting.."
+				echo "Please install snapd and enable the service (e.g. from systemctl)"
+				echo "In case you get an error like the following please run 'sudo ln -s /var/lib/snapd/snap /snap':"
+				echo "    error: cannot install 'microk8s': classic confinement requires snaps under /snap or symlink from /snap to /var/lib/snapd/snap"
+				exit 1
+			}
+		fi
+
+		# from here on we are on a Ubuntu-like machine with snap enabled
 		snap list microk8s || {
 			echo "microk8s is missing, installing it now"
 			sudo snap install microk8s --classic
 		}
+
 	else
 		echo "Local K8s provider $cfg__local__provider not supported!"
 	fi

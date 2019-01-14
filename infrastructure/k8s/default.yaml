@@ -1,7 +1,7 @@
 local:
   cpus: 8
   memory: 16288
-  storage: 60g
+  storage: 60G
   gpu_support: false
   use_overlay: false
   provider: microk8s
