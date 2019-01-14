@@ -58,7 +58,7 @@ if [ "$ACTION" = "debug" ]; then
 	kubectl delete pod $debugging_pod_name -n=$cfg__project__k8s_namespace
 elif [ "$ACTION" = "start" ]; then
 	# just start K8s
-	. $root_folder/k8s/setup.sh $LOCATION
+	. $root_folder/k8s/setup.sh
 	# show installed components
 	helm ls
 	# connect proxy
@@ -69,7 +69,7 @@ elif [ "$ACTION" = "start" ]; then
 elif [[ "$ACTION" = "install" || "$ACTION" = "delete" ]]; then
 	if [ "$ACTION" = "install" ]; then
 		# 1. ******** Setup K8s ********
-		. $root_folder/k8s/setup.sh $LOCATION
+		. $root_folder/k8s/setup.sh
 	fi
 
 	# run ACTION on modules of the K8s cluster
