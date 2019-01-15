@@ -150,7 +150,7 @@ else
 			# from here on we are on a Ubuntu-like machine with snap enabled
 			echo "Checking if microk8s is already installed"
 			$(run_multipass "sudo snap install microk8s --classic")
-			# run the following command only for the multipass VM (noop if row snap is used)
+			# run the following command only for the multipass VM (noop if raw snap is used)
 			$(run_multipass "sudo iptables -P FORWARD ACCEPT" "multipass_only")
 		else
 			echo "Local K8s provider $cfg__local__provider not supported!"
@@ -210,12 +210,16 @@ else
 			fi
 		elif [ "$cfg__local__provider" = "microk8s" ]; then
 			# start microk8s, if it is already running nothing will happen
-			$(run_multipass "/snap/bin/microk8s.start")
-			$(run_multipass "/snap/bin/microk8s.status --wait-ready --timeout 120")
-			$(run_multipass "/snap/bin/microk8s.enable dns registry storage")
+			$(run_multipass "/snap/bin/microk8s.status --wait-ready --timeout 120")  || $(run_multipass "/snap/bin/microk8s.start")
+			echo "checking for DNS addon $(run_multipass)"
+			$(run_multipass "/snap/bin/microk8s.status | grep "dns: enabled"") >/dev/null 2>&1 || $(run_multipass "/snap/bin/microk8s.enable dns")
+			echo "checking for storage addon"
+			$(run_multipass "/snap/bin/microk8s.status | grep "storage: enabled"") >/dev/null 2>&1 || $(run_multipass "/snap/bin/microk8s.enable storage")
+			echo "checking for registry addon"
+			$(run_multipass "/snap/bin/microk8s.status | grep "registry: enabled"") >/dev/null 2>&1 || $(run_multipass "/snap/bin/microk8s.enable registry")
 
 			if [ ! -z "$cfg__local__gpu_support" ] && [ "$cfg__local__gpu_support" = true ]; then
-				$(run_multipass "/snap/bin/microk8s.enable gpu")
+				$(run_multipass "/snap/bin/microk8s.status | grep "gpu: enabled"") >/dev/null 2>&1 || $(run_multipass "/snap/bin/microk8s.enable gpu")
 			fi
 
 			if [ $USE_MULTIPASS = true ]; then
