@@ -41,6 +41,17 @@ hub:
             'extra_resource_guarantees': {'nvidia.com/gpu': '1'},
             'extra_resource_limits': {'nvidia.com/gpu': '1'}
         }
+      },
+      {
+        'display_name': 'Standard kubeflow tensorflow image',
+        'description': 'uses gcr.io/kubeflow-images-public/tensorflow-1.10.1-notebook-gpu:v0.4.0',
+        'kubespawner_override': {
+            'singleuser_image_spec': 'gcr.io/kubeflow-images-public/tensorflow-1.10.1-notebook-gpu:v0.4.0',
+            'cpu_limit': 1,
+            'mem_limit': '4G',
+            'extra_resource_guarantees': {'nvidia.com/gpu': '1'},
+            'extra_resource_limits': {'nvidia.com/gpu': '1'}
+        }
       }
     ]
 
@@ -74,6 +85,10 @@ prePuller:
     pygpu:
       name: datamillcloud/pydl_gpu_env
       tag: latest
+      policy: IfNotPresent
+    kubeflow:
+      name: gcr.io/kubeflow-images-public/tensorflow-1.10.1-notebook-gpu
+      tag: v0.4.0
       policy: IfNotPresent
 
 scheduling:
