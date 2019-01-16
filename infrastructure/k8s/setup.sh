@@ -31,7 +31,7 @@ run_multipass(){
 		# run command on the multipass VM
 		VM_NAME=${cfg__local__provider}-vm
 		# todo: change to make this configurable
-		echo "multipass exec $VM_NAME -- $1"
+		echo "multipass exec $VM_NAME -- "${1}
 	else
 		# run command on the host
 		if [ -z "$2" ] || [ "$2" != "multipass_only" ]; then
@@ -220,7 +220,7 @@ else
 			fi
 		elif [ "$cfg__local__provider" = "microk8s" ]; then
 			# start microk8s, if it is already running nothing will happen
-			$(run_multipass "/snap/bin/microk8s.status --wait-ready --timeout 120")  || $(run_multipass "/snap/bin/microk8s.start")
+			$(run_multipass "/snap/bin/microk8s.status --wait-ready --timeout 120") || $(run_multipass "/snap/bin/microk8s.start")
 			echo "checking for DNS addon"
 			$(run_multipass "/snap/bin/microk8s.status | grep "dns: enabled"") >/dev/null 2>&1 || $(run_multipass "/snap/bin/microk8s.enable dns")
 			echo "checking for storage addon"
@@ -231,6 +231,20 @@ else
 			if [ ! -z "$cfg__local__gpu_support" ] && [ "$cfg__local__gpu_support" = true ]; then
 				$(run_multipass "/snap/bin/microk8s.status | grep "gpu: enabled"") >/dev/null 2>&1 || $(run_multipass "/snap/bin/microk8s.enable gpu")
 			fi
+
+			# make sure allow-privileged is enabled for microk8s (not by default)
+			echo "checking allow-privileged"
+
+			$(run_multipass "cat /var/snap/microk8s/current/args/kube-apiserver") | grep -e '--allow-privileged' >/dev/null 2>&1 \
+			&& { echo "--allow-privileged is already set"; } \
+			|| {
+				echo "Flag not set, adding it.."
+				$(run_multipass "echo --allow-privileged") | $(run_multipass "sudo tee -a /var/snap/microk8s/current/args/kube-apiserver")
+				# restart daemon after config change
+				$(run_multipass "sudo systemctl restart snap.microk8s.daemon-apiserver")
+				# the following used only for debug purposes
+				#$(run_multipass "sudo cat /var/snap/microk8s/current/args/kube-apiserver")
+			}
 
 			if [ $USE_MULTIPASS = true ]; then
 				# create a cluster context for our local kubectl tool
