@@ -259,7 +259,7 @@ else
 			# switch context
 			kubectl config use-context $cfg__local__provider
 			# create a namespace for us
-			kubectl create namespace $cfg__project__k8s_namespace
+			kubectl get ns $cfg__project__k8s_namespace >/dev/null 2>&1 || kubectl create namespace $cfg__project__k8s_namespace
 		else
 			echo "Local K8s provider $cfg__local__provider not supported!"
 		fi

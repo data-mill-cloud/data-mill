@@ -90,8 +90,8 @@ elif [[ "$ACTION" = "install" || "$ACTION" = "delete" ]]; then
 		helm ls
 
 		# start proxy to connect to K8s API
-		echo "Please access K8s UI at: http://localhost:$cfg__project__proxy_port/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy/"
-		kubectl proxy --port=$cfg__project__proxy_port #&
+		#echo "Please access K8s UI at: http://localhost:$cfg__project__proxy_port/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy/"
+		#kubectl proxy --port=$cfg__project__proxy_port #&
 	else
 		# delete the namespace only if we removed all components
         	if [ -z "$COMPONENT" ]; then
