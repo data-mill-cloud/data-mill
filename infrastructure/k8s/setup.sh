@@ -122,8 +122,7 @@ else
 						Linux)
 						   echo "Multipass not available, installing using snap"
 						   sudo snap install multipass --beta --classic
-						   # make sure we have read write access to the multipass folder /run/multipass_socket
-						   sudo chmod a+rw /run/multipass_socket;;
+						   ;;
 						Mac)
 						   echo "Multipass is necessary to run microk8s. Please visit: https://github.com/CanonicalLtd/multipass/releases"
 						   exit 1;;
@@ -132,6 +131,17 @@ else
 						   exit 1;;
 					esac
 				}
+
+				# make sure we have read write access to the multipass folder /run/multipass_socket
+				MULTIPASS_GROUP=$(ls -g /run/multipass_socket | awk '{print $3}')
+				# Multipass supported groups: sudo, adm, admin (https://github.com/CanonicalLtd/multipass/pull/513)
+				if getent group $MULTIPASS_GROUP | grep &>/dev/null "\b$(whoami)\b"; then
+					echo "$(whoami) has access to /run/multipass_socket"
+				else
+					echo "No access to /run/multipass_socket, Adding $(whoami) to group $MULTIPASS_GROUP"
+					sudo usermod -aG $MULTIPASS_GROUP $(whoami)
+					newgrp $MULTIPASS_GROUP
+				fi
 				echo "Launching multipass VM $VM_NAME"
 				# launch a VM if not already running or does not exists yet
 				# the exit 1 is needed in case the VM fails to start, e.g. when "launch failed: multipass socket access denied"
@@ -211,7 +221,7 @@ else
 		elif [ "$cfg__local__provider" = "microk8s" ]; then
 			# start microk8s, if it is already running nothing will happen
 			$(run_multipass "/snap/bin/microk8s.status --wait-ready --timeout 120")  || $(run_multipass "/snap/bin/microk8s.start")
-			echo "checking for DNS addon $(run_multipass)"
+			echo "checking for DNS addon"
 			$(run_multipass "/snap/bin/microk8s.status | grep "dns: enabled"") >/dev/null 2>&1 || $(run_multipass "/snap/bin/microk8s.enable dns")
 			echo "checking for storage addon"
 			$(run_multipass "/snap/bin/microk8s.status | grep "storage: enabled"") >/dev/null 2>&1 || $(run_multipass "/snap/bin/microk8s.enable storage")
