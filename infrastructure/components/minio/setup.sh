@@ -21,12 +21,12 @@ elif [ "$ACTION" = "install" ]; then
 	echo "Starting Minio with:"
 	echo "- KEY:$random_key"
 	echo "- SECRET:$random_secret"
-	echo "- Mounting Minio on PVC named $cfg__minio__pvc_name"
+
 	# https://github.com/helm/charts/tree/master/stable/minio#configuration
 	helm upgrade $cfg__minio__release stable/minio \
 	 --namespace $cfg__project__k8s_namespace \
 	 --values $file_folder/$cfg__minio__config_file \
-	 --set accessKey=$random_key,secretKey=$random_secret,persistence.existingClaim=$cfg__minio__pvc_name,persistence.storageClass=$cfg__minio__storageClass \
+	 --set accessKey=$random_key,secretKey=$random_secret,persistence.storageClass=$cfg__minio__storageClass \
 	 --install --force
 	unset random_key
 	unset random_secret

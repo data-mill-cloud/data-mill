@@ -17,7 +17,9 @@ KUBEFLOW_SRC="${file_folder}/${cfg__kubeflow__src_subfolder}/${KUBEFLOW_TAG}"
 KUBEFLOW_CONFIG="${file_folder}/${cfg__kubeflow__conf_subfolder}/${KUBEFLOW_TAG}"
 
 # kubeflow uses env vars to pass information to kfctl
-export K8S_NAMESPACE=$cfg__project__k8s_namespace
+# use a specific namespace if defined, or otherwise the project namespace
+export K8S_NAMESPACE=${cfg__kubeflow__k8s_namespace:=$cfg__project__k8s_namespace}
+echo "kubeflow namespace: "$K8S_NAMESPACE
 
 if [ -z "$ACTION" ] || [ "$ACTION" != "install" ] && [ "$ACTION" != "delete" ];then
         echo "usage: $0 {'install' | 'delete'}";
@@ -48,11 +50,6 @@ elif [ "$ACTION" = "install" ]; then
 		rm -fr ksonnet
 		rm ksonnet.tar.gz
 	}
-
-	# download kubeflow iff not already available as a folder
-	KUBEFLOW_TAG=${cfg__kubeflow__kubeflow_tag:=$(get_latest_github_release "kubeflow/kubeflow")}
-	KUBEFLOW_SRC="${file_folder}/${cfg__kubeflow__src_subfolder}/${KUBEFLOW_TAG}"
-	KUBEFLOW_CONFIG="${file_folder}/${cfg__kubeflow__conf_subfolder}/${KUBEFLOW_TAG}"
 
 	# download iff the folder with the code for the version is not already available locally
 	if [ ! -d "${KUBEFLOW_SRC}" ]; then

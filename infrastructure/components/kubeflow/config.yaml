@@ -8,3 +8,9 @@ kubeflow:
   conf_subfolder: kf_conf
   # if no ksonnet_tag is specified, latest released is used
   ksonnet_tag: v0.13.1
+  # by default, we use the project k8s namespace for kubeflow, however
+  # we suggest using a different namespace, since its devs are doing weird stuff in sonnet
+  # if you check their kfctl they are even deleting the namespace when uninstalling kubeflow
+  # if you want you can use the same namespace of the project, and that works, but at your own risk as we do not control kfctl
+  # otherwise specify the k8s_namespace below
+  k8s_namespace: kubeflow

@@ -227,7 +227,6 @@ else
 			fi
 		elif [ "$cfg__local__provider" = "microk8s" ]; then
 			# start microk8s, if it is already running nothing will happen
-			echo "$(run_multipass)"
 			$(run_multipass "/snap/bin/microk8s.status --wait-ready --timeout 120") || $(run_multipass "/snap/bin/microk8s.start")
 			echo "checking for DNS addon"
 			$(run_multipass "/snap/bin/microk8s.status") | grep -e 'dns: enabled' >/dev/null 2>&1 || $(run_multipass "/snap/bin/microk8s.enable dns")

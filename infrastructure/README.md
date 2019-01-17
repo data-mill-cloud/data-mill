@@ -47,7 +47,7 @@ project:
   data_folder: data
 ```
 
-The flavour indicates which components are to be included in the project the default is related to.
+The flavour attribute indicates which components are to be included in the project the default is related to.
 You can use `flavour: all` or list the component names e.g. `flavour: spark, jupyterhub`.
 When using `flavour: all` the components are taken in alphabetical order, so it is necessary to list them if you have dependencies across them.
 The `k8s_default_config` is used to specify the default filename for cluster configuration, this can be overwritten with `-t filename`.
@@ -110,7 +110,7 @@ mc config host add <ALIAS> <YOUR-S3-ENDPOINT> <YOUR-ACCESS-KEY> <YOUR-SECRET-KEY
 Now we can manage the objects on the datalake, for instance create (`mc mb minio/mybucket`), list (`mc ls minio/mybucket`), delete (`mc rm minio/mybucket/myfile`).
 
 Pachyderm is provided for code versioning purposes. This component is using the default minio datalake, where it creates a specific bucket.
-The utility pachctl can be installed to interact with Pachyderm, see the guide [here](http://docs.pachyderm.io/en/latest/getting_started/local_installation.html), for instance:
+The utility pachctl can be installed to interact with Pachyderm, see the guide [here](http://docs.pachyderm.io/en/latest/getting_started/local_installation.html).
 Once pachctl is available, we can point it to the cluster's master node, or in case of a single node setup like minikube or mikrok8s to the sole node available:
 ```
 export ADDRESS=$(minikube ip)":30650"
@@ -136,4 +136,10 @@ pachctl list-repo
 List containers running in each pod:
 ```
 kubectl get pods --all-namespaces -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' | sort
+```
+
+Retrieve the secrets used for the datalake:
+```
+$(kubectl -n <namespace> get secrets <minio-deployment> -o jsonpath="{.data.accesskey}" | base64 -d)
+$(kubectl -n <namespace> get secrets <minio-deployment> -o jsonpath="{.data.secretkey}" | base64 -d)
 ```
