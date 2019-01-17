@@ -260,7 +260,8 @@ else
 
 				# switch to this config file
 				export KUBECONFIG="$file_folder/${cfg__local__provider}.config"
-				#echo "KUBECONFIG is $KUBECONFIG"
+				echo "KUBECONFIG for the cluster stored at $KUBECONFIG"
+				echo "Please run: export KUBECONFIG=$file_folder/${cfg__local__provider}.config"
 				kubectl config view --flatten
 			fi
 			# switch context

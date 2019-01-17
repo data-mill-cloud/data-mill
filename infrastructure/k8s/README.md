@@ -29,7 +29,7 @@ local:
   use_overlay: false
   provider: microk8s
 ```
-Microk8s can be installed either directly using snap (e.g. on Ubuntu/Debian distros) or using a Multipass VM.
+Microk8s can be installed either directly using snap (e.g. on Ubuntu/Debian distros) or using a [Multipass VM](https://github.com/CanonicalLtd/multipass).
 Mind that when using Multipass the GPU support is not available.
 
 ## 2. Remote setup

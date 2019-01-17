@@ -96,8 +96,11 @@ elif [[ "$ACTION" = "install" || "$ACTION" = "delete" ]]; then
 		# delete the namespace only if we removed all components
         	if [ -z "$COMPONENT" ]; then
                 	kubectl delete namespace $cfg__project__k8s_namespace
+			# delete the cluster too
+			#. $root_folder/k8s/setup.sh
 	        fi
 	fi
+
 else
 	echo "ACTION should be either debug, install or delete"
 fi

@@ -1,0 +1,10 @@
+kubeflow:
+  release: kubeflow
+  # if no kubeflow_tag is specified, latest released is used
+  kubeflow_tag: v0.3.5
+  # src_subfolder is the subdirectory where you want the kubeflow source to be downloaded
+  src_subfolder: kf_src
+  # conf_subfolder is the subdirectory where you want the kubeflow configuration to be stored
+  conf_subfolder: kf_conf
+  # if no ksonnet_tag is specified, latest released is used
+  ksonnet_tag: v0.13.1
