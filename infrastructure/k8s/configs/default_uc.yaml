@@ -1,0 +1,8 @@
+# Default K8s config for microk8s
+local:
+  cpus: 8
+  memory: 16288
+  storage: 60G
+  gpu_support: true
+  use_overlay: false
+  provider: microk8s

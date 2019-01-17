@@ -40,7 +40,7 @@ project:
   # the flavour is used to list all the components to be used in the project
   flavour: all
   # k8s default config, can be overwritten with -t filename
-  k8s_default_config: default.yaml
+  k8s_default_config: default_uc.yaml
   # component default config, can be overwritten with -f filename
   component_default_config: config.yaml
   # set the data folder
@@ -51,6 +51,7 @@ The flavour indicates which components are to be included in the project the def
 You can use `flavour: all` or list the component names e.g. `flavour: spark, jupyterhub`.
 When using `flavour: all` the components are taken in alphabetical order, so it is necessary to list them if you have dependencies across them.
 The `k8s_default_config` is used to specify the default filename for cluster configuration, this can be overwritten with `-t filename`.
+For instance, `default_uc.yaml` in `k8s/configs` specifies a microk8s cluster. This target can be overwritten with `-t` or directly in the flavour file, for instance using `default_mc.yaml` to target a minikube cluster.
 The `component_default_config` is used to specify the default configuration filename for each component, and can be overwritten with `-f filename`.
 With `-f filename` we can specify a different flavour than the default one, and overwrite the config of each file (if `filename` exists, or fallback to `component_default_config` where it 
 doesn't). The data folder is where the code examples are stored, along with the bucket structure that we want replicated to the local datalake.
@@ -66,10 +67,18 @@ The projects is structured over the following folders:
 
 ## 2. Common functions
 
-### 2.1 Debugging environment
+### 2.1 Start existing cluster
+An existing cluster can be started as follows:
+```
+./run.sh -i -l -s
+```
+This will use the default flavour and k8s config. 
+To overwrite this behavior a different flavour can be passed with `-f flavour_config.yaml` or a different target file `-t target_config.yaml` can be set.
+
+### 2.2 Debugging environment
 A debugging environment (i.e., a pod within the namespace providing an interactive session) can be spawned using `run.sh -d`.
 
-### 2.2 Installing local helm charts
+### 2.3 Installing local helm charts
 We provide a subfolder to collect a few helm-chart that were not yet offered at the time of development.   
 To install a helm chart from the infrastructure folder you would normally run something like:
 ```

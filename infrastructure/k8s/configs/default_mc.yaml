@@ -1,0 +1,9 @@
+# Default k8s configuration for minikube
+local:
+  cpus: 8
+  memory: 16288
+  storage: 60G
+  gpu_support: true
+  use_overlay: false
+  provider: minikube
+  vm_driver: kvm2

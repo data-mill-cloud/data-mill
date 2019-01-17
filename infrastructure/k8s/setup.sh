@@ -7,7 +7,7 @@ file_folder=$(dirname $fullpath)
 # if -t was not passed we stick to the default config
 TARGET_FILE=${TARGET_FILE:="$cfg__project__k8s_default_config"}
 # if the target file was specified but does not exist, we fall back to the default config
-TARGET_CONFIG=$(file_exists "$file_folder/$TARGET_FILE" "$file_folder/$cfg__project__k8s_default_config")
+TARGET_CONFIG=$(file_exists "$file_folder/configs/$TARGET_FILE" "$file_folder/configs/$cfg__project__k8s_default_config")
 eval $(parse_yaml $TARGET_CONFIG "cfg__")
 
 # Retrieving the OS type
