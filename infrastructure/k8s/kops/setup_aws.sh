@@ -3,12 +3,6 @@
 fullpath=$(readlink --canonicalize --no-newline $BASH_SOURCE)
 file_folder=$(dirname $fullpath)
 
-# load local yaml config
-eval $(parse_yaml $file_folder/$CONFIG_FILE "cfg__")
-
-# use if set or a string argument otherwise
-ACTION=${ACTION:=$1}
-
 # Retrieving the OS type
 OS=$(get_os_type)
 
@@ -20,6 +14,9 @@ REGION=$cfg__remote__region #"us-east1"
 ZONES=$cfg__remote__zones #"us-east-1a"
 NO_NODES=$cfg__remote__no_nodes #2
 NODE_SIZE=$cfg__remote__node_size #t2.medium
+
+#( set -o posix ; set ) | more
+#exit 1
 
 if [ "$ACTION" = "install" ]; then
 	# K8s cluster creation - AWS

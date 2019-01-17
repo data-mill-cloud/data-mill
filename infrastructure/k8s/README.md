@@ -37,7 +37,7 @@ We provide basic scripts for the setup of AWS and GKE K8s clusters, using the Ku
 For this setup, a configuration file for AWS would look like the following:
 ```
 remote:
-  type: aws
+  provider: aws
   cluster_name: data-mill
   bucket_name: data-mill
   region: "us-east1"
@@ -45,3 +45,4 @@ remote:
   no_nodes: 2
   node_size: t2.medium
 ```
+Mind that remote cluster setup is still experimental (alpha) and to be used with caution.

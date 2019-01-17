@@ -7,3 +7,13 @@ local:
   use_overlay: false
   provider: minikube
   vm_driver: kvm2
+
+# Example config for remote k8s cluster on AWS
+remote:
+  provider: aws
+  cluster_name: data-mill
+  bucket_name: data-mill
+  region: "us-east1"
+  zones: "us-east1a"
+  no_nodes: 2
+  node_size: t2.medium

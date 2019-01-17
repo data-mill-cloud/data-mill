@@ -60,7 +60,14 @@ if [ "$ACTION" = "delete" ]; then
 			echo "Local K8s provider $cfg__local__provider not supported!"
 		fi
 	else
-		echo "ToDo"
+		echo "Deleting K8s cluster provided by $cfg__remote__provider";
+		case $cfg__remote__provider in
+			aws) . $file_folder/kops/setup_aws.sh;;
+			gke) . $file_folder/kops/setup_gke.sh;;
+			*)
+			  echo "Cloud provider not available. Exiting"
+			  exit 1
+                esac
 	fi
 else
 	# we have to start, install, or debug the cluster
@@ -296,6 +303,13 @@ else
 		# show where tiller was deployed
 		echo "Tiller deployed as pod "$(get_pod_name "tiller")
 	else
-		echo "Setting up infrastructure on remote K8s cluster";
+		echo "Setting up infrastructure on remote K8s cluster provided by $cfg__remote__provider";
+		case $cfg__remote__provider in
+			aws) . $file_folder/kops/setup_aws.sh;;
+			gke) . $file_folder/kops/setup_gke.sh;;
+			*)
+			  echo "Cloud provider not available. Exiting"
+			  exit 1
+		esac
 	fi
 fi

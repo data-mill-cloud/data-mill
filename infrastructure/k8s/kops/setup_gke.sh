@@ -3,12 +3,6 @@
 fullpath=$(readlink --canonicalize --no-newline $BASH_SOURCE)
 file_folder=$(dirname $fullpath)
 
-# load local yaml config
-eval $(parse_yaml $file_folder/$CONFIG_FILE "cfg__")
-
-# use if set or a string argument otherwise
-ACTION=${ACTION:=$1}
-
 # Retrieving the OS type
 OS=$(get_os_type)
 
@@ -19,6 +13,9 @@ STATE_BUCKET="gs://$BUCKET_NAME/"
 REGION=$cfg__remote__region # "us-east1"
 # e.g. to run for multiple zones: us-east-1b,us-east-1c,us-east-1d
 ZONES=$cfg__remote__zones #"us-east1-a"
+
+#( set -o posix ; set ) | more
+#exit 1
 
 if [ "$ACTION" = "install" ]; then
 	# K8s cluster creation - GCE

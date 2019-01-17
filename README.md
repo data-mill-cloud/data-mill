@@ -8,11 +8,11 @@
 
 Providing:  
   1. K8s setup  
-    * [Local](https://github.com/data-mill-cloud/data-mill/tree/master/infrastructure/k8s) (i.e. Minikube)  
-    * [Remote](https://github.com/data-mill-cloud/data-mill/tree/master/infrastructure/k8s/kops) (e.g. VM, K8s Cluster)  
+    * [Local](https://github.com/data-mill-cloud/data-mill/tree/master/infrastructure/k8s) (i.e. Minikube, MicroK8s)  
+    * [Remote](https://github.com/data-mill-cloud/data-mill/tree/master/infrastructure/k8s/kops) (i.e. AWS, GKE)  
   2. Setup of [common components](https://github.com/data-mill-cloud/data-mill/tree/master/infrastructure/components)  
     * Ingestion (e.g. kafka, RabbitMQ)  
-    * Persistent storage (e.g. s3)  
+    * Persistent storage (e.g. s3, ArangoDB, InfluxDB)  
     * Data Versioning (e.g. Pachyderm)  
     * Processing (e.g. dask, spark)  
     * Exploration Environment (e.g. JupyterHub)  
