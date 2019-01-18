@@ -3,7 +3,7 @@
 project:
   k8s_namespace: data-mill
   proxy_port: 8088
-  flavour: minio pachyderm
+  flavour: minio, pachyderm
   # k8s default config, can be overwritten with -t filename
   k8s_default_config: default_uc.yaml
   # component default config, can be overwritten with -f filename

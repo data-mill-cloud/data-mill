@@ -15,6 +15,7 @@ if [ -z "$ACTION" ] || [ "$ACTION" != "install" ] && [ "$ACTION" != "delete" ];t
         echo "usage: $0 {'install' | 'delete'}";
         exit 1
 elif [ "$ACTION" = "install" ]; then
+	echo "Pachyderm set to use dalake $cfg__pachyderm__datalake__type"
 	if [ "$cfg__pachyderm__datalake__type" = "minio" ]; then
 		ACCESS_KEY=$(kubectl -n $cfg__project__k8s_namespace get secrets $cfg__pachyderm__datalake__minio_release -o jsonpath="{.data.accesskey}" | base64 -d)
 		SECRET_KEY=$(kubectl -n $cfg__project__k8s_namespace get secrets $cfg__pachyderm__datalake__minio_release -o jsonpath="{.data.secretkey}" | base64 -d)
@@ -24,7 +25,6 @@ elif [ "$ACTION" = "install" ]; then
 		#echo $(datalake_run_command "$cfg__project__k8s_namespace" "mc config host add minio http://$cfg__pachyderm__datalake__minio_release:9000 $ACCESS_KEY $SECRET_KEY --api S3v4 && mc mb minio/$cfg__pachyderm__datalake__bucket --ignore-existing")
 		$(minio_create_bucket $cfg__project__k8s_namespace $cfg__pachyderm__datalake__minio_release $cfg__project__data_folder $cfg__pachyderm__datalake__bucket)
 	else
-		echo "Pachyderm set to use dalake $cfg__pachyderm__datalake__type"
 		ACCESS_KEY=$cfg__pachyderm__datalake__access_key
 		SECRET_KEY=$cfg__pachyderm__datalake__secret_key
 		ENDPOINT=$cfg__pachyderm__datalake__endpoint
