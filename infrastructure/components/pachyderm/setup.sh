@@ -18,7 +18,8 @@ elif [ "$ACTION" = "install" ]; then
 	if [ "$cfg__pachyderm__datalake__type" = "minio" ]; then
 		ACCESS_KEY=$(kubectl -n $cfg__project__k8s_namespace get secrets $cfg__pachyderm__datalake__minio_release -o jsonpath="{.data.accesskey}" | base64 -d)
 		SECRET_KEY=$(kubectl -n $cfg__project__k8s_namespace get secrets $cfg__pachyderm__datalake__minio_release -o jsonpath="{.data.secretkey}" | base64 -d)
-		ENDPOINT=$(kubectl -n $cfg__project__k8s_namespace  get endpoints $cfg__pachyderm__datalake__minio_release | awk 'NR==2 {print $2}')
+		#ENDPOINT=$(kubectl -n $cfg__project__k8s_namespace  get endpoints $cfg__pachyderm__datalake__minio_release | awk 'NR==2 {print $2}')
+		ENDPOINT="${cfg__pachyderm__datalake__minio_release}:9000"
 
 		# before installing pachyderm, make sure a bucket named $cfg__pachyderm__bucket is available on minio
 		#echo $(datalake_run_command "$cfg__project__k8s_namespace" "mc config host add minio http://$cfg__pachyderm__datalake__minio_release:9000 $ACCESS_KEY $SECRET_KEY --api S3v4 && mc mb minio/$cfg__pachyderm__datalake__bucket --ignore-existing")
