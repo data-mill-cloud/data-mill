@@ -1,0 +1,7 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+Once installed, you can access the UI via kubectl proxy:
+1. Run kubectl proxy in a terminal
+2. Navigate to http://localhost:8001/api/v1/namespaces/default/services/{{ .Release.Name }}-jobmanager:ui/proxy in your browser

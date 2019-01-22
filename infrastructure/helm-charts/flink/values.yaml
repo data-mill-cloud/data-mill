@@ -1,0 +1,28 @@
+image:
+  repository: flink
+  tag: latest
+  pullPolicy: IfNotPresent
+
+jobmanager:
+  replicaCount: 1
+
+taskmanager:
+  replicaCount: 2
+
+nameOverride: ""
+fullnameOverride: ""
+
+resources: 
+  # {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # Please check this link to view the meaning of those limits/requirements:
+  # https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-cpu
+  taskmanager:
+    requests:
+      cpu: 500m
+      memory: 1024Mi
+  jobmanager:
+    requests:
+      cpu: 100m
+      memory: 1024Mi
