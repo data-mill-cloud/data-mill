@@ -263,6 +263,7 @@ else
 				echo "Please run: export KUBECONFIG=$file_folder/${cfg__local__provider}.config"
 				kubectl config view --flatten
 			fi
+
 			# switch context
 			kubectl config use-context $cfg__local__provider
 			# create a namespace for us
