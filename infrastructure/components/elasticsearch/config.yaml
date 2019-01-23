@@ -1,0 +1,10 @@
+elastic:
+  release: elasticsearch
+  #use_version: community
+  #config_file: community_es_config.yaml
+  # https://github.com/elastic/helm-charts/blob/6.5.2-alpha1/elasticsearch/README.md
+  use_version: official
+  config_file: official_es_config.yaml
+  # https://kubedb.com/docs/0.9.0/guides/elasticsearch/quickstart/quickstart/
+  #use_version: kubedb
+  #config_file: kubedb_es_config.yaml

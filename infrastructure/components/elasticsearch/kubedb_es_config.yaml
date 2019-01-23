@@ -1,0 +1,16 @@
+apiVersion: kubedb.com/v1alpha1
+kind: Elasticsearch
+metadata:
+  name: es-name
+  namespace: es-ns
+spec:
+  version: es-version
+  storageType: Durable
+  storage:
+    storageClassName: "standard"
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 50Mi
+  #terminationPolicy: DoNotTerminate

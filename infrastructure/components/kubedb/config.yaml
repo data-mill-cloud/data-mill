@@ -1,0 +1,11 @@
+kubedb:
+  namespace: kubedb
+  operator:
+    release: kubedb-operator
+    version: 0.9.0
+    setup_timeout: 0
+    config_file: kubedb_config.yaml
+  catalog:
+    release: kubedb-catalog
+    version: 0.9.0  
+    setup_timeout: 0

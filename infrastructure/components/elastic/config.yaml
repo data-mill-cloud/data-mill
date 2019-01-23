@@ -1,8 +1,0 @@
-elastic:
-  release: elastic
-  operator:
-    config_file: operator_config.yaml
-    setup_timeout: 500
-  es:
-    config_file: es_config.yaml
-    setup_timeout: 0

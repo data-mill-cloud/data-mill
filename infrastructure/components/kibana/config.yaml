@@ -1,0 +1,3 @@
+kibana:
+  release: kibana
+  config_file: kibana_config.yaml
