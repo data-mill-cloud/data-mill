@@ -14,15 +14,19 @@ eval $(parse_yaml $TARGET_CONFIG "cfg__")
 OS=$(get_os_type)
 
 check_multipass(){
-	MIN_VERSION=18
+	MIN_VERSION_UBUNTU=18
+	MIN_VERSION_DEBIAN=9
 	# use raw snap only if we are on a ubuntu/debian distro and after a certain version
 	lsb_release -sr >/dev/null 2>&1 && {
         	# if lsb_release check the OS version
-		if [ $(lsb_release -sr | cut -f1 -d ".") -ge $MIN_VERSION ]; then
-			echo "USE_MULTIPASS=false"
-		else
-			echo "USE_MULTIPASS=true"
-                fi
+		os_version=$(lsb_release -sr | cut -f1 -d ".")
+		os_type=$(lsb_release -sd)
+		# check a different min version for ubuntu and debian
+		case $(lsb_release -ds) in
+		 *Debian*) echo $( [ $os_version -ge $MIN_VERSION_DEBIAN ] && { printf "USE_MULTIPASS=false"; } || { printf "USE_MULTIPASS=true"; } );;
+		 *Ubuntu*) echo $( [ $os_version -ge $MIN_VERSION_UBUNTU ] && { printf "USE_MULTIPASS=false"; } || { printf "USE_MULTIPASS=true"; } );;
+		 *) echo "USE_MULTIPASS=true";;
+		esac
 	} || echo "USE_MULTIPASS=true"
 }
 
@@ -165,6 +169,13 @@ else
 			fi
 
 			# from here on we are on a Ubuntu-like machine with snap enabled
+			# N.B there is a bug on debian that requires installing the core first
+			# https://github.com/ubuntu/microk8s/issues/165
+			# https://stackoverflow.com/questions/2172352/in-bash-how-can-i-check-if-a-string-begins-with-some-value
+			if [[ $(lsb_release -sd) = Debian* ]]; then
+				sudo snap install core
+			fi
+
 			echo "Checking if microk8s is already installed"
 			$(run_multipass "sudo snap install microk8s --classic")
 			# run the following command only for the multipass VM (noop if raw snap is used)
@@ -253,16 +264,16 @@ else
 				#$(run_multipass "sudo cat /var/snap/microk8s/current/args/kube-apiserver")
 			}
 
-			if [ $USE_MULTIPASS = true ]; then
-				# create a cluster context for our local kubectl tool
-				$(run_multipass "/snap/bin/microk8s.config") > $file_folder/${cfg__local__provider}.config
+			#if [ $USE_MULTIPASS = true ]; then
+			# create a cluster context for our local kubectl tool
+			$(run_multipass "/snap/bin/microk8s.config") > $file_folder/${cfg__local__provider}.config
 
-				# switch to this config file
-				export KUBECONFIG="$file_folder/${cfg__local__provider}.config"
-				echo "KUBECONFIG for the cluster stored at $KUBECONFIG"
-				echo "Please run: export KUBECONFIG=$file_folder/${cfg__local__provider}.config"
-				kubectl config view --flatten
-			fi
+			# switch to this config file
+			export KUBECONFIG="$file_folder/${cfg__local__provider}.config"
+			echo "KUBECONFIG for the cluster stored at $KUBECONFIG"
+			echo "Please run: export KUBECONFIG=$file_folder/${cfg__local__provider}.config"
+			kubectl config view --flatten
+			#fi
 
 			# switch context
 			kubectl config use-context $cfg__local__provider
@@ -281,9 +292,11 @@ else
 		command -v helm >/dev/null 2>&1 || {
 	                echo >&2 "Helm not available... installing";
 			# helm installation
-			wget "https://storage.googleapis.com/kubernetes-helm/helm-v2.12.1-linux-amd64.tar.gz"
-			tar -zxvf helm-v2.12.1-linux-amd64.tar.gz
-			mv linux-amd64/helm /usr/local/bin/helm
+			helm_version="v2.12.1"
+			wget "https://storage.googleapis.com/kubernetes-helm/helm-${helm_version}-linux-amd64.tar.gz"
+			tar -zxvf helm-${helm_version}-linux-amd64.tar.gz
+			sudo mv linux-amd64/helm /usr/local/bin/helm
+			rm helm-*.tar.gz
 		}
 		# initializing helm and installing tiller on the cluster
 		# https://docs.helm.sh/using_helm/
