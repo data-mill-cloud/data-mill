@@ -44,18 +44,20 @@ elif [ "$ACTION" = "install" ]; then
 
 	# install kubedb client
         command -v kubedb >/dev/null 2>&1 || {
+		RELEASE=$(get_latest_github_release 'kubedb/cli')
+		RELEASE=${RELEASE:=$cfg__kubedb__operator__version}
 		OS=$(get_os_type)
-		echo "Installing kubedb on $OS"
+		echo "Installing kubedb $RELEASE on $OS"
 		case "$OS" in
 			Linux)
 				# Linux amd 64-bit
-				wget -O kubedb https://github.com/kubedb/cli/releases/download/$cfg__kubedb__operator__version/kubedb-linux-amd64 \
+				wget -O kubedb https://github.com/kubedb/cli/releases/download/$RELEASE/kubedb-linux-amd64 \
 				  && chmod +x kubedb \
 				  && sudo mv kubedb /usr/local/bin/
 				;;
 			Mac)
 				# Mac 64-bit
-				wget -O kubedb https://github.com/kubedb/cli/releases/download/0.9.0/kubedb-darwin-amd64 \
+				wget -O kubedb https://github.com/kubedb/cli/releases/download/$RELEASE/kubedb-darwin-amd64 \
 				  && chmod +x kubedb \
 				  && sudo mv kubedb /usr/local/bin/
 				;;
@@ -63,6 +65,8 @@ elif [ "$ACTION" = "install" ]; then
 	                        echo "$OS not supported."
 	                        exit 1;;
 		esac
+		unset OS
+		unset RELEASE
         }
 
 else

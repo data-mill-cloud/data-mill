@@ -1,0 +1,4 @@
+argo:
+  release: argo
+  config_file: argo_config.yaml
+  namespace: kube-system
