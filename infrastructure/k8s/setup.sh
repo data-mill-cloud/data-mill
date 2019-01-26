@@ -59,7 +59,15 @@ if [ "$ACTION" = "delete" ]; then
 			minikube stop
 			minikube delete
 		elif [ "$cfg__local__provider" = "microk8s" ]; then
-			eval $(check_multipass)
+			#eval $(check_multipass)
+			# if not specified, use bare on ubuntu/debian and on multipass otherwise
+			if [ -z "$cfg__local__use_multipass" ]; then
+				eval $(check_multipass)
+			else
+				# use multipass iff this is esplicitly specified
+				USE_MULTIPASS=$cfg__local__use_multipass
+			fi
+
 			if [ $USE_MULTIPASS = true ]; then
 				multipass stop $VM_NAME
 				multipass delete $VM_NAME
@@ -128,7 +136,13 @@ else
 			# use raw snap only if we are on a ubuntu/debian distro and after a certain version
 			# by default use multipass, we tried it on other linux distro and snap was very messy
 			#USE_MULTIPASS=true
-			eval $(check_multipass)
+			# if not specified, use bare on ubuntu/debian and on multipass otherwise
+			if [ -z "$cfg__local__use_multipass" ]; then
+				eval $(check_multipass)
+			else
+				# use multipass iff this is esplicitly specified
+				USE_MULTIPASS=$cfg__local__use_multipass
+			fi
 			VM_NAME=${cfg__local__provider}-vm
 			# todo: make vm_name configurable so that we can run multiple clusters
 

@@ -6,6 +6,9 @@ local:
   gpu_support: true
   use_overlay: false
   provider: microk8s
+  # if use_multipass is provided use it
+  # otherwise uc is used without multipass only on the newer ubuntu and debian
+  use_multipass: false
 
 # example config for a remote k8s cluster on AWS
 remote:
