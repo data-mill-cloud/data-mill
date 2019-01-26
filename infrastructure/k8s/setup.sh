@@ -44,6 +44,14 @@ run_multipass(){
 	fi
 }
 
+
+helm_delete(){
+	kubectl -n kube-system delete deployment tiller-deploy
+	kubectl delete clusterrolebinding tiller
+	kubectl -n kube-system delete serviceaccount tiller
+}
+
+
 # ACTIONS: start debug install delete
 if [ "$ACTION" = "delete" ]; then
 	if [ "$LOCATION" = "local" ]; then
@@ -264,16 +272,15 @@ else
 				#$(run_multipass "sudo cat /var/snap/microk8s/current/args/kube-apiserver")
 			}
 
-			#if [ $USE_MULTIPASS = true ]; then
-			# create a cluster context for our local kubectl tool
-			$(run_multipass "/snap/bin/microk8s.config") > $file_folder/${cfg__local__provider}.config
-
-			# switch to this config file
-			export KUBECONFIG="$file_folder/${cfg__local__provider}.config"
-			echo "KUBECONFIG for the cluster stored at $KUBECONFIG"
-			echo "Please run: export KUBECONFIG=$file_folder/${cfg__local__provider}.config"
+			if [ $USE_MULTIPASS = true ]; then
+				# create a cluster context for our local kubectl tool
+				$(run_multipass "/snap/bin/microk8s.config") > $file_folder/${cfg__local__provider}.config
+				# switch to this config file
+				export KUBECONFIG="$file_folder/${cfg__local__provider}.config"
+				echo "KUBECONFIG for the cluster stored at $KUBECONFIG"
+				echo "Please run: export KUBECONFIG=$file_folder/${cfg__local__provider}.config"
+			fi
 			kubectl config view --flatten
-			#fi
 
 			# switch context
 			kubectl config use-context $cfg__local__provider
@@ -302,11 +309,11 @@ else
 		# https://docs.helm.sh/using_helm/
 		if [[ -z $(check_if_pod_exists "tiller") ]]; then
 			echo "Installing Tiller"
-			kubectl -n kube-system create sa tiller
-			kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
-			helm init --service-account tiller --wait --tiller-connection-timeout 300
-			# 300 seconds (5 mins) is the default waiting time
-			# --wait : block until Tiller is running and ready to receive requests
+		        kubectl -n kube-system create sa tiller
+        		kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+        		helm init --service-account tiller --wait --tiller-connection-timeout 300
+        		# 300 seconds (5 mins) is the default waiting time
+        		# --wait : block until Tiller is running and ready to receive requests
 		fi
 		# wait for tiller to be up and running (minikube is not respecting --wait)
 		while [[ -z $(check_if_pod_exists "tiller") || $(get_pod_status "tiller") != "Running" ]]; do
