@@ -286,14 +286,14 @@ else
 				#$(run_multipass "sudo cat /var/snap/microk8s/current/args/kube-apiserver")
 			}
 
-			if [ $USE_MULTIPASS = true ]; then
+			#if [ $USE_MULTIPASS = true ]; then
 				# create a cluster context for our local kubectl tool
 				$(run_multipass "/snap/bin/microk8s.config") > $file_folder/${cfg__local__provider}.config
 				# switch to this config file
 				export KUBECONFIG="$file_folder/${cfg__local__provider}.config"
 				echo "KUBECONFIG for the cluster stored at $KUBECONFIG"
 				echo "Please run: export KUBECONFIG=$file_folder/${cfg__local__provider}.config"
-			fi
+			#fi
 			kubectl config view --flatten
 
 			# switch context

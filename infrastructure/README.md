@@ -65,20 +65,33 @@ The projects is structured over the following folders:
 * registry - contains the details to manage a local docker registry
 * utils - contains bash utility functions (e.g. arg parsing)
 
-## 2. Common functions
+## 2. Example flavours
 
-### 2.1 Start existing cluster
+The components were successfully tested on all 3 local environments and a few example flavours are provided to get quickly started:
+* default - installs all components in alphabetical order, which can be highly memory consuming so use with caution
+* datalake_flavour - installs the minio S3 and pachyderm to set up a datalake; this is the smallest flavour concerning pachyderm and a datalake;
+* kubeflow_flavour - installs minio, pachyderm and kubeflow (using ksonnet), the integration of kubeflow was successfully tested, however we suggest installing kubeflow in a separated namespace (i.e. see the config for the component and the README) since upon 
+* deletion using the default kfctl the entire namespace is deleted
+* datawarehouse_flavour - installs minio, pachyderm, kafka, rabbitmq, superset, spark and the monitoring-stack.
+* explorative_flavour - installs minio, arangodb, influxdb, superset, jupyterhub, dask and seldon.
+
+An example flavour is reported below:
+![Example flavour](https://raw.githubusercontent.com/data-mill-cloud/data-mill/master/docs/img/architecture.png)
+
+## 3. Common functions
+
+### 3.1 Start existing cluster
 An existing cluster can be started as follows:
 ```
 ./run.sh -i -l -s
 ```
-This will use the default flavour and k8s config. 
+This will use the default flavour and k8s config (i.e. `k8s_default_config: default_uc.yaml`) to start the microk8s cluster defined in `default_uc.yaml`, without altering (installing/uninstalling) any component.  
 To overwrite this behavior a different flavour can be passed with `-f flavour_config.yaml` or a different target file `-t target_config.yaml` can be set.
 
-### 2.2 Debugging environment
+### 3.2 Debugging environment
 A debugging environment (i.e., a pod within the namespace providing an interactive session) can be spawned using `run.sh -d`.
 
-### 2.3 Installing local helm charts
+### 3.3 Installing local helm charts
 We provide a subfolder to collect a few helm-chart that were not yet offered at the time of development.   
 To install a helm chart from the infrastructure folder you would normally run something like:
 ```
@@ -92,10 +105,7 @@ Alternatively, just add our Git Repo as Helm repo too:
 helm repo add data-mill https://data-mill-cloud.github.io/data-mill/helm-charts/
 ```
 
-## 3. Developing applications
-Please check the `data` folder for examples on how to connect to services, such as S3, Spark, Dask, Keras/Tensorflow.
-
-## 4. Accessing the Data Lake and Data versioning
+### 3.4 Accessing the Data Lake and Data versioning
 We use minio as local S3 datalake service. Code examples are directly copied to the minio pod and exposed as a bucket.
 Within the cluster, Minio can be accessed at <minio-release>.<namespace>.svc.cluster.local on port 9000 (or http://<minio-release>:9000).
 Minio can also be managed from it minio/mc client, using port forwarding to the pod:
@@ -131,7 +141,72 @@ pachctl put-file images master liberty.png -f http://imgur.com/46Q8nDz.png
 pachctl list-repo
 ```
 
-## 5. Debugging utils
+## 4. Data Science Environments
+Jupyterhub is a multi-user server that can be used to spawn multiple jupyter servers with different computation requirements and runtime environments.  
+As visible and discussed [here](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html), there exists 3 main streams for the DS environments:
+* `scipy-notebook` is the base Python DS Environment, as this includes the entire scientific python, if you rather develop in R the `r-notebook` is to be used; alternatively, the `datascience-notebook` is a heavy DS environment that contains libs for Python, R, 
+Julia and a bunch of datasets and libraries;
+* `pyspark-notebook` is the extension of the Python DS to add the Spark Python libraries, this is further extended in the all-spark-notebook with R and Scala support;
+* `tensorflow-notebook` is the extension of the Python DS environment to add tensorflow and Keras support; mind that this runs on CPU resources only;
+That said, we provide the following extensions:
+* `python_env` extending `jupyter/scipy-notebook:latest`
+* `pyspark_env` extending `jupyter/pyspark-notebook:latest`
+* `pydl_env` extending `jupyter/tensorflow-notebook:latest`
+* `pydl_gpu_env` extending `nvidia/cuda:9.0-base-ubuntu16.04` to add the whole jupyterhub stack as in the pydl_env;
+* `gcr.io/kubeflow-images-public/tensorflow-1.10.1-notebook-gpu:v0.4.0` the standard GPU notebook image used in Kubeflow
+The images were pushed to [Dockerhub](https://hub.docker.com/search?q=datamillcloud&type=image) and are automatically prepulled at deployment time using the prepuller hook of Jupyterhub. This can generate latencies during installation.
+If you use wait in the helm install (i.e. --timeout $cfg__jhub__setup_timeout --wait), a good practice is to set jupyterhub as the last component installed in the flavour list.
+
+## 5. Developing applications
+Please check the `data` folder for examples on how to connect to services, such as S3, Spark, Dask, Keras/Tensorflow.
+
+### 5.1 Connecting to the data lake
+Connecting to the data lake can be done using the s3fs library, for instance:
+```
+import s3fs
+s3 = s3fs.S3FileSystem(key='Ae8rNrsv8GoB4TUEZidFBzBp',
+                       secret='2bd1769fa235373922229d65114a072',
+                       client_kwargs={"endpoint_url":'http://minio-datalake:9000'})
+```
+
+### 5.2 Processing with Dask
+When using Dask, a scheduler and multiple workers are spawned in the cluster. Dask distributed is provided as client to connect to the scheduler, e.g.:
+```
+from dask.distributed import Client, progress
+c = Client("dask-scheduler:8786")
+```
+
+### 5.3 Processing with Spark
+When developing Spark code, the provided pyspark notebook shall be used. A Spark session can be easily created with:
+```
+import pyspark
+sc = pyspark.SparkContext('local[*]')
+```
+The Spark component is deployed as Kubernetes operator. That means that the code won't be runnable using the classic spark-submit to submit the 
+job to an always running driver pod (for that you could rather run this instead of an operator), but rather spawned as any K8s resource (i.e. with `kubectl apply -f resource_config.yaml`), 
+as shown in the example [here](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/quick-start-guide.md#running-the-examples), the guide [here](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/blob/master/docs/user-guide.md).
+The pi application would be something like:
+```
+apiVersion: sparkoperator.k8s.io/v1beta1
+kind: SparkApplication
+metadata:
+  name: spark-pi
+  namespace: default
+spec:
+  type: Scala
+  mode: cluster
+  image: gcr.io/spark/spark:v2.4.0
+  mainClass: org.apache.spark.examples.SparkPi
+  mainApplicationFile: local:///opt/spark/examples/jars/spark-examples_2.11-2.4.0.jar
+```
+
+### 5.4 Processing with Keras & Tensorflow
+We refer to our [code example](https://github.com/data-mill-cloud/data-mill/blob/master/infrastructure/data/examples/keras_example.ipynb), showing the use of autoencoders for noise removal on image data (MNIST).
+
+## 6. GPU Support
+To enable GPU support you either set minikube/multipass VM to use a spare GPU or enable PCI passthrough, though this is currently only working for the bare microk8s version (I guess for license reasons on multipass).
+
+## 7. Debugging utils
 
 List containers running in each pod:
 ```
@@ -143,3 +218,11 @@ Retrieve the secrets used for the datalake:
 $(kubectl -n <namespace> get secrets <minio-deployment> -o jsonpath="{.data.accesskey}" | base64 -d)
 $(kubectl -n <namespace> get secrets <minio-deployment> -o jsonpath="{.data.secretkey}" | base64 -d)
 ```
+
+## 6. Typical issues with microk8s
+When using microk8s directly on a non-Ubuntu/Debian distro, you might encounter multiple errors:
+* "error: cannot install 'microk8s': classic confinement requires snaps under /snap or symlink from /snap to /var/lib/snapd/snap" which is due to the missing [confinement environment](https://docs.snapcraft.io/snap-confinement/6233) on non Ubuntu/Debian distros, 
+and can be solved with `sudo ln -s /var/lib/snapd/snap /snap`.
+* "error while loading shared libraries: libselinux.so.1: cannot open shared object file: No such file or directory" which is due to the missing libselinux libraries and can be easily solved installing them. For instance on archlinux the libselinux is available 
+on AUR.
+
