@@ -1,0 +1,3 @@
+grafana:
+  release: grafana
+  config_file: grafana_config.yaml
