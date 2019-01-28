@@ -31,7 +31,7 @@ secretMounts:
 #    path: /usr/share/elasticsearch/config/certs
 
 image: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-imageTag: "6.5.4"
+imageTag: "6.5.2"
 imagePullPolicy: "IfNotPresent"
 
 esJavaOpts: "-Xmx1g -Xms1g"
@@ -40,9 +40,9 @@ resources:
   requests:
     cpu: "100m"
     memory: "2Gi"
-  limits:
-    cpu: "1000m"
-    memory: "2Gi"
+  #limits:
+  #  cpu: "1000m"
+  #  memory: "6Gi"
 
 networkHost: "0.0.0.0"
 
@@ -51,7 +51,7 @@ volumeClaimTemplate:
   storageClassName: "standard"
   resources:
     requests:
-      storage: 30Gi
+      storage: 1Gi
 
 # By default this will make sure two pods don't end up on the same node
 # Changing this to a region would allow you to spread pods across regions
@@ -59,7 +59,8 @@ antiAffinityTopologyKey: "kubernetes.io/hostname"
 
 # Hard means that by default pods will only be scheduled if there are enough nodes for them
 # and that they will never end up on the same node. Setting this to soft will do this "best effort"
-antiAffinity: "hard"
+#antiAffinity: "hard"
+antiAffinity: "soft"
 
 # The default is to deploy all pods serially. By setting this to parallel all pods are started at
 # the same time when bootstrapping the cluster
@@ -109,4 +110,3 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
-

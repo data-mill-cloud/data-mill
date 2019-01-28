@@ -24,11 +24,11 @@ eval $(parse_yaml "$root_folder/flavours/$CONFIG_FILE" "cfg__")
 declare -a flavour;
 if [ -z "$cfg__project__flavour" ] || [ "$cfg__project__flavour" = "all" ]; then
 	flavour=($(ls $root_folder/components))
-	[ -z "$COMPONENT" ] && echo "Using all components ${flavour[@]}"
+	[ "$ACTION" != "debug" ] && [ -z "$COMPONENT" ] && echo "Using all components ${flavour[@]}"
 else
 	# read the list of components to include in "${flavour[@]}"
 	IFS=', ' read -r -a flavour <<< "$cfg__project__flavour"
-	[ -z "$COMPONENT" ] && echo "Using user-defined flavour: ${flavour[@]}"
+	[ "$ACTION" != "debug" ] && [ -z "$COMPONENT" ] && echo "Using user-defined flavour: ${flavour[@]}"
 fi
 
 echo ""

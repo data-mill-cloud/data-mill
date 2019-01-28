@@ -19,3 +19,8 @@ find_by_volume_name_and_create(){
 		fi
 	done
 }
+
+
+get_default_storage_class(){
+	kubectl get storageclass | grep "(default)" | awk '{print $1}'
+}

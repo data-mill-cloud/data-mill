@@ -29,10 +29,15 @@ elif [ "$ACTION" = "install" ]; then
 		# install via official elastic image
 		helm repo add elastic https://helm.elastic.co
 		helm repo update
+		default_storage_class=$(get_default_storage_class)
+		echo "Deploying using default storage class $default_storage_class"
                 helm upgrade ${cfg__elastic__release} elastic/elasticsearch \
                  --namespace $cfg__project__k8s_namespace \
                  --values $file_folder/$cfg__elastic__config_file \
+		 --set volumeClaimTemplate.storageClassName=$default_storage_class \
                  --install --force
+		# volumeClaimTemplate.storageClassName=standard
+		unset default_storage_class
 		helm repo remove elastic
 		;;
 	*)

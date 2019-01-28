@@ -212,6 +212,15 @@ List containers running in each pod:
 ```
 kubectl get pods --all-namespaces -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' | sort
 ```
+Log specific container in a pod:
+```
+kubectl logs -n=<namespace> <pod-name> -c <container-name>
+```
+
+Get configuration being ran in a pod:
+```
+kubectl get pod -n=<namespace> <pod-name> -o=yaml
+```
 
 Retrieve the secrets used for the datalake:
 ```
