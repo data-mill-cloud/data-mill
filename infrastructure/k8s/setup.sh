@@ -201,7 +201,7 @@ else
 			echo "Checking if microk8s is already installed"
 			$(run_multipass "sudo snap install microk8s --classic")
 			# run the following command only for the multipass VM (noop if raw snap is used)
-			$(run_multipass "sudo iptables -P FORWARD ACCEPT" "multipass_only")
+			$(run_multipass "sudo iptables -P FORWARD ACCEPT") # "multipass_only"
 		else
 			echo "Local K8s provider $cfg__local__provider not supported!"
 		fi
