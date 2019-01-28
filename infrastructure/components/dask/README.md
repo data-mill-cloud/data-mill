@@ -38,7 +38,7 @@ This includes:
   1. [delayed](http://docs.dask.org/en/latest/delayed.html) - introduces lazy evaluation on general python functions, the workload can be triggered calling compute  
     * delayed - to add a lazy task for a common python function;  
     * to/from delayed - to convert results to and from Dask collections (delayed or futures);  
-    ```
+```
     @dask.delayed
     def inc(x):
       return x + 1
@@ -51,9 +51,9 @@ This includes:
     b = inc(2)       # no work has happened yet
     c = add(a, b)    # no work has happened yet
     c = c.compute()  #  triggers the computations
-    ```
+```
   2. [futures](http://docs.dask.org/en/latest/futures.html) - similar to delayed, but the computation is ran directly, i.e. without waiting for compute to be called  
-    ```
+```
     from dask.distributed import Client
     client = Client()
 
@@ -68,7 +68,7 @@ This includes:
     c = client.submit(add, a, b)  # work starts immediately
 
     c = c.result()                # block until work finishes, then gather result
-    ```
+```
 
 ## 4. Dask ML
 [Dask ML](https://ml.dask.org/) is a collection of scalable ML algorithms for Dask. Beside that, Dask ML also provide a means to directly parallelize popular ML libraries, such as [scikit-learn](http://matthewrocklin.com/blog/work/2017/02/07/dask-sklearn-simple) and [xgboost](https://ml.dask.org/xgboost.html), using [Python Joblib](https://ml.dask.org/joblib.html).
