@@ -228,7 +228,7 @@ $(kubectl -n <namespace> get secrets <minio-deployment> -o jsonpath="{.data.acce
 $(kubectl -n <namespace> get secrets <minio-deployment> -o jsonpath="{.data.secretkey}" | base64 -d)
 ```
 
-## 6. Typical issues with microk8s
+## 8. Typical issues with microk8s
 When using microk8s directly on a non-Ubuntu/Debian distro, you might encounter multiple errors:
 * "error: cannot install 'microk8s': classic confinement requires snaps under /snap or symlink from /snap to /var/lib/snapd/snap" which is due to the missing [confinement environment](https://docs.snapcraft.io/snap-confinement/6233) on non Ubuntu/Debian distros, 
 and can be solved with `sudo ln -s /var/lib/snapd/snap /snap`.
