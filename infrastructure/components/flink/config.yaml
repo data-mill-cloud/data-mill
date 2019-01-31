@@ -1,3 +1,7 @@
 flink:
-  release: flink
-  config_file: flink_config.yaml
+  #release: flink
+  #type: session
+  #config_file: session_cluster_config.yaml
+  release: flinkjob-example
+  type: job
+  config_file: job_cluster_config.yaml

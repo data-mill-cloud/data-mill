@@ -1,0 +1,31 @@
+image:
+  repository: flink
+  tag: latest
+  pullPolicy: IfNotPresent
+
+taskmanager:
+  command: "task-manager"
+  replicaCount: 2
+
+jobmanager:
+  # the default parallelism should be at most as the number of workers (task managers) we spawn or the job won't start
+  # https://ci.apache.org/projects/flink/flink-docs-stable/dev/best_practices.html#using-the-parameters-in-your-flink-program
+  command: "['job-cluster', '--job-classname', 'className', '-Dparallelism.default=2', '-Dblob.server.port=6124', '-Dqueryable-state.server.ports=6125']"
+
+nameOverride: ""
+fullnameOverride: ""
+
+resources:
+  # {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # Please check this link to view the meaning of those limits/requirements:
+  # https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#meaning-of-cpu
+  taskmanager:
+    requests:
+      cpu: 500m
+      memory: 1024Mi
+  jobmanager:
+    requests:
+      cpu: 100m
+      memory: 1024Mi

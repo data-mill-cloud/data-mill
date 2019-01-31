@@ -1,0 +1,10 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+Once installed, you can access the UI via kubectl proxy:
+1. Run kubectl proxy in a terminal to access the K8s UI
+2. Navigate to http://localhost:port/api/v1/namespaces/{{ .Release.Namespace }}/services/{{ .Release.Name }}-jobmanager:ui/proxy in your browser
+
+The jobmanager is the cluster master which coordinates the execution of the Flink dataflow graph. This service can be accessed at:
+kubectl get svc -n={{ .Release.Namespace }} {{ .Release.Name }}-jobmanager

@@ -1,0 +1,23 @@
+image:
+  repository: flink
+  tag: latest
+  pullPolicy: IfNotPresent
+
+jobmanager:
+  replicaCount: 1
+
+taskmanager:
+  replicaCount: 2
+
+nameOverride: ""
+fullnameOverride: ""
+
+resources:
+  taskmanager:
+    requests:
+      cpu: 500m
+      memory: 1024Mi
+  jobmanager:
+    requests:
+      cpu: 100m
+      memory: 1024Mi

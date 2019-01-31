@@ -15,14 +15,24 @@ if [ -z "$ACTION" ] || [ "$ACTION" != "install" ] && [ "$ACTION" != "delete" ];t
         echo "usage: $0 {'install' | 'delete'}";
         exit 1
 elif [ "$ACTION" = "install" ]; then
-	# adding and updating repo and helm chart
-        helm repo add data-mill https://data-mill-cloud.github.io/data-mill/helm-charts/
+	helm repo add data-mill https://data-mill-cloud.github.io/data-mill/helm-charts/
         helm repo update
-
-        helm upgrade $cfg__flink__release data-mill/flink \
-         --namespace $cfg__project__k8s_namespace \
-         --values $file_folder/$cfg__flink__config_file \
-         --install --force
+	if [ -z "$cfg__flink__type" ] || [ "$cfg__flink__type" = "session" ]; then
+		echo "Deploying Flink Session Cluster"
+		# deploying flink as session cluster
+	        helm upgrade $cfg__flink__release data-mill/flink \
+	         --namespace $cfg__project__k8s_namespace \
+	         --values $file_folder/$cfg__flink__config_file \
+	         --install --force
+	else
+		# start as job
+		echo "Deploying Flink Job cluster"
+                helm upgrade $cfg__flink__release data-mill/flink-job \
+                 --namespace $cfg__project__k8s_namespace \
+                 --values $file_folder/$cfg__flink__config_file \
+                 --install --force
+	fi
+	helm repo remove data-mill
 else
         helm delete $cfg__flink__release --purge
 fi

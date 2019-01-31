@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-jobmanager
+spec:
+  template:
+    metadata:
+      # https://docs.helm.sh/chart_best_practices/#standard-labels
+      labels:
+        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        app.kubernetes.io/name: {{ include "flink.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/component: {{ .Chart.Name }}-taskmanager
+    spec:
+      containers:
+      - name: jobmanager
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: {{ .Values.jobmanager.command }}
+        ports:
+        - containerPort: 6123
+          name: rpc
+        - containerPort: 6124
+          name: blob
+        - containerPort: 6125
+          name: query
+        - containerPort: 8081
+          name: ui
+        env:
+        - name: JOB_MANAGER_RPC_ADDRESS
+          value: {{ .Release.Name }}-jobmanager
+        resources:
+          requests:
+            cpu: {{ .Values.resources.jobmanager.requests.cpu }}
+            memory: {{ .Values.resources.jobmanager.requests.memory }}

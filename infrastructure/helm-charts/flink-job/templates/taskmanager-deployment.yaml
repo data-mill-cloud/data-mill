@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-taskmanager
+spec:
+  replicas: {{ .Values.taskmanager.replicaCount }}
+  template:
+    metadata:
+      # https://docs.helm.sh/chart_best_practices/#standard-labels
+      labels:
+        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        app.kubernetes.io/name: {{ include "flink.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/managed-by: {{ .Release.Service }}
+        app.kubernetes.io/component: {{ .Chart.Name }}-taskmanager
+    spec:
+      containers:
+      - name: taskmanager
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: {{ .Values.taskmanager.command }}
+        ports:
+        - containerPort: 6121
+          name: data
+        - containerPort: 6122
+          name: rpc
+        - containerPort: 6125
+          name: query
+        env:
+        - name: JOB_MANAGER_RPC_ADDRESS
+          value: {{ .Release.Name }}-jobmanager
+        resources:
+          requests:
+            cpu: {{ .Values.resources.taskmanager.requests.cpu }}
+            memory: {{ .Values.resources.taskmanager.requests.memory }}
