@@ -13,7 +13,7 @@ The session cluster uses the `flink:latest` image, and thus a job has to be expl
 On the contrary, the job cluster packs the Flink Jar in a Flink docker runtime, i.e. the job is already included and directly launched.
 A job, i.e. a flink dataflow graph, is packaged in a self-contained Docker image which can be launched to create a dedicated job cluster.
 
-See [Sect. 2](#1-deploying-a-session-cluster-using-the-provided-helm-chart) on how to start a Session Cluster, [Sect. 3](#3-packaging-flink-code) on how to package your code, and [Sect. 4](#4-deploying-a-flink-job-cluster) on how to deploy a Job Cluster.
+See [Sect. 2](#2-deploying-a-session-cluster-using-the-provided-helm-chart) on how to start a Session Cluster, [Sect. 3](#3-packaging-flink-code) on how to package your code, and [Sect. 4](#4-deploying-a-flink-job-cluster) on how to deploy a Job Cluster.
 
 ## 2. Deploying a Session Cluster using the provided Helm chart  
 The provided Helm Chart takes care of creating the Job manager, as well as the service and the pool of task managers.
