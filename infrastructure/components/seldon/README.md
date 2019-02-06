@@ -27,7 +27,8 @@ Please refer to [this page here](https://github.com/SeldonIO/seldon-core/tree/ma
 Wrapping an ML model in Python requires s2i (source-to-image) and the following files:
 * `requirements.txt` listing the pip dependencies to be installed to run the model or alternatively a `setup.py` installation file
 * `.s2i/environment` defining the core parameters for the model, such as  
-  ```
+
+```
 MODEL_NAME=MyModel
 API_TYPE=REST
 SERVICE_TYPE=MODEL
