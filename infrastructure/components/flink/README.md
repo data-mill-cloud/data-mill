@@ -38,6 +38,10 @@ The script combines the specified job jar with a Flink distribution as: i) an of
 After those 3 steps are followed, we should have the Flink job available in our docker repository.
 The [image](https://github.com/apache/flink/blob/master/flink-container/docker/Dockerfile) used for the build inherits a standard Alpine JRE image, downloads the Flink Java source code and sets the entrypoint. The [entrypoint](https://github.com/apache/flink/blob/master/flink-container/docker/docker-entrypoint.sh) can be passed either "job-cluster" to start a jobmanager, or "task-manager" to start one of the workers.
 
+Alternatively, you can consider a solution such as [source-2-image](https://youtu.be/flI6zx9wH6M) to inject on the fly your artifact in a alpine JRE runtime image.  
+
+If you need a code example for Flink, I provide one [in this quickstart example](https://github.com/pilillo/flink-quickstart).
+
 ## 4. Deploying a Flink Job Cluster  
 ### 4.1 Manual creation of the services
 Once the code has been packaged and dockerized, a Job cluster can be created as a K8s Job:
@@ -48,4 +52,4 @@ Once the code has been packaged and dockerized, a Job cluster can be created as 
   * Write a [deployment configuration](https://github.com/apache/flink/blob/master/flink-container/kubernetes/task-manager-deployment.yaml.template) to spawn multiple task manager pods (i.e. workers)
 
 ### 4.2 Use the Helm Chart to create the Job Cluster
-For this setup, please set `flink.type=job` in the component `config.yaml` file.
+For this setup, please set `flink.type=job` in the component `config.yaml` file, and also make sure to change the `image.repository` and `image.tag` to the one you previously built. See [job_cluster_config.yaml](https://github.com/data-mill-cloud/data-mill/blob/master/infrastructure/components/flink/job_cluster_config.yaml) for an example.

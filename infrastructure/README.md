@@ -75,7 +75,7 @@ The components were successfully tested on all 3 local environments and a few ex
 * datawarehouse_flavour - installs minio, pachyderm, kafka, rabbitmq, superset, spark and the monitoring-stack.
 * explorative_flavour - installs minio, arangodb, influxdb, superset, jupyterhub, dask and seldon.
 
-An example flavour is reported below:
+An example flavour is reported below:   
 ![Example flavour](https://raw.githubusercontent.com/data-mill-cloud/data-mill/master/docs/img/architecture.png)
 
 ## 3. Common functions
