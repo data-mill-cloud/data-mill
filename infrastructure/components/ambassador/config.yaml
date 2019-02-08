@@ -1,0 +1,4 @@
+ambassador:
+  release: ambassador
+  config_file: ambassador_config.yaml
+  diagnostic_ui: true

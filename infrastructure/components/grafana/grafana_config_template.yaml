@@ -74,7 +74,16 @@ chownDataImage:
 service:
   type: ClusterIP
   port: 80
-  annotations: {}
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v0
+      kind:  Mapping
+      name:  release-name_mapping
+      prefix: /release-name
+      service: release-name
+      #.k8s-namespace:80
+  # {}
   labels: {}
 
 ingress:

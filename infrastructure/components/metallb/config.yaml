@@ -1,0 +1,5 @@
+metallb:
+  # N.B. MetalLB is a cluster service, and as such can only be deployed as a cluster singleton.
+  # Running multiple installations of MetalLB in a single cluster is not supported.
+  release: metallb
+  config_file: metallb_config.yaml

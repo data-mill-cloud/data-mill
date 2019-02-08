@@ -15,15 +15,18 @@ if [ -z "$ACTION" ] || [ "$ACTION" != "install" ] && [ "$ACTION" != "delete" ];t
         echo "usage: $0 {'install' | 'delete'}";
         exit 1
 elif [ "$ACTION" = "install" ]; then
-	# replace release name to map to the right service
-	sed -e "s/release-name/${cfg__grafana__release}/g" -e "s/k8s-namespace/${cfg__project__k8s_namespace}/g" $file_folder/${cfg__grafana__config_file/.yaml/_template.yaml} > $file_folder/$cfg__grafana__config_file
-
-	helm upgrade $cfg__grafana__release stable/grafana \
+	helm repo add datawire https://www.getambassador.io/helm
+	# https://medium.com/devopslinks/how-to-create-an-api-gateway-using-ambassador-on-kubernetes-95f181904ff7
+	# https://www.getambassador.io/user-guide/helm
+	# https://github.com/datawire/ambassador/tree/master/helm/ambassador
+	helm repo update
+	helm upgrade $cfg__ambassador__release datawire/ambassador \
 	 --namespace $cfg__project__k8s_namespace \
-	 --values $file_folder/$cfg__grafana__config_file \
-	 --install --force
+	 --values $file_folder/$cfg__ambassador__config_file \
+	 --install --force --wait
 
-	rm $file_folder/$cfg__grafana__config_file
+	echo "Diagnostics available at http://"$(kubectl get svc -n=$cfg__project__k8s_namespace $cfg__ambassador__release | awk 'FNR > 1 { print $3 }')"/$cfg__ambassador__release/v0/diag/"
+	helm repo remove datawire
 else
-	helm delete $cfg__grafana__release --purge
+	helm delete $cfg__ambassador__release --purge
 fi
