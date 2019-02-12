@@ -42,6 +42,14 @@ ingress_def=${ingress_def}\
 "
 fi
 
+if [ ! -z "${7}" ]; then
+ingress_def=${ingress_def}\
+"
+  tls:
+    - secretName: ${7}
+"
+fi
+
 echo "${ingress_def}"
 }
 
@@ -51,5 +59,5 @@ create_ingress(){
 }
 
 # example usages:
-#echo "$(get_ingress_def '1' '2' '3' '4' '5' '6')"
+#echo "$(get_ingress_def '1' '2' '3' '4' '5' '6' '7')"
 #"$(create_ingress '1' '2' '3' '4' '5' '6')"
