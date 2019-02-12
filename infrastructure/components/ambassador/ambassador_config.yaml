@@ -40,9 +40,6 @@ service:
          diagnostics:
            # NB. set to false to remove diagnostic on a production setup
            enabled: true
-           # added for test
-           redirect_cleartext_from: 80
-           service_port: 443
   # loadBalancerSourceRanges:
   #   - YOUR_IP_RANGE
 

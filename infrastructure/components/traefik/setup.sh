@@ -15,16 +15,24 @@ if [ -z "$ACTION" ] || [ "$ACTION" != "install" ] && [ "$ACTION" != "delete" ];t
         echo "usage: $0 {'install' | 'delete'}";
         exit 1
 elif [ "$ACTION" = "install" ]; then
-	#sed -e "s/release-name/${cfg__grafana__release}/g" \
-	# -e "s/k8s-namespace/${cfg__project__k8s_namespace}/g" \
-	#$file_folder/${cfg__grafana__config_file/.yaml/_template.yaml} > $file_folder/$cfg__grafana__config_file
+	helm repo update
 
-	helm upgrade $cfg__grafana__release stable/grafana \
-	 --namespace $cfg__project__k8s_namespace \
-	 --values $file_folder/$cfg__grafana__config_file \
+	# use the global namespace if no specific one is set
+	traefik_ns=${cfg__traefik__k8s_namespace:=$cfg__project__k8s_namespace}
+
+	# use the local hostname if no host is set
+	app_host=$(hostname --long)
+	app_host=${cfg__traefik__host:=$app_host}
+
+	# install traefik chart
+	helm upgrade $cfg__traefik__release stable/traefik \
+	 --namespace $traefik_ns \
+	 --values $file_folder/$cfg__traefik__config_file \
 	 --install --force
 
-	#rm $file_folder/$cfg__grafana__config_file
+	# unset vars
+	unset traefik_ns
+	unset app_host
 else
-	helm delete $cfg__grafana__release --purge
+	helm delete $cfg__traefik__release --purge
 fi

@@ -74,15 +74,15 @@ chownDataImage:
 service:
   type: ClusterIP
   port: 80
-  annotations:
-    getambassador.io/config: |
-      ---
-      apiVersion: ambassador/v0
-      kind:  Mapping
-      name:  release-name_mapping
-      prefix: /release-name
-      service: release-name
-      #.k8s-namespace:80
+  annotations: {}
+  #  getambassador.io/config: |
+  #    ---
+  #    apiVersion: ambassador/v1
+  #    kind: Mapping
+  #    name: release-name_mapping
+  #    #host: release-name.k8s-namespace.local
+  #    prefix: /release-name
+  #    service: release-name
   # {}
   labels: {}
 
@@ -92,7 +92,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   labels: {}
-  path: /
+  path: /release-name
   hosts:
     - chart-example.local
   tls: []

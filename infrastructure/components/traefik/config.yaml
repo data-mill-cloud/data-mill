@@ -1,0 +1,7 @@
+traefik:
+  release: traefik
+  config_file: traefik_config.yaml
+  # if set use this namespace instead of the application default one
+  #k8s_namespace: kube-system
+  # if no host is set, then $(hostname --long) is used
+  #host:
