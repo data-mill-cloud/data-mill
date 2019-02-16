@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 
-fullpath=$(readlink --canonicalize --no-newline $BASH_SOURCE)
-file_folder=$(dirname $fullpath)
-
+# load component paths
+eval $(get_paths)
 # load local yaml config
-# if -f was given and the file exists use it, otherwise fallback to the specified component default config
-COMPONENT_CONFIG=$(file_exists "$file_folder/$CONFIG_FILE" "$file_folder/$cfg__project__component_default_config")
-eval $(parse_yaml $COMPONENT_CONFIG "cfg__")
+eval $(get_component_config)
 
 # use if set or a string argument otherwise
 ACTION=${ACTION:=$1}

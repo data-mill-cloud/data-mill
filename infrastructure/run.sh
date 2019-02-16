@@ -10,21 +10,17 @@ done
 
 # we fetch the default config, unless specified differently in the CONFIG_FILE variable (-f)
 CONFIG_FILE=${CONFIG_FILE:="default.yaml"}
-# make sure we only get the filename and not a path (for error or simplicity passed in)
-CONFIG_FILE=$(basename "$CONFIG_FILE")
-echo "Using config at $root_folder/flavours/$CONFIG_FILE"
+# attempt passing the path, if we only passed the filename, then assume this refers to the flavours folder
+CONFIG_FILE=$(file_exists "$CONFIG_FILE" "$root_folder/flavours/$CONFIG_FILE")
+echo "Using config at $CONFIG_FILE"
 
 # include global configs
-eval $(parse_yaml "$root_folder/flavours/$CONFIG_FILE" "cfg__")
-
-# for debugging config var names:
-#( set -o posix ; set ) | more
-#exit 1
+eval $(parse_yaml "$CONFIG_FILE" "cfg__")
 
 declare -a flavour;
 if [ -z "$cfg__project__flavour" ] || [ "$cfg__project__flavour" = "all" ]; then
 	flavour=($(ls $root_folder/components))
-	[ "$ACTION" != "debug" ] && [ -z "$COMPONENT" ] && echo "Using all components ${flavour[@]}"
+	[ "$ACTION" != "debug" ] && [ -z "$COMPONENT" ] && echo "Using all components is deprecated, this would include: ${flavour[@]}"
 else
 	# read the list of components to include in "${flavour[@]}"
 	IFS=', ' read -r -a flavour <<< "$cfg__project__flavour"

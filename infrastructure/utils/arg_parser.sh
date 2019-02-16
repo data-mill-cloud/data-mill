@@ -1,3 +1,27 @@
+cleanup_path(){
+        if [[ -f $1 ]]; then
+                # retrieve parent directory
+                path=$(dirname "$1")
+                # retrieve file name
+                fname=$(basename "$1")
+        else
+                path=$1
+        fi
+
+        # if we have a relative path then we need to retrieve the absolute path
+        # follow the relative path and return the absolute one
+        if [[ -d $1 ]]; then
+                # return a path
+                echo `cd "$path"; pwd`
+        else
+                # return a path to the file
+                echo `cd "$path"; find "$(pwd)" -name $fname`
+        fi
+}
+
+# used for testing
+#echo $(cleanup_path "$1")
+
 # variables to mandatorily return in output
 VARS=(LOCATION ACTION)
 
@@ -31,16 +55,16 @@ while getopts $OPTIONS opt; do
       ACTION="delete"
       ;;
     t)
-      echo "-t: overwriting target cluster configuration filename with $OPTARG" >&2
-      TARGET_FILE=$OPTARG
+      TARGET_FILE=$(cleanup_path "$OPTARG")
+      echo "-t: overwriting target cluster configuration filename with $TARGET_FILE" >&2
       ;;
     f)
-      echo "-f: overwriting default component configuration filename with $OPTARG" >&2
-      CONFIG_FILE=$OPTARG
+      CONFIG_FILE=$(cleanup_path "$OPTARG")
+      echo "-f: overwriting default component configuration filename with $CONFIG_FILE" >&2
       ;;
     c)
-      echo "-c: running for the sole component $OPTARG" >&2
-      COMPONENT=$OPTARG
+      COMPONENT=$(basename "$OPTARG")
+      echo "-c: running for the sole component $COMPONENT" >&2
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -73,4 +97,18 @@ if [ "$ACTION" != "debug" ]; then
       exit 1
     fi
   done
+
+  [ -z "$CONFIG_FILE" ] && [ "$ACTION" != "start" ] && [ -z "$COMPONENT" ] && {
+    echo "Running the default flavour configuration with an action of type install/uninstall is deprecated!" >&2
+    echo "Please specificy a component with -c <component> or a different flavour with -f <file>" >&2
+    exit 1
+  }
+
+  [ ! -z $COMPONENT ] && [ ! -z $CONFIG_FILE ] && {
+    echo "You selected both a flavour and a component." >&2
+    echo "Flavours are meant to group multiple components. Selecting a component other than those in the flavour will have no effect." >&2
+    echo "Please use the default flavour (since it contains all components) or remove the component selector and update your flavour accordingly." >&2
+    # this is a design choice and could be made configurable
+    exit 1
+  }
 fi

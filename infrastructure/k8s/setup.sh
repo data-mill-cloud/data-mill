@@ -1,14 +1,9 @@
 #!/usr/bin/env bash
 
-fullpath=$(readlink --canonicalize --no-newline $BASH_SOURCE)
-file_folder=$(dirname $fullpath)
-
+# set component path
+eval $(get_paths)
 # load local yaml config
-# if -t was not passed we stick to the default config
-TARGET_FILE=${TARGET_FILE:="$cfg__project__k8s_default_config"}
-# if the target file was specified but does not exist, we fall back to the default config
-TARGET_CONFIG=$(file_exists "$file_folder/configs/$TARGET_FILE" "$file_folder/configs/$cfg__project__k8s_default_config")
-eval $(parse_yaml $TARGET_CONFIG "cfg__")
+eval $(get_target_env_config)
 
 # Retrieving the OS type
 OS=$(get_os_type)

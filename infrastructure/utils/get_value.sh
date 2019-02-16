@@ -7,6 +7,7 @@ get_value() {
 
 
 file_exists(){
+	# returns $1 if exists or $2 if not
 	(ls $1 >> /dev/null 2>&1 && echo $1) || echo $2
 }
 

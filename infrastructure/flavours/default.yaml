@@ -11,3 +11,17 @@ project:
   component_default_config: config.yaml
   # set the data folder
   data_folder: data
+
+ambassador:
+  release: ambassador
+  config_file: ambassador_config.yaml
+  diagnostic_ui: true
+
+local:
+  cpus: 8
+  memory: 16288
+  storage: 60G
+  gpu_support: true
+  use_overlay: false
+  provider: microk8s
+  use_multipass: false
