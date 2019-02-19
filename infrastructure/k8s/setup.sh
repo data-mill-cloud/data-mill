@@ -226,8 +226,8 @@ else
 				# https://kubernetes.io/docs/setup/minikube/#mounted-host-folders
 				# starting registry mirror on host
 				docker start registry-mirror || docker run -d --restart=always -p 5000:5000 --name registry-mirror \
-				-v $PWD/registry/data/:/var/lib/registry/ \
-				-v $PWD/registry/config/:/etc/docker/registry/ registry:2
+				-v $root_folder/registry/data/:/var/lib/registry/ \
+				-v $root_folder/registry/config/:/etc/docker/registry/ registry:2
 
 				echo "starting minikube"
 				minikube start \
