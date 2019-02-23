@@ -1,0 +1,3 @@
+horovod:
+  release: horovod
+  config_file: horovod_config.yaml
