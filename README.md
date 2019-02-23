@@ -62,6 +62,24 @@ Data-Mill already provides:
 
 ---
 <div style="text-align:center"><img src="https://raw.githubusercontent.com/data-mill-cloud/data-mill/master/docs/img/logos/logo_data_mill_2.png" width="200"></div>
+
 The Data Mill logo reflects the purpose of a team embarking on a data science project.
 The Mill is the place where farmers bring their wheat to produce flour and finally bread. As such, it is the most important place in a village to process raw material and obtain added value, Food.
 The inner Star is a 8-point one, this is generally used to represent the Polar Star, historically used for navigation.
+
+---
+
+## Installation
+1. Select a target folder e.g. user home
+```
+export DATA_MILL_HOME=$HOME
+```
+2. Download and run installation script to the target directory  
+```
+wget https://raw.githubusercontent.com/data-mill-cloud/data-mill/master/install.sh --directory-prefix=$DATA_MILL_HOME
+cd $DATA_MILL_HOME
+sudo chmod +x install.sh
+./install.sh
+rm install.sh
+```
+This downloads the latest version of data-mill at $DATA_MILL_HOME and copies the run.sh to the /usr/local/bin to make it callable from anywhere.  
