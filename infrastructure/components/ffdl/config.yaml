@@ -1,0 +1,6 @@
+ffdl:
+  release: ffdl
+  config_file: ffdl_config.yaml
+  version: v0.1.1-rc
+  #shared_volume_storage_class: storage_class_name
+  #namespace: if_different_than_project_one
