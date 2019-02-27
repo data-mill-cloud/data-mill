@@ -17,7 +17,7 @@ elif [ "$ACTION" = "install" ]; then
 	helm repo update
 
 	# use a different namespace if set
-	kubedb_namespace=${cfg__project__k8s_namespace:=$cfg__kubedb__namespace}
+	kubedb_namespace=${cfg__kubedb__namespace:-$cfg__project__k8s_namespace}
 
 	# install kubedb operator chart
 	echo "Deploying kubedb operator"
@@ -42,7 +42,7 @@ elif [ "$ACTION" = "install" ]; then
 	# install kubedb client
         command -v kubedb >/dev/null 2>&1 || {
 		RELEASE=$(get_latest_github_release 'kubedb/cli')
-		RELEASE=${RELEASE:=$cfg__kubedb__operator__version}
+		RELEASE=${cfg__kubedb__operator__version:-$RELEASE}
 		OS=$(get_os_type)
 		echo "Installing kubedb $RELEASE on $OS"
 		case "$OS" in
