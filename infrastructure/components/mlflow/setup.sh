@@ -22,7 +22,7 @@ elif [ "$ACTION" = "install" ]; then
 
 	helm upgrade $cfg__mlflow__release data-mill/mlflow \
          --namespace $cfg__project__k8s_namespace \
-         --values $file_folder/$cfg__mlflow__config_file \
+         --values $(get_values_file "$cfg__mlflow__config_file") \
          --install --force
 else
         helm delete $cfg__mlflow__release --purge

@@ -19,7 +19,7 @@ elif [ "$ACTION" = "install" ]; then
 	helm repo update
 	helm upgrade $cfg__ambassador__release datawire/ambassador \
 	 --namespace $cfg__project__k8s_namespace \
-	 --values $file_folder/$cfg__ambassador__config_file \
+	 --values $(get_values_file "$cfg__ambassador__config_file") \
 	 --install --force --wait
 
 	echo "Diagnostics available at http://"$(kubectl get svc -n=$cfg__project__k8s_namespace $cfg__ambassador__release | awk 'FNR > 1 { print $3 }')"/$cfg__ambassador__release/v0/diag/"

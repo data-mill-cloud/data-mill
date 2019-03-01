@@ -24,7 +24,7 @@ elif [ "$ACTION" = "install" ]; then
 	# kubedb complains a lot if you try to upgrade it, even with --reuse-values
 	helm install appscode/kubedb --name $cfg__kubedb__operator__release \
 	 --version $cfg__kubedb__operator__version \
-	 --values $file_folder/$cfg__kubedb__operator__config_file \
+	 --values $(get_values_file "$cfg__kubedb__operator__config_file") \
 	 --namespace $kubedb_namespace $( [ ! -z $cfg__kubedb__operator__setup_timeout ] && [ $cfg__kubedb__operator__setup_timeout -gt 0 ] && printf %s "--timeout $cfg__kubedb__operator__setup_timeout --wait" )
 
 	# wait for CRDs to be registered
@@ -66,6 +66,7 @@ elif [ "$ACTION" = "install" ]; then
 		unset RELEASE
         }
 
+	helm repo remove appscode
 else
 	helm delete --purge $cfg__kubedb__catalog__release
 	helm delete --purge $cfg__kubedb__operator__release

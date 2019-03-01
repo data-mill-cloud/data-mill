@@ -19,14 +19,14 @@ elif [ "$ACTION" = "install" ]; then
 		# deploying flink as session cluster
 	        helm upgrade $cfg__flink__release data-mill/flink \
 	         --namespace $cfg__project__k8s_namespace \
-	         --values $file_folder/$cfg__flink__config_file \
+	         --values $(get_values_file "$cfg__flink__config_file") \
 	         --install --force
 	else
 		# start as job
 		echo "Deploying Flink Job cluster"
                 helm upgrade $cfg__flink__release data-mill/flink-job \
                  --namespace $cfg__project__k8s_namespace \
-                 --values $file_folder/$cfg__flink__config_file \
+                 --values $(get_values_file "$cfg__flink__config_file") \
                  --install --force
 	fi
 	helm repo remove data-mill

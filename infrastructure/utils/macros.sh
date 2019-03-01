@@ -19,7 +19,7 @@ get_target_env_config(){
 		REMVARS=$(count_vars_from_prefix "cfg__remote__")
 		NUM_VARS=$(( $LOCVARS + $REMVARS ))
 
-		# the config vars are not defined already (in the flavour file)
+		# the config vars are not defined already (centralised in the flavour file)
 		# we rather need to load it from the component folder (distributed configuration)
 		if [ "$NUM_VARS" -eq "0" ]; then
 			# load the default target file from the local k8s folder otherwise
@@ -37,11 +37,18 @@ get_component_config(){
 	# if no vars are available we are not using the centralised config, but the distributed one (1 file per component)
 	# in this case we need to check in the component folder
 	if [ "$NUM_VARS" -eq "0" ]; then
-		# if -f CONFIG_FILE was given and the file for the component exists, then use it
+		# if -f FLAVOUR_FILE was given and the file for the component exists, then use it
 		# we have to be careful, since config_file may be passed as filename or path, let's then just retrieve the filename
-		CONFIG_FILE=$(basename "$CONFIG_FILE")
+		FLAVOUR_FILE=$(basename "$FLAVOUR_FILE")
 		# otherwise fallback to the specified component default config (e.g. when using -c component without specifying any flavour)
-		COMPONENT_CONFIG=$(file_exists "$file_folder/$CONFIG_FILE" "$file_folder/$cfg__project__component_default_config")
+		COMPONENT_CONFIG=$(file_exists "$file_folder/$FLAVOUR_FILE" "$file_folder/$cfg__project__component_default_config")
 		echo "$(parse_yaml $COMPONENT_CONFIG 'cfg__')"
 	fi
+}
+
+# returns the path to the file in the flavour folder or config_folder, if it exists, or to the component folder otherwise
+get_values_file(){
+	echo $(file_exists "${cfg__project__config_folder}/${1}" "${file_folder}/${1}")
+	# this can be changed in future to skip the action on the component if the values.yaml is not found
+	# for now we however want to provide all 3 options for now (flavour_folder, flavours with config_folder, per-component values.yaml)
 }

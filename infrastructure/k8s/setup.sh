@@ -12,7 +12,7 @@ check_multipass(){
 	MIN_VERSION_UBUNTU=18
 	MIN_VERSION_DEBIAN=9
 	# use raw snap only if we are on a ubuntu/debian distro and after a certain version
-	lsb_release -sr >/dev/null 2>&1 && {
+	command -v lsb_release >/dev/null 2>&1 && {
         	# if lsb_release check the OS version
 		os_version=$(lsb_release -sr | cut -f1 -d ".")
 		os_type=$(lsb_release -sd)

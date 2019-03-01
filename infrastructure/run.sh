@@ -8,14 +8,17 @@ for filename in $root_folder/utils/*.sh; do
     . $filename
 done
 
-# we fetch the default config, unless specified differently in the CONFIG_FILE variable (-f)
-CONFIG_FILE=${CONFIG_FILE:="default.yaml"}
-# attempt passing the path, if we only passed the filename, then assume this refers to the flavours folder
-CONFIG_FILE=$(file_exists "$CONFIG_FILE" "$root_folder/flavours/$CONFIG_FILE")
-echo "Using config at $CONFIG_FILE"
-
 # include global configs
-eval $(parse_yaml "$CONFIG_FILE" "cfg__")
+echo "Using config at $FLAVOUR_FILE"
+eval $(parse_yaml "$FLAVOUR_FILE" "cfg__")
+
+# set the position of the configuration files
+# 1) a path is specified for all components in the flavour config as "config_folder" (1 folder with all flavours, configs in separated folders)
+if [ -z $cfg__project__config_folder ]; then
+	# 2) a path is not specified, so we expect all configs to be in the flavour folder (each flavour is a folder that has all configs inside)
+	cfg__project__config_folder=$(dirname "$FLAVOUR_FILE")
+        # 3) if the config path is not specified, nor the configs are available at the flavour folder, then use the component folder to load the configuration (distributed)
+fi
 
 declare -a flavour;
 if [ -z "$cfg__project__flavour" ] || [ "$cfg__project__flavour" = "all" ]; then

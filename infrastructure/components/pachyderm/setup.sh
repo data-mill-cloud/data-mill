@@ -36,7 +36,7 @@ elif [ "$ACTION" = "install" ]; then
 	helm upgrade $cfg__pachyderm__release stable/pachyderm \
 	 --version $cfg__pachyderm__version \
 	 --namespace $cfg__project__k8s_namespace \
-	 --values $file_folder/$cfg__pachyderm__config_file \
+	 --values $(get_values_file "$cfg__pachyderm__config_file") \
 	 --set s3.accessKey=$ACCESS_KEY,s3.secretKey=$SECRET_KEY,s3.bucketName=$cfg__pachyderm__datalake__bucket,s3.endpoint=$ENDPOINT \
 	 --recreate-pods \
 	 --install --force

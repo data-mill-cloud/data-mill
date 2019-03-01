@@ -5,13 +5,10 @@ get_value() {
 	cat $1 | grep $2 | awk -F": " '{ print $2 }'
 }
 
-
 file_exists(){
 	# returns $1 if exists or $2 if not
 	(ls $1 >> /dev/null 2>&1 && echo $1) || echo $2
 }
-
-
 
 check_if_pod_exists(){
 	kubectl get pods --all-namespaces | grep $1

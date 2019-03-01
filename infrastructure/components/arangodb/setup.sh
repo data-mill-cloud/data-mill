@@ -19,7 +19,7 @@ elif [ "$ACTION" = "install" ]; then
     # The following will install the operator for `ArangoDeployment`
     helm upgrade --namespace $cfg__project__k8s_namespace --install --force  $cfg__arangodb__release https://github.com/arangodb/kube-arangodb/releases/download/$latest_arangodb/kube-arangodb.tgz
     # installing ArangoDB server
-    kubectl apply -n $cfg__project__k8s_namespace -f components/arangodb/$cfg__arangodb__mode.yaml
+    kubectl apply -n $cfg__project__k8s_namespace -f $file_folder/$cfg__arangodb__mode.yaml
     echo "execute: "kubectl -n $cfg__project__k8s_namespace port-forward svc/""$cfg__arangodb__release"-"$cfg__arangodb__mode 8529""
     echo "Then access UI: https://localhost:8529"
 

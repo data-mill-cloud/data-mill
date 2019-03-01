@@ -14,7 +14,7 @@ if [ -z "$ACTION" ] || [ "$ACTION" != "install" ] && [ "$ACTION" != "delete" ];t
 elif [ "$ACTION" = "install" ]; then
 	helm upgrade $cfg__rabbitmq__release stable/rabbitmq \
 	 --namespace $cfg__project__k8s_namespace \
-	 --values $file_folder/$cfg__rabbitmq__config_file \
+	 --values $(get_values_file "$cfg__rabbitmq__config_file") \
 	 --install --force
 else
 	helm delete $cfg__rabbitmq__release --purge

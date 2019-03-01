@@ -20,7 +20,7 @@ elif [ "$ACTION" = "install" ]; then
 	# installing a standalone kibana component
 	helm upgrade $cfg__kibana__release stable/kibana \
 	 --namespace $cfg__project__k8s_namespace \
-	 --values $file_folder/$cfg__kibana__config_file \
+	 --values $(get_values_file "$cfg__kibana__config_file") \
 	 --install --force
 
 	#rm $file_folder/$cfg__kibana__config_file

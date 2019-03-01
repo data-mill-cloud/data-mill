@@ -18,7 +18,7 @@ elif [ "$ACTION" = "install" ]; then
 		helm repo update
 		helm upgrade ${cfg__elastic__release} stable/elasticsearch \
 	         --namespace $cfg__project__k8s_namespace \
-	         --values $file_folder/$cfg__elastic__config_file \
+	         --values $(get_values_file "$cfg__elastic__config_file") \
 		 --install --force
 		# --recreate-pods
 		;;
@@ -30,7 +30,7 @@ elif [ "$ACTION" = "install" ]; then
 		echo "Deploying using default storage class $default_storage_class"
                 helm upgrade ${cfg__elastic__release} elastic/elasticsearch \
                  --namespace $cfg__project__k8s_namespace \
-                 --values $file_folder/$cfg__elastic__config_file \
+                 --values $(get_values_file "$cfg__elastic__config_file") \
 		 --set volumeClaimTemplate.storageClassName=$default_storage_class \
                  --install --force
 		# volumeClaimTemplate.storageClassName=standard
@@ -46,7 +46,7 @@ elif [ "$ACTION" = "install" ]; then
 		}
 		# https://kubedb.com/docs/0.9.0/guides/elasticsearch/quickstart/quickstart/
 		es_version="6.3-v1"
-		sed -e "s/es-name/${cfg__elastic__release}/g" -e "s/es-ns/${cfg__project__k8s_namespace}/g" -e "s/es-version/${es_version}/g" $file_folder/$cfg__elastic__config_file | kubectl create --namespace=${cfg__project__k8s_namespace} -f -
+		sed -e "s/es-name/${cfg__elastic__release}/g" -e "s/es-ns/${cfg__project__k8s_namespace}/g" -e "s/es-version/${es_version}/g" $(get_values_file "$cfg__elastic__config_file") | kubectl create --namespace=${cfg__project__k8s_namespace} -f -
 		;;
 	esac
 else

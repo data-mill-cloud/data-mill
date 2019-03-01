@@ -18,13 +18,15 @@ elif [ "$ACTION" = "install" ]; then
 
 	helm upgrade $cfg__seldon_crd__release seldon-charts/seldon-core-crd \
 	 --namespace $cfg__project__k8s_namespace \
-	 --values $file_folder/$cfg__seldon_crd__config_file \
+	 --values $(get_values_file "$cfg__seldon_crd__config_file") \
 	 --install --force
 
 	helm upgrade $cfg__seldon__release seldon-charts/seldon-core \
          --namespace $cfg__project__k8s_namespace \
-         --values $file_folder/$cfg__seldon__config_file \
+         --values $(get_values_file "$cfg__seldon__config_file") \
          --install --force
+
+	helm repo remove seldon-charts
 else
         helm delete $cfg__seldon__release --purge
 	helm delete $cfg__seldon_crd__release --purge

@@ -15,7 +15,7 @@ elif [ "$ACTION" = "install" ]; then
 	# https://github.com/helm/charts/tree/master/stable/superset
 	helm upgrade $cfg__superset__release stable/superset \
 	 --namespace $cfg__project__k8s_namespace \
-	 --values $file_folder/$cfg__superset__config_file \
+	 --values $(get_values_file "$cfg__superset__config_file") \
 	 --install --force
 else
 	helm delete $cfg__superset__release --purge

@@ -12,10 +12,10 @@ if [ -z "$ACTION" ] || [ "$ACTION" != "install" ] && [ "$ACTION" != "delete" ];t
         echo "usage: $0 {'install' | 'delete'}";
         exit 1
 elif [ "$ACTION" = "install" ]; then
-	# https://github.com/helm/charts/tree/master/stable/superset
+	# https://github.com/helm/charts/tree/master/stable/influxdb
 	helm upgrade $cfg__influxdb__release stable/influxdb \
 	 --namespace $cfg__project__k8s_namespace \
-	 --values $file_folder/$cfg__influxdb__config_file \
+	 --values $(get_values_file "$cfg__influxdb__config_file") \
 	 --install --force
 else
 	helm delete $cfg__influxdb__release --purge

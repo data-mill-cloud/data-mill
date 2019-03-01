@@ -24,7 +24,7 @@ elif [ "$ACTION" = "install" ]; then
 	# install traefik chart
 	helm upgrade $cfg__traefik__release stable/traefik \
 	 --namespace $traefik_ns \
-	 --values $file_folder/$cfg__traefik__config_file \
+	 --values $(get_values_file "$cfg__traefik__config_file") \
 	 --install --force
 
 	# unset vars

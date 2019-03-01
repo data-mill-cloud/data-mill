@@ -21,7 +21,7 @@ elif [ "$ACTION" = "install" ]; then
 	# deploy chart
 	helm upgrade $cfg__argo__release argo/argo \
 	 --namespace $argo_namespace \
-	 --values $file_folder/$cfg__argo__config_file \
+	 --values $(get_values_file "$cfg__argo__config_file") \
 	 --install --force
 	# remove argo repo (we do not want to update everything every time)
 	helm repo remove argo
