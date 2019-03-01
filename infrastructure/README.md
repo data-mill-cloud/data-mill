@@ -3,7 +3,7 @@
 ## 1. Infrastructure setup
 * LOCATION: local (-l) to the node by installing minikube, remote (-r) to a VM or a Cluster
 * ACTION: install (-i) the components or delete them (-d) using Helm
-* CONFIG: the default config file for each component is config.yaml, -f [filename] defines a different project config file
+* FLAVOUR_FILE: the default config file for each component is config.yaml, -f [filename] defines a different project config file (aka flavour)
 * COMPONENT: runs the ACTION only for the specific component, regardless of the project flavour
 
 ```
@@ -13,10 +13,10 @@ Usage: ./run.sh [debug-mode] [params] [options]
   params:
     LOCATION: -l (local cluster), -r (remote cluster)
     ACTION: -s (start only), -i (install), -u (uninstall)
+    FLAVOUR_FILE: -f path/filename.yaml
+      -> sets the project flavour file
   options:
-    CONFIG_FILE: -f filename.yaml
-      -> overwrites the default component configuration filename
-    TARGET_FILE: -t filename.yaml
+    TARGET_FILE: -t path/filename.yaml
       -> overwrites the default k8s configuration filename
     COMPONENT: -c component_name
 ```
@@ -55,6 +55,13 @@ For instance, `default_uc.yaml` in `k8s/configs` specifies a microk8s cluster. T
 The `component_default_config` is used to specify the default configuration filename for each component, and can be overwritten with `-f filename`.
 With `-f filename` we can specify a different flavour than the default one, and overwrite the config of each file (if `filename` exists, or fallback to `component_default_config` where it 
 doesn't). The data folder is where the code examples are stored, along with the bucket structure that we want replicated to the local datalake.
+
+The component configuration can either be placed in the flavour folder on in the component folder.  
+It is also important to explain how the flavour-specific configuration can be organized, namely in 3 modes:  
+1. a folder is created for a specific flavour, to contain the project configuration (flavour config), the target (commonly included in the flavour, can be made external to distinguish multiple environments), a bunch of `values.yaml` files for the components that 
+use it.  
+2. a folder is used to contain all project configurations (for all flavours) and a `project.config_folder` property is defined to link to a specific folder where to retrieve the `values.yaml` files for the components that use it.  
+3. none of the previous two, the file is neither available in the flavour folder nor a specific `config_folder` was set; the default `values.yaml` is used for the component from its folder.  
 
 The projects is structured over the following folders:
 * components - containing the installable components
