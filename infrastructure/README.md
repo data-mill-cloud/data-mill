@@ -63,6 +63,8 @@ use it.
 2. a folder is used to contain all project configurations (for all flavours) and a `project.config_folder` property is defined to link to a specific folder where to retrieve the `values.yaml` files for the components that use it.  
 3. none of the previous two, the file is neither available in the flavour folder nor a specific `config_folder` was set; the default `values.yaml` is used for the component from its folder.  
 
+![Organizing flavours](https://raw.githubusercontent.com/data-mill-cloud/data-mill/master/docs/img/flavour_modes.png)
+
 The projects is structured over the following folders:
 * components - containing the installable components
 * data - is mounted as PV and PVC and eventually available in the Minio S3 data lake, it can be used to provide example code
