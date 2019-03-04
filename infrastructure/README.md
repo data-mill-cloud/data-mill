@@ -92,7 +92,7 @@ An example flavour is reported below:
 ### 3.1 Start existing cluster
 An existing cluster can be started as follows:
 ```
-./run.sh -i -l -s
+./run.sh -l -s -f flavours/default.yaml
 ```
 This will use the default flavour and k8s config (i.e. `k8s_default_config: default_uc.yaml`) to start the microk8s cluster defined in `default_uc.yaml`, without altering (installing/uninstalling) any component.  
 To overwrite this behavior a different flavour can be passed with `-f flavour_config.yaml` or a different target file `-t target_config.yaml` can be set.
