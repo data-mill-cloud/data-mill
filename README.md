@@ -8,8 +8,9 @@ information over incoming data, in terms of both data quality and the processes 
 significant investment and a clear strategy are necessary to succeed.
 
 Moreover, typical lambda architectures (i.e. one that combines a streaming layer to a batch one) bring in significant complexity and potential technical gaps. Whilst continuous-integration and deployment (CICD) can automate and speed up to a great extent (using 
-unit and integration tests, as well as frequent releases) the software development cycle, generally data scientists tend to work in a different workflow, and are often operating aside the rest of the team with consequent information gaps and unexpected behaviors 
-upon changes on the data they use and the models they produced.
+unit and integration tests, as well as frequent releases) the software development cycle, generally data scientists tend to work in a different workflow, and are often operating aside the rest of the team with consequent information gaps and unexpected behaviors upon changes on the data they use and the models they produced.
+
+![ML workflow](https://raw.githubusercontent.com/data-mill-cloud/data-mill/master/docs/img/ML_workflow.png)
 
 In this setup, waste of resources is the norm.  
 
