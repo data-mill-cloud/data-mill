@@ -13,7 +13,7 @@ upon changes on the data they use and the models they produced.
 
 In this setup, waste of resources is the norm.  
 
-The goal is therefore to enforce [DataOps practices](http://dataopsmanifesto.org/) and provide a complete-cloud agnostic architecture to develop data analytics applications:  
+The goal is therefore to enforce [DataOps practices](http://dataopsmanifesto.org/) and provide a complete - **cloud native** -(or cloud-provider agnostic) architecture to develop data analytics applications:  
   1. Data ingestion  
     * logs - Confluent Kafka ecosystem  
     * sensor data - AMQP and MQTT protocols (e.g. RabbitMQ)  
@@ -37,8 +37,11 @@ The goal is therefore to enforce [DataOps practices](http://dataopsmanifesto.org
 Data-Mill already provides:  
   1. K8s setup  
     * [Local](https://github.com/data-mill-cloud/data-mill/tree/master/infrastructure/k8s) (i.e. Minikube, MicroK8s)  
-    * [Remote (experimental)](https://github.com/data-mill-cloud/data-mill/tree/master/infrastructure/k8s/kops) (i.e. AWS, GKE)  
-  2. Overlay network  
+    * [Remote *(experimental)*](https://github.com/data-mill-cloud/data-mill/tree/master/infrastructure/k8s/kops) (i.e. AWS, GKE)  
+  2. Networking  
+    * Load Balancers for bare-metal clusters  
+    * Overlay Network  
+    * Application Gateways  
   3. Setup of [common components](https://github.com/data-mill-cloud/data-mill/tree/master/infrastructure/components)  
     * Ingestion (e.g. kafka, RabbitMQ)  
     * Persistent storage (e.g. s3, ArangoDB, InfluxDB, Cassandra)  
