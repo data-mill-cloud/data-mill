@@ -42,6 +42,7 @@ data. Consequently, each segment is identified by its data source, the time inte
 This component installs Druid using the official [Helm Chart](https://github.com/helm/charts/tree/master/incubator/druid).  
 
 Please follow the links hereby for more specific use case:  
+* [Setting S3 Storage](http://druid.io/docs/latest/development/extensions-core/s3.html)
 * [Setting Minio as S3 storage](https://dzone.com/articles/how-to-configure-druid-to-use-minio-as-deep-storag)
 * [Loading data from Kafka](http://druid.io/docs/latest/tutorials/tutorial-kafka.html)
 * [Queries](http://druid.io/docs/latest/tutorials/tutorial-query.html)
