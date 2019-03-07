@@ -63,6 +63,8 @@ use it.
 2. a folder is used to contain all project configurations (for all flavours) and a `project.config_folder` property is defined to link to a specific folder where to retrieve the `values.yaml` files for the components that use it.  
 3. none of the previous two, the file is neither available in the flavour folder nor a specific `config_folder` was set; the default `values.yaml` is used for the component from its folder.  
 
+![Organizing flavours](https://raw.githubusercontent.com/data-mill-cloud/data-mill/master/docs/img/flavour_modes.png)
+
 The projects is structured over the following folders:
 * components - containing the installable components
 * data - is mounted as PV and PVC and eventually available in the Minio S3 data lake, it can be used to provide example code
@@ -90,7 +92,7 @@ An example flavour is reported below:
 ### 3.1 Start existing cluster
 An existing cluster can be started as follows:
 ```
-./run.sh -i -l -s
+./run.sh -l -s -f flavours/default.yaml
 ```
 This will use the default flavour and k8s config (i.e. `k8s_default_config: default_uc.yaml`) to start the microk8s cluster defined in `default_uc.yaml`, without altering (installing/uninstalling) any component.  
 To overwrite this behavior a different flavour can be passed with `-f flavour_config.yaml` or a different target file `-t target_config.yaml` can be set.
