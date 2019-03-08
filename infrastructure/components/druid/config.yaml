@@ -1,0 +1,3 @@
+druid:
+  release: druid
+  config_file: druid_config.yaml
