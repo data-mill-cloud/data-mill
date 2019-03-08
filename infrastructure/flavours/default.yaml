@@ -6,7 +6,8 @@ project:
   # the flavour is used to list all the components to be used in the project
   flavour: all
   # k8s default config, can be overwritten with -t filename
-  k8s_default_config: default_uc.yaml
+  # k8s_default_config: default_uc.yaml
+  # not necessary in this example, since we provide the target in this file
   # component default config, can be overwritten with -f filename
   component_default_config: config.yaml
   # set the data folder
@@ -25,3 +26,4 @@ local:
   use_overlay: false
   provider: microk8s
   use_multipass: false
+  istio_support: true
