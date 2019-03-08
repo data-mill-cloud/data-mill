@@ -20,7 +20,7 @@ elif [ "$ACTION" = "install" ]; then
 	 --namespace $cfg__project__k8s_namespace \
 	 --set token=$kubemq_token \
 	 --install --force
-	#--values $file_folder/$cfg__kubemq__config_file \
+	#--values $(get_values_file "$cfg__kubemq__config_file") \
 	helm repo remove kubemq-charts
 else
 	helm delete $cfg__kubemq__release --purge
