@@ -1,0 +1,3 @@
+kubemq:
+  release: kubemq
+  #config_file: kubemq_config.yaml
