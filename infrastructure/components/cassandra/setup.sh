@@ -17,7 +17,7 @@ elif [ "$ACTION" = "install" ]; then
 	# deploy
 	helm upgrade $cfg__cassandra__release incubator/cassandra \
 	 --namespace $cfg__project__k8s_namespace \
-	 --values $file_folder/$cfg__cassandra__config_file \
+	 --values $(get_values_file "$cfg__cassandra__config_file") \
 	 --install --force
 else
 	helm delete $cfg__cassandra__release --purge

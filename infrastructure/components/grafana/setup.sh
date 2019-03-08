@@ -18,7 +18,7 @@ elif [ "$ACTION" = "install" ]; then
 
 	helm upgrade $cfg__grafana__release stable/grafana \
 	 --namespace $cfg__project__k8s_namespace \
-	 --values $file_folder/$cfg__grafana__config_file \
+	 --values $(get_values_file "$cfg__grafana__config_file") \
 	 --install --force
 
 	#rm $file_folder/$cfg__grafana__config_file

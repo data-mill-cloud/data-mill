@@ -21,10 +21,11 @@ elif [ "$ACTION" = "install" ]; then
 	helm upgrade $cfg__jhub__release jupyterhub/jupyterhub \
 	  --namespace $cfg__project__k8s_namespace \
 	  --version $cfg__jhub__version \
-	  --values $file_folder/$cfg__jhub__config_file \
+	  --values $(get_values_file "$cfg__jhub__config_file") \
 	  --set proxy.secretToken=$secretToken \
 	  --install --force $( [ ! -z $cfg__jhub__setup_timeout ] && [ $cfg__jhub__setup_timeout -gt 0 ] && printf %s "--timeout $cfg__jhub__setup_timeout --wait" )
 	unset secretToken
+	helm repo remove jupyterhub
 else
 	helm delete $cfg__jhub__release --purge
 fi

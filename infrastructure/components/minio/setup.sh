@@ -23,7 +23,7 @@ elif [ "$ACTION" = "install" ]; then
 	# https://github.com/helm/charts/tree/master/stable/minio#configuration
 	helm upgrade $cfg__minio__release stable/minio \
 	 --namespace $cfg__project__k8s_namespace \
-	 --values $file_folder/$cfg__minio__config_file \
+	 --values $(get_values_file "$cfg__minio__config_file") \
 	 --set accessKey=$random_key,secretKey=$random_secret,persistence.storageClass=$cfg__minio__storage_class \
 	 --recreate-pods \
 	 --install --force $( [ ! -z $cfg__minio__setup_timeout ] && [ $cfg__minio__setup_timeout -gt 0 ] && printf %s "--timeout $cfg__minio__setup_timeout --wait" )

@@ -17,7 +17,7 @@ elif [ "$ACTION" = "install" ]; then
 	helm repo update
 	helm upgrade $cfg__spark__release incubator/sparkoperator \
 	 --namespace $cfg__project__k8s_namespace \
-	 --values $file_folder/$cfg__spark__config_file \
+	 --values $(get_values_file "$cfg__spark__config_file") \
 	 --install --force
 	helm repo remove incubator
 else

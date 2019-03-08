@@ -16,7 +16,7 @@ elif [ "$ACTION" = "install" ]; then
 	kubectl delete statefulsets.apps --cascade=false $cfg__horovod__release
 	helm upgrade $cfg__horovod__release stable/horovod \
 	 --namespace $cfg__project__k8s_namespace \
-	 --values $file_folder/$cfg__horovod__config_file \
+	 --values $(get_values_file "$cfg__horovod__config_file") \
 	 --install --force
 else
 	helm delete $cfg__horovod__release --purge

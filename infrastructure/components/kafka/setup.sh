@@ -18,10 +18,10 @@ elif [ "$ACTION" = "install" ]; then
 	helm install strimzi/strimzi-kafka-operator --name $cfg__kafka__release --namespace $cfg__project__k8s_namespace
 	latest_strimzi=$(get_latest_github_release "strimzi/strimzi-kafka-operator")
 	# install kafka with operator
-    curl -L https://raw.githubusercontent.com/strimzi/strimzi-kafka-operator/$latest_strimzi/examples/kafka/kafka-persistent.yaml \
+	curl -L https://raw.githubusercontent.com/strimzi/strimzi-kafka-operator/$latest_strimzi/examples/kafka/kafka-persistent.yaml \
 	| sed -e "s/my-cluster/$cfg__kafka__release/" \
-    | kubectl --namespace $cfg__project__k8s_namespace apply -f -
-
+	| kubectl --namespace $cfg__project__k8s_namespace apply -f -
+	helm repo remove strimzi
 else
 	helm delete --purge $cfg__kafka__release
 	kubectl delete -f https://raw.githubusercontent.com/strimzi/strimzi-kafka-operator/$latest_strimzi/examples/kafka/kafka-persistent.yaml \

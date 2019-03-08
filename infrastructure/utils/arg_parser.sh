@@ -19,11 +19,8 @@ cleanup_path(){
         fi
 }
 
-# used for testing
-#echo $(cleanup_path "$1")
-
 # variables to mandatorily return in output
-VARS=(LOCATION ACTION)
+VARS=("LOCATION" "ACTION" "FLAVOUR_FILE")
 
 OPTIONS=":dsrliut:f:c:"
 
@@ -55,12 +52,23 @@ while getopts $OPTIONS opt; do
       ACTION="delete"
       ;;
     t)
+      (ls "$OPTARG" >> /dev/null 2>&1) || {
+        echo "-t expects a path to the yaml file containing cluster information, e.g. -t path/default.yaml"
+        echo "$OPTARG not found!"
+        exit 1
+      }
       TARGET_FILE=$(cleanup_path "$OPTARG")
-      echo "-t: overwriting target cluster configuration filename with $TARGET_FILE" >&2
+      echo "-t: overwriting target cluster configuration filename with $TARGET_FILE"
       ;;
     f)
-      CONFIG_FILE=$(cleanup_path "$OPTARG")
-      echo "-f: overwriting default component configuration filename with $CONFIG_FILE" >&2
+      # if the passed path exists convert it to absolute, otherwise raise error
+      (ls "$OPTARG" >> /dev/null 2>&1) || {
+        echo "$OPTARG not found!"
+        echo "-f expects a path to the flavour file, e.g. -f flavours/default.yaml"
+	exit 1
+      }
+      FLAVOUR_FILE=$(cleanup_path "$OPTARG")
+      echo "-f: overwriting default component configuration filename with $FLAVOUR_FILE"
       ;;
     c)
       COMPONENT=$(basename "$OPTARG")
@@ -88,27 +96,13 @@ if [ "$ACTION" != "debug" ]; then
       echo "  params:"
       echo "    LOCATION: -l (local cluster), -r (remote cluster)"
       echo "    ACTION: -s (start only), -i (install), -u (uninstall)"
+      echo "    FLAVOUR_FILE: -f path/filename.yaml"
+      echo "      -> sets the project flavour file"
       echo "  options:"
-      echo "    CONFIG_FILE: -f filename.yaml"
-      echo "      -> overwrites the default component configuration filename"
-      echo "    TARGET_FILE: -t filename.yaml"
+      echo "    TARGET_FILE: -t path/filename.yaml"
       echo "      -> overwrites the default k8s configuration filename"
       echo "    COMPONENT: -c component_name"
       exit 1
     fi
   done
-
-  [ -z "$CONFIG_FILE" ] && [ "$ACTION" != "start" ] && [ -z "$COMPONENT" ] && {
-    echo "Running the default flavour configuration with an action of type install/uninstall is deprecated!" >&2
-    echo "Please specificy a component with -c <component> or a different flavour with -f <file>" >&2
-    exit 1
-  }
-
-  [ ! -z $COMPONENT ] && [ ! -z $CONFIG_FILE ] && {
-    echo "You selected both a flavour and a component." >&2
-    echo "Flavours are meant to group multiple components. Selecting a component other than those in the flavour will have no effect." >&2
-    echo "Please use the default flavour (since it contains all components) or remove the component selector and update your flavour accordingly." >&2
-    # this is a design choice and could be made configurable
-    exit 1
-  }
 fi

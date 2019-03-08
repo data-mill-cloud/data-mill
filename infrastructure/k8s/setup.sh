@@ -12,7 +12,7 @@ check_multipass(){
 	MIN_VERSION_UBUNTU=18
 	MIN_VERSION_DEBIAN=9
 	# use raw snap only if we are on a ubuntu/debian distro and after a certain version
-	lsb_release -sr >/dev/null 2>&1 && {
+	command -v lsb_release >/dev/null 2>&1 && {
         	# if lsb_release check the OS version
 		os_version=$(lsb_release -sr | cut -f1 -d ".")
 		os_type=$(lsb_release -sd)
@@ -247,6 +247,13 @@ else
 				if [ ! -z "$cfg__local__gpu_support" ] && [ "$cfg__local__gpu_support" = true ]; then
 					minikube addons enable nvidia-driver-installer
 					minikube addons enable nvidia-gpu-device-plugin
+				else
+					minikube addons disable nvidia-driver-installer
+                                        minikube addons disable nvidia-gpu-device-plugin
+				fi
+				if [ ! -z "$cfg__local__istio_support" ] && [ "$cfg__local__istio_support" = true ]; then
+					minikube addons enable ingress
+					kubectl create namespace istio-system
 				fi
 				# create a namespace for us
 				kubectl create namespace $cfg__project__k8s_namespace
@@ -265,7 +272,16 @@ else
 
 			if [ ! -z "$cfg__local__gpu_support" ] && [ "$cfg__local__gpu_support" = true ]; then
 				$(run_multipass "/snap/bin/microk8s.status") | grep -e 'gpu: enabled' >/dev/null 2>&1 || $(run_multipass "/snap/bin/microk8s.enable gpu")
+			else
+				$(run_multipass "/snap/bin/microk8s.status") | grep -e 'gpu: enabled' >/dev/null 2>&1 && $(run_multipass "/snap/bin/microk8s.disable gpu")
 			fi
+
+			if [ ! -z "$cfg__local__istio_support" ] && [ "$cfg__local__istio_support" = true ]; then
+                        	$(run_multipass "/snap/bin/microk8s.status") | grep -e 'istio: enabled' >/dev/null 2>&1 || echo N | $(run_multipass "/snap/bin/microk8s.enable istio")
+				# enables istio and creates a namespace istio-system
+			else
+				$(run_multipass "/snap/bin/microk8s.status") | grep -e 'istio: enabled' >/dev/null 2>&1 && $(run_multipass "/snap/bin/microk8s.disable istio")
+                        fi
 
 			# make sure allow-privileged is enabled for microk8s (not by default)
 			echo "checking allow-privileged"
@@ -332,6 +348,41 @@ else
 
 		# show where tiller was deployed
 		echo "Tiller deployed as pod "$(get_pod_name "tiller")
+
+		# for minikube and generally for K8s (i.e. not microk8s) install istio using helm if required
+		if [ "$cfg__local__provider" != "microk8s" ]; then
+			if [ ! -z "$cfg__local__istio_support" ] && [ "$cfg__local__istio_support" = true ]; then
+				# https://istio.io/docs/setup/kubernetes/download-release/
+				# save context (calling location)
+				caller_dir=${PWD}
+				# call the following code in the file_folder directory
+				cd $file_folder
+				# download the latest istio release as istio-x.y.z (e.g. istio-1.0.6)
+				curl -L https://git.io/getLatestIstio | sh -
+				cd istio*
+				# If using a Helm version prior to 2.10.0, install Istio’s Custom Resource Definitions
+				kubectl apply -f install/kubernetes/helm/istio/templates/crds.yaml
+				# overwrite PATH var to add the bin to the list of executables
+				export PATH=$PWD/bin:$PATH
+				# https://istio.io/docs/setup/kubernetes/quick-start/
+				# https://istio.io/docs/setup/kubernetes/helm-install/
+				helm install install/kubernetes/helm/istio --name istio --namespace istio-system
+				# get back to previous context
+				cd $caller_dir
+				unset caller_dir
+			else
+				# if we are running start and istio is disabled but was previously deployed then remove it
+				[[ $(helm ls istio --short) == "istio" ]] && {
+					helm delete --purge istio
+					caller_dir=${PWD}
+					cd $file_folder/istio*
+					kubectl delete -f install/kubernetes/helm/istio/templates/crds.yaml -n istio-system
+					cd $caller_dir
+					unset caller_dir
+				}
+			fi
+		fi
+
 	else
 		echo "Setting up infrastructure on remote K8s cluster provided by $cfg__remote__provider";
 		case $cfg__remote__provider in
