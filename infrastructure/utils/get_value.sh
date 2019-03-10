@@ -6,8 +6,19 @@ get_value() {
 }
 
 file_exists(){
-	# returns $1 if exists or $2 if not
+	# returns $1 if exists or $2 as default location if not
 	(ls $1 >> /dev/null 2>&1 && echo $1) || echo $2
+}
+
+iterate_file_exists(){
+	# iterates on a list of paths and returns the first that actually exists, or nothing otherwise
+	for location in "$@"
+	do
+		ls $location >> /dev/null 2>&1 && {
+			echo $location
+			break
+		}
+	done
 }
 
 check_if_pod_exists(){

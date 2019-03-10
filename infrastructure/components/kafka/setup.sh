@@ -15,15 +15,28 @@ elif [ "$ACTION" = "install" ]; then
 	# https://strimzi.io/quickstarts/minikube/
 	# install strimzi operator
 	helm repo add strimzi http://strimzi.io/charts/
-	helm install strimzi/strimzi-kafka-operator --name $cfg__kafka__release --namespace $cfg__project__k8s_namespace
-	latest_strimzi=$(get_latest_github_release "strimzi/strimzi-kafka-operator")
-	# install kafka with operator
-	curl -L https://raw.githubusercontent.com/strimzi/strimzi-kafka-operator/$latest_strimzi/examples/kafka/kafka-persistent.yaml \
-	| sed -e "s/my-cluster/$cfg__kafka__release/" \
-	| kubectl --namespace $cfg__project__k8s_namespace apply -f -
+
+        helm upgrade $cfg__kafka__release strimzi/strimzi-kafka-operator \
+         --namespace $cfg__project__k8s_namespace \
+         --install --force --wait
+	# --values $(get_values_file "$cfg__kafka__config_file")
+
+	# install kafka resource using the operator
+	if [ ! -z $cfg__kafka__deployment_file ]; then
+		echo "Deploying Kafka cluster: $cfg__kafka__release"
+		sed -e "s/my-cluster/$cfg__kafka__release/" $(get_values_file "$cfg__kafka__deployment_file") | kubectl apply --namespace=$cfg__project__k8s_namespace -f -
+	fi
+
+	# remove strimzi repo
 	helm repo remove strimzi
 else
-	helm delete --purge $cfg__kafka__release
-	kubectl delete -f https://raw.githubusercontent.com/strimzi/strimzi-kafka-operator/$latest_strimzi/examples/kafka/kafka-persistent.yaml \
-	 --namespace $cfg__project__k8s_namespace
+	# remove strimzi resource if deployed
+	# cancel the kafka cluster if set in the component config
+	if [ ! -z $cfg__kafka__deployment_file ]; then
+		echo "Deleting Kafka cluster: $cfg__kafka__release"
+		sed -e "s/my-cluster/$cfg__kafka__release/" $(get_values_file "$cfg__kafka__deployment_file") | kubectl delete --namespace=$cfg__project__k8s_namespace -f -
+	fi
+
+        # remove kafka operator
+        helm delete --purge $cfg__kafka__release
 fi

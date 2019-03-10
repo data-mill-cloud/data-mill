@@ -48,6 +48,7 @@ get_component_config(){
 
 # returns the path to the file in the flavour folder or config_folder, if it exists, or to the component folder otherwise
 get_values_file(){
+	# $cfg__project__config_folder is either set explicitly or defaulted to the flavour config folder (see run.sh)
 	echo $(file_exists "${cfg__project__config_folder}/${1}" "${file_folder}/${1}")
 	# this can be changed in future to skip the action on the component if the values.yaml is not found
 	# for now we however want to provide all 3 options for now (flavour_folder, flavours with config_folder, per-component values.yaml)
