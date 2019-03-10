@@ -366,7 +366,11 @@ else
 				export PATH=$PWD/bin:$PATH
 				# https://istio.io/docs/setup/kubernetes/quick-start/
 				# https://istio.io/docs/setup/kubernetes/helm-install/
-				helm install install/kubernetes/helm/istio --name istio --namespace istio-system
+				helm install install/kubernetes/helm/istio \
+				--name istio \
+				--namespace istio-system \
+				--set kiali.enabled=true
+				# enable kiali: https://istio.io/docs/tasks/telemetry/kiali/
 				# get back to previous context
 				cd $caller_dir
 				unset caller_dir
