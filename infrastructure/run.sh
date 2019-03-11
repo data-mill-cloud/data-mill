@@ -47,11 +47,20 @@ echo ""
 
 
 if [ "$ACTION" = "debug" ]; then
+	case $DPOD in
+	net)
+	  # busybox is perfect for small network troubleshooting and it is around 1 MB of size
+	  debug_image="busybox";;
+	app)
+	  # we derive from the ubuntu:latest (~88MB) and add java, python3 and kafka clients (more complete toolkit)
+	  debug_image="datamillcloud/appdebugger:0.1";;
+	esac
+
 	# start an interactive session using busybox in the cluster namespace
 	debugging_pod_name="debugging-pod-"$(date '+%d-%m-%Y--%H-%M-%S')
-	#--image=busybox
+	# run the debug docker image as a pod in the application namespace
 	kubectl run -it $debugging_pod_name \
-	--image=ubuntu \
+	--image=$debug_image \
 	--restart=Never --namespace=$cfg__project__k8s_namespace --env="POD_NAMESPACE=$cfg__project__k8s_namespace"
 	echo "Terminating Debug Pod.."
 	kubectl delete pod $debugging_pod_name -n=$cfg__project__k8s_namespace

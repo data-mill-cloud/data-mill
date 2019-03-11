@@ -38,7 +38,7 @@ for e in $env_path; do
   if [ -z $commit_tag ]; then
     echo "-> Build failed for $t:$version! skipping."
   # check if image already exists on remote repo
-  elif [ $(check_tag_in_dh_repo $t $version) == "true" ]; then
+  elif [[ $(check_tag_in_dh_repo $t $version) == "true" ]]; then
     echo "$t:$version already exists on DockerHub! Skipping!"
   else
     echo "-> docker tag $commit_tag $t:$version"

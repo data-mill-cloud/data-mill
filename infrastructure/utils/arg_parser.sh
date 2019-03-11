@@ -22,13 +22,19 @@ cleanup_path(){
 # variables to mandatorily return in output
 VARS=("LOCATION" "ACTION" "FLAVOUR_FILE")
 
-OPTIONS=":dsrliut:f:c:"
+OPTIONS=":srliud:t:f:c:"
 
 while getopts $OPTIONS opt; do
   case $opt in
     d)
-      echo "-d: debug mode enabled, spawning environment"
+      if [ "$OPTARG" != "net" ] && [ "$OPTARG" != "app" ]; then
+        echo "-d expects an environment type in {'net', 'app'}"
+        exit 1
+      fi
+      # spawn debug environment
       ACTION="debug"
+      DPOD="$OPTARG"
+      echo "-d: debug mode "${DPOD}" requested"
       break
       ;;
     s)
