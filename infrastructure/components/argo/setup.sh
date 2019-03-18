@@ -23,6 +23,28 @@ elif [ "$ACTION" = "install" ]; then
 	 --namespace $argo_namespace \
 	 --values $(get_values_file "$cfg__argo__config_file") \
 	 --install --force
+
+	if [ "$cfg__argo__events__enable" = "true" ]; then
+		helm upgrade ${cfg__argo__release}_events argo/argo-events \
+        	 --namespace $argo_namespace \
+	         --values $(get_values_file "$cfg__argo__events__config_file") \
+	         --install --force
+	fi
+
+	if [ "$cfg__argo__ci__enable" = "true" ]; then
+		helm upgrade ${cfg__argo__release}_ci argo/argo-ci \
+                 --namespace $argo_namespace \
+                 --values $(get_values_file "$cfg__argo__ci__config_file") \
+                 --install --force
+	fi
+
+	if [ "$cfg__argo__cd__enable" = "true" ]; then
+		helm upgrade ${cfg__argo__release}_cd argo/argo-cd \
+                 --namespace $argo_namespace \
+                 --values $(get_values_file "$cfg__argo__cd__config_file") \
+                 --install --force
+	fi
+
 	# remove argo repo (we do not want to update everything every time)
 	helm repo remove argo
 
@@ -55,5 +77,16 @@ elif [ "$ACTION" = "install" ]; then
         }
 
 else
+        if [ "$cfg__argo__events__enable" = "true" ]; then
+                helm upgrade ${cfg__argo__release}_events --purge
+        fi
+
+        if [ "$cfg__argo__ci__enable" = "true" ]; then
+                helm delete ${cfg__argo__release}_ci --purge
+        fi
+
+        if [ "$cfg__argo__cd__enable" = "true" ]; then
+                helm delete ${cfg__argo__release}_cd --purge
+        fi
 	helm delete $cfg__argo__release --purge
 fi

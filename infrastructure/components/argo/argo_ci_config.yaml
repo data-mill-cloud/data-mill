@@ -1,0 +1,10 @@
+imageNamespace: argoproj
+ciImage: argoci
+imageTag: v1.0.0-alpha2
+workflowNamespace: default
+
+argo:
+  imagesNamespace: argoproj
+  installMinio: false
+  minioBucketName: argo-artifacts
+  useReleaseAsInstanceID: true

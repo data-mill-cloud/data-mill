@@ -2,3 +2,12 @@ argo:
   release: argo
   config_file: argo_config.yaml
   namespace: kube-system
+  events:
+    enable: false
+    config_file: argo_events_config.yaml
+  ci:
+    enable: false
+    config_file: argo_ci_config.yaml
+  cd:
+    enable: false
+    config_file: argo_cd_config.yaml
