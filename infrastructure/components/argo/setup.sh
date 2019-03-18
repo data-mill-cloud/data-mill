@@ -17,7 +17,7 @@ elif [ "$ACTION" = "install" ]; then
 	helm repo add argo https://argoproj.github.io/argo-helm
 	helm repo update
 	# if set use special namespace for argo
-	argo_namespace=${cfg__project__k8s_namespace:=$cfg__argo__namespace}
+	argo_namespace=${cfg__argo__namespace:=$cfg__project__k8s_namespace}
 	# deploy chart
 	helm upgrade $cfg__argo__release argo/argo \
 	 --namespace $argo_namespace \
@@ -31,7 +31,7 @@ elif [ "$ACTION" = "install" ]; then
 	# install argo CLI
         command -v kubedb >/dev/null 2>&1 || {
 		RELEASE=$(get_latest_github_release 'argoproj/argo')
-                RELEASE=${RELEASE:=$cfg__argo__version}
+                RELEASE=${cfg__argo__version:=$RELEASE}
 		# install for specific os
                 OS=$(get_os_type)
                 echo "Installing argo $RELEASE on $OS"
