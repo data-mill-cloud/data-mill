@@ -22,7 +22,8 @@ RUN apt-get update \
     && apt-get install --yes python3 python3-pip \
     # kafka client
     && cd $(dirname ${KAFKA_HOME}) \
-    && wget https://www-${KAFKA_MIRROR}.apache.org/dist/kafka/${KAFKA_VERSION}/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz -O kafka.tgz && tar -xvzf kafka.tgz && rm kafka.tgz && mv kafka* kafka
+    && curl https://raw.githubusercontent.com/infinimesh/kaf/master/godownloader.sh | BINDIR=${KAFKA_HOME}/bin bash
+    #&& wget https://www-${KAFKA_MIRROR}.apache.org/dist/kafka/${KAFKA_VERSION}/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz -O kafka.tgz && tar -xvzf kafka.tgz && rm kafka.tgz && mv kafka* kafka
 
 # append kafka bin folder
 ENV PATH=$KAFKA_HOME/bin:$PATH
