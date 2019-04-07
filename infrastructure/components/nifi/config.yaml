@@ -1,0 +1,4 @@
+nifi:
+  release: nifi
+  config_file: nifi_config.yaml
+  deploy_registry: true
