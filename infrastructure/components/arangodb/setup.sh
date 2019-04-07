@@ -15,15 +15,14 @@ elif [ "$ACTION" = "install" ]; then
     latest_arangodb=$(get_latest_github_release "arangodb/kube-arangodb")
     echo "installing $cfg__arangodb__release $latest_arangodb operator"
     # The following will install the custom resources required by the operators.
-    helm upgrade --namespace $cfg__project__k8s_namespace --install --force  ${cfg__arangodb__release}-crd https://github.com/arangodb/kube-arangodb/releases/download/$latest_arangodb/kube-arangodb-crd.tgz
+    helm upgrade --namespace $cfg__project__k8s_namespace --install --force ${cfg__arangodb__release}-crd https://github.com/arangodb/kube-arangodb/releases/download/$latest_arangodb/kube-arangodb-crd.tgz
     # The following will install the operator for `ArangoDeployment`
-    helm upgrade --namespace $cfg__project__k8s_namespace --install --force  $cfg__arangodb__release https://github.com/arangodb/kube-arangodb/releases/download/$latest_arangodb/kube-arangodb.tgz
-    # installing ArangoDB server
-    kubectl apply -n $cfg__project__k8s_namespace -f $file_folder/$cfg__arangodb__mode.yaml
-    echo "execute: "kubectl -n $cfg__project__k8s_namespace port-forward svc/""$cfg__arangodb__release"-"$cfg__arangodb__mode 8529""
-    echo "Then access UI: https://localhost:8529"
-
+    helm upgrade --namespace $cfg__project__k8s_namespace --install --force ${cfg__arangodb__release} https://github.com/arangodb/kube-arangodb/releases/download/$latest_arangodb/kube-arangodb.tgz
+    # installing ArangoDB server as in $file_folder/${cfg__arangodb__mode}.yaml
+    kubectl apply -n $cfg__project__k8s_namespace -f $(get_values_file "${cfg__arangodb__mode}.yaml")
 else
-    helm delete --purge $cfg__arangodb__release
+    # delete DB definition as in $file_folder/${cfg__arangodb__mode}.yaml
+    kubectl delete -n $cfg__project__k8s_namespace -f $(get_values_file "${cfg__arangodb__mode}.yaml")
+    helm delete --purge ${cfg__arangodb__release}
     helm delete --purge ${cfg__arangodb__release}-crd
 fi
