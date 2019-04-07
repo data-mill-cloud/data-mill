@@ -29,6 +29,7 @@ elif [ "$ACTION" = "install" ]; then
 	--namespace $cfg__project__k8s_namespace \
 	--set prometheusOperator.createCustomResource=false,grafana.adminPassword=$random_secret \
 	--install --force
+	# --values $(get_values_file "$cfg__monitoring__config_file")
 
 	echo "kubectl port-forward -n $cfg__project__k8s_namespace svc/""$cfg__monitoring__release-grafana 3000:80"
 	echo "http://localhost:3000 admin:$random_secret"
