@@ -1,6 +1,6 @@
 # Monitoring Stack
 
-This component installs the CoreOS Prometheus operator, along with an optional [Grafana](https://prometheus.io/docs/visualization/grafana/) dashboard to visualize collected metrics.
+This component installs the [CoreOS Prometheus operator](https://github.com/coreos/prometheus-operator), along with an optional [Grafana](https://prometheus.io/docs/visualization/grafana/) dashboard to visualize collected metrics.
 
 ## Prometheus
 
