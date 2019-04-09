@@ -18,9 +18,8 @@ either table or graph;
 ### Data Model
 Prometheus stores all data as time series, i.e. timestamped values grouped under a specific metric name.
 In practice, a metric consists of multiple domains or labels, thus prometheus a metric is a multivariate time series. Metrics can be [exposed](https://prometheus.io/docs/instrumenting/exposition_formats/) using a simple text format.
-A metric has format `<metric name>{<label name>=<label value>, ...} <value> <timestamp>`, where value is a float related to the metric and timestamp is an int64 (milliseconds since epoch).
-Labels enrich the time series by providing context. The name is a UTF-8 string, whereas the value can be of numerical type float as well as `NaN`, `+Inf`, `-Inf`. Naming convention is described [here](https://prometheus.io/docs/practices/naming/). As perceivable, 
-Prometheus does not actually care of labels data types and flattens them into an untyped time series.
+A metric has format `<metric name>{<label name>=<label value>, ...} <value> <timestamp>`, where value is a float related to the metric (as well as `NaN`, `+Inf`, `-Inf`) and timestamp is an int64 (milliseconds since epoch).
+Labels enrich the time series by providing context. The label name and value are UTF-8 strings. Naming convention is described [here](https://prometheus.io/docs/practices/naming/). As perceivable, Prometheus does not actually care of labels data types and flattens them into an untyped time series.
 More complex [metrics](https://prometheus.io/docs/concepts/metric_types/), such as counters, gauges, histograms and summaries, can be defined on data. See [this](https://prometheus.io/docs/instrumenting/exposition_formats/#histograms-and-summaries) example.
 
 By default metrics are stored in a local folder for a period of 15 days. On K8s this folder can be maintained on a persistent volume (PV) or a [StatefulSet](https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/) can be otherwise used to 
