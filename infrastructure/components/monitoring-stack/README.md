@@ -15,6 +15,12 @@ either table or graph;
 
 ![Prometheus architecture](https://prometheus.io/assets/architecture.png)
 
+You can also watch this introductory video to have a better overview of Prometheus.
+
+<p align="center">
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=PDxcEzu62jk" target="_blank"><img src="http://img.youtube.com/vi/PDxcEzu62jk/0.jpg" alt="prometheus walkthrough" width="560" height="315" border="1" /></a>
+</p>
+
 ### Data Model
 Prometheus stores all data as time series, i.e. timestamped values grouped under a specific metric name.
 In practice, a metric consists of multiple domains or labels, thus prometheus a metric is a multivariate time series. Metrics can be [exposed](https://prometheus.io/docs/instrumenting/exposition_formats/) using a simple text format.
