@@ -7,3 +7,16 @@ get_os_type() {
 		*) echo "?"
 	esac
 }
+
+get_pacman(){
+	# one of these commands should always be available to install packages
+	pacmans=( yum apt-get pacman )
+
+	for i in "${pacmans[@]}"
+	do
+		command -v $i > /dev/null 2>&1 && {
+			echo $i
+			break
+		}
+	done
+}
