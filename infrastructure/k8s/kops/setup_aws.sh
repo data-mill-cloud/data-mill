@@ -23,14 +23,16 @@ if [ "$ACTION" = "install" ]; then
 	# https://medium.com/containermind/how-to-create-a-kubernetes-cluster-on-aws-in-few-minutes-89dda10354f4
 
 	# 1. INSTALLATION
-	if [ "$OS" = "Mac" ]; then
-		brew install kops
-	else
-		# Linux
-		curl -LO https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
-		chmod +x kops-linux-amd64
-		sudo mv kops-linux-amd64 /usr/local/bin/kops
-	fi
+	command -v kops >/dev/null 2>&1 || {
+		if [ "$OS" = "Mac" ]; then
+			brew install kops
+		else
+			# Linux
+			curl -LO https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
+			chmod +x kops-linux-amd64
+			sudo mv kops-linux-amd64 /usr/local/bin/kops
+		fi
+	}
 
 	# 2. IAM - CREATE USER AND GRANT PERMISSIONS
 	echo "Create a new user on IAM and grant the following permissions:"
@@ -60,8 +62,8 @@ if [ "$ACTION" = "install" ]; then
 	# 8. get info of master node
 	kubectl cluster-info
 
-elif [ "$ACTION" = "delete" ]; then
+elif [ "$ACTION" = "delete_all" ]; then
 	kops delete cluster $CLUSTER_NAME
 else
-	echo "Error: $ACTION should be either 'install' or 'delete'"
+	echo "AWS setup error: ACTION should be either 'install' or 'delete_all'"
 fi

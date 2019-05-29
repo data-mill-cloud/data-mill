@@ -47,45 +47,64 @@ helm_delete(){
 }
 
 
-# ACTIONS: start debug install delete
+# ACTIONS: debug (start alt) (install delete) delete_all
 if [ "$ACTION" = "delete" ]; then
+	# print an alert message, since this action has no effect on the cluster
+	echo "Deletion of flavours and components does not imply cluster removal, use 'delete_all' mode (-x) instead"
+elif [[ "$ACTION" = "alt" || "$ACTION" = "delete_all" ]]; then
 	if [ "$LOCATION" = "local" ]; then
 		if [ "$cfg__local__provider" = "minikube" ]; then
 			minikube stop
-			minikube delete
+			# delete cluster if explicitly requested
+			if [[ "$ACTION" = "delete_all" ]]; then
+				minikube delete
+			fi
 		elif [ "$cfg__local__provider" = "microk8s" ]; then
 			#eval $(check_multipass)
 			# if not specified, use bare on ubuntu/debian and on multipass otherwise
 			if [ -z "$cfg__local__use_multipass" ]; then
 				eval $(check_multipass)
 			else
-				# use multipass iff this is esplicitly specified
+				# use multipass iff this is explicitly specified
 				USE_MULTIPASS=$cfg__local__use_multipass
 			fi
 
 			if [ $USE_MULTIPASS = true ]; then
 				multipass stop $VM_NAME
-				multipass delete $VM_NAME
-				multipass purge
+				# delete cluster if explicitly requested
+				if [[ "$ACTION" = "delete_all" ]]; then
+					multipass delete $VM_NAME
+					multipass purge
+				fi
 			else
 				microk8s.stop
-				microk8s.reset
+				# delete cluster if explicitly requested
+				if [[ "$ACTION" = "delete_all" ]]; then
+					microk8s.reset
+				fi
 			fi
 		else
 			echo "Local K8s provider $cfg__local__provider not supported!"
 		fi
+	elif [ "$LOCATION" = "remote" ]; then
+		# on a provided k8s cluster, we can only delete everything
+		if [[ "$ACTION" = "delete_all" ]]; then
+			echo "Deleting K8s cluster provided by $cfg__remote__provider";
+			case $cfg__remote__provider in
+				aws) . $file_folder/kops/setup_aws.sh;;
+				gke) . $file_folder/kops/setup_gke.sh;;
+				*)
+				  echo "Cloud provider not available. Exiting"
+				  exit 1
+                	esac
+		fi
 	else
-		echo "Deleting K8s cluster provided by $cfg__remote__provider";
-		case $cfg__remote__provider in
-			aws) . $file_folder/kops/setup_aws.sh;;
-			gke) . $file_folder/kops/setup_gke.sh;;
-			*)
-			  echo "Cloud provider not available. Exiting"
-			  exit 1
-                esac
+		# deleting a cluster from kubectl is not allowed
+		echo "Deleting a cluster using $LOCATION location mode is not allowed!"
+		exit 1
 	fi
 else
-	# we have to start, install, or debug the cluster
+	# we have to start the cluster or install a flavour on the cluster
 	if [ "$LOCATION" = "local" ]; then
 		echo "Setting up local K8s cluster";
 
@@ -386,9 +405,8 @@ else
 				}
 			fi
 		fi
-
-	else
-		echo "Setting up infrastructure on remote K8s cluster provided by $cfg__remote__provider";
+	elif [ "$LOCATION" = "remote" ]; then
+		echo "Setting up infrastructure on remote K8s cluster provided by $cfg__remote__provider"
 		case $cfg__remote__provider in
 			aws) . $file_folder/kops/setup_aws.sh;;
 			gke) . $file_folder/kops/setup_gke.sh;;
@@ -396,5 +414,7 @@ else
 			  echo "Cloud provider not available. Exiting"
 			  exit 1
 		esac
+	else
+		echo "You are running $ACTION on an existing cluster. Make sure the cluster is properly running since this tool does not operate externally created clusters."
 	fi
 fi

@@ -20,6 +20,18 @@ if [ -z $cfg__project__config_folder ]; then
         # 3) if the config path is not specified, nor the configs are available at the flavour folder, then use the component folder to load the configuration (distributed)
 fi
 
+# 2) make sure we passed an environment and this is defined in the loaded flavour or target file
+if [[ $(is_target_env_defined "$LOCATION") = "false" ]]; then
+	echo "Cluster details for location ${LOCATION} are undefined! Please check your flavour file "$(basename "$FLAVOUR_FILE")", your target file and default cluster settings."
+	exit 1
+fi
+
+# 3) make sure if we passed a kubeconfig to use it
+if [[ "$LOCATION" = "hybrid" ]]; then
+        echo "Using existing cluster whose kube-config file is defined at ${cfg__hybrid__config}"
+	export KUBECONFIG=${cfg__hybrid__config}
+fi
+
 declare -a flavour;
 if [ -z "$cfg__project__flavour" ] || [ "$cfg__project__flavour" = "all" ]; then
 	flavour=($(ls $root_folder/components))
@@ -64,51 +76,44 @@ if [ "$ACTION" = "debug" ]; then
 	--restart=Never --namespace=$cfg__project__k8s_namespace --env="POD_NAMESPACE=$cfg__project__k8s_namespace"
 	echo "Terminating Debug Pod.."
 	kubectl delete pod $debugging_pod_name -n=$cfg__project__k8s_namespace
-elif [ "$ACTION" = "start" ]; then
-	# just start K8s
-	. $root_folder/k8s/setup.sh
-	# show installed components
-	helm ls
+elif [ "$ACTION" = "proxy" ]; then
 	# connect proxy
 	# start proxy to connect to K8s API
-        echo "Please access K8s UI at: http://localhost:$cfg__project__proxy_port/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy/"
-        kubectl proxy --port=$cfg__project__proxy_port #&
+	echo "Please access K8s UI at: http://localhost:$cfg__project__proxy_port/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy/"
+	kubectl proxy --port=$cfg__project__proxy_port #&
 
-elif [[ "$ACTION" = "install" || "$ACTION" = "delete" ]]; then
-	if [ "$ACTION" = "install" ]; then
+else
+	# setup the k8s cluster if starting or installing a flavour
+	if [[ "$ACTION" = "start" || "$ACTION" = "install" ]]; then
 		# 1. ******** Setup K8s ********
 		. $root_folder/k8s/setup.sh
 	fi
 
-	# run ACTION on modules of the K8s cluster
-	for c in "${flavour[@]}"; do
-		if [[ -z "$COMPONENT"  || ( ! -z "$COMPONENT" &&  $c = "$COMPONENT") ]]; then
-			setup_component="$root_folder/components/$c/setup.sh"
-			if [ -e "$setup_component" ]; then
-				echo "Running $ACTION for $setup_component";
-				. $setup_component $ACTION
-			else
-				echo "$setup_component unavailable. Skipping!"
+	# skip if we only desire to start the existing cluster regardless of the flavour
+	if [[ "$ACTION" = "install" || "$ACTION" = "delete" ]]; then
+		# run ACTION on modules of the K8s cluster that are included in the selected flavour (-f) or component (-c)
+		for c in "${flavour[@]}"; do
+			if [[ -z "$COMPONENT"  || ( ! -z "$COMPONENT" &&  $c = "$COMPONENT") ]]; then
+				setup_component="$root_folder/components/$c/setup.sh"
+				if [ -e "$setup_component" ]; then
+					echo "Running $ACTION for $setup_component";
+					. $setup_component $ACTION
+				else
+					echo "$setup_component unavailable. Skipping!"
+				fi
 			fi
-		fi
-	done
-
-	if [ "$ACTION" = "install" ]; then
-		# show deployed services
-		helm ls
-
-		# start proxy to connect to K8s API
-		#echo "Please access K8s UI at: http://localhost:$cfg__project__proxy_port/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy/"
-		#kubectl proxy --port=$cfg__project__proxy_port #&
-	else
-		# delete the namespace only if we removed all components
-        	if [ -z "$COMPONENT" ]; then
-                	kubectl delete namespace $cfg__project__k8s_namespace
-			# delete the cluster too
-			#. $root_folder/k8s/setup.sh
-	        fi
+		done
 	fi
 
-else
-	echo "ACTION should be either debug, install or delete"
+	if [[ "$ACTION" = "start" || "$ACTION" = "install" ]]; then
+		# show deployed services
+		helm ls
+	elif [[ "$ACTION" = "alt" || "$ACTION" = "delete" || "$ACTION" = "delete_all" ]]; then
+		# delete the namespace only if we ran delete and removed all components (delete -f and not delete -c was ran) or directly delete_all
+        	if [[ "$ACTION" = "delete_all" || ( "$ACTION" = "delete" && -z "$COMPONENT" ) ]]; then
+                	kubectl delete namespace $cfg__project__k8s_namespace
+	        fi
+		# call k8s/setup to alt, or delete the cluster iff this was explicitly requested (delete_all), delete flavour has no effect
+                . $root_folder/k8s/setup.sh
+	fi
 fi

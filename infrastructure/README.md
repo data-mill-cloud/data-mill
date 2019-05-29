@@ -50,8 +50,11 @@ project:
 The flavour attribute indicates which components are to be included in the project the default is related to.
 You can use `flavour: all` or list the component names e.g. `flavour: spark, jupyterhub`.
 When using `flavour: all` the components are taken in alphabetical order, so it is necessary to list them if you have dependencies across them.
-The `k8s_default_config` is used to specify the default filename for cluster configuration, this can be overwritten with `-t filename`.
-For instance, `default_uc.yaml` in `k8s/configs` specifies a microk8s cluster. This target can be overwritten with `-t` or directly in the flavour file, for instance using `default_mc.yaml` to target a minikube cluster.
+The `k8s_default_config` is used to specify the default filename for cluster configuration.
+For instance, `default_uc.yaml` in `k8s/configs` specifies a microk8s cluster. 
+This target can be overwritten with `-t` or directly in the flavour file, for instance using `default_mc.yaml` to target a minikube cluster instead.
+As defined `utils/macros.sh`, the `get_target_env_config` checks if any environment is defined in the passed flavour file, if not, it attepts loading the default ones defined at `k8s_default_config`.
+This is to avoid inconsistencies, where the script would load certain environments from a file and certain others from default. Consequently, it is important to make sure cluster details are either defined within the flavour or in an external target file, or in the default file instead.
 The `component_default_config` is used to specify the default configuration filename for each component, and can be overwritten with `-f filename`.
 With `-f filename` we can specify a different flavour than the default one, and overwrite the config of each file (if `filename` exists, or fallback to `component_default_config` where it 
 doesn't). The data folder is where the code examples are stored, along with the bucket structure that we want replicated to the local datalake.

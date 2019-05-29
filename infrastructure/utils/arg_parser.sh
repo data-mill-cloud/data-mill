@@ -22,7 +22,7 @@ cleanup_path(){
 # variables to mandatorily return in output
 VARS=("LOCATION" "ACTION" "FLAVOUR_FILE")
 
-OPTIONS=":srliud:t:f:c:"
+OPTIONS=":sarlhiuxpd:t:f:c:"
 
 while getopts $OPTIONS opt; do
   case $opt in
@@ -35,11 +35,18 @@ while getopts $OPTIONS opt; do
       ACTION="debug"
       DPOD="$OPTARG"
       echo "-d: debug mode "${DPOD}" requested"
-      break
+      ;;
+    p)
+      echo "-p: start kubectl reverse proxy"
+      ACTION="proxy"
       ;;
     s)
       echo "-s: start existing cluster without installing further dependencies"
       ACTION="start"
+      ;;
+    a)
+      echo "-a: alt cluster"
+      ACTION="alt"
       ;;
     r)
       echo "-r: running to remote cluster"
@@ -49,13 +56,21 @@ while getopts $OPTIONS opt; do
       echo "-l: running local cluster"
       LOCATION="local"
       ;;
+    h)
+      echo "-h: running cluster from existing KUBECONFIG"
+      LOCATION="hybrid"
+      ;;
     i)
-      echo "-i: installing infrastructure"
+      echo "-i: installing flavour/component"
       ACTION="install"
       ;;
     u)
-      echo "-u: uninstalling infrastructure"
+      echo "-u: uninstalling flavour/component"
       ACTION="delete"
+      ;;
+    x)
+      echo "-x: uninstalling flavour and deleting cluster"
+      ACTION="delete_all"
       ;;
     t)
       (ls "$OPTARG" >> /dev/null 2>&1) || {
@@ -96,12 +111,13 @@ if [ "$ACTION" != "debug" ]; then
   for var in "${VARS[@]}"
   do
     if [ -z ${!var} ]; then
-      echo "Usage: $0 [debug-mode] [params] [options]"
-      echo "  debug mode:"
-      echo "    DEBUG: -d"
+      echo "Usage: $0 [location] [action] [flavour] [options]"
       echo "  params:"
-      echo "    LOCATION: -l (local cluster), -r (remote cluster)"
-      echo "    ACTION: -s (start only), -i (install), -u (uninstall)"
+      echo "    LOCATION: -l (local cluster), -r (remote cluster), -h (kubeconfig cluster)"
+      echo "    ACTION:"
+      echo "      -p (start proxy), -d (debug mode)"
+      echo "      -s (start/create cluster), -a (alt cluster)"
+      echo "      -i (install flavour/component), -u (uninstall flavour/component), -x (uninstall and delete cluster)"
       echo "    FLAVOUR_FILE: -f path/filename.yaml"
       echo "      -> sets the project flavour file"
       echo "  options:"

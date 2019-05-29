@@ -20,3 +20,7 @@ remote:
   zones: "us-east1a"
   no_nodes: 2
   node_size: t2.medium
+
+hybrid:
+  # use the local microk8s config to test it (change path to yours)
+  config: "~/Documents/data-mill/infrastructure/k8s/microk8s.config"

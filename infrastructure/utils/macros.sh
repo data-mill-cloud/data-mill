@@ -7,6 +7,12 @@ get_paths(){
 	echo 'file_folder=$(dirname $fullpath)'
 }
 
+is_target_env_defined(){
+	EVARS=$(count_vars_from_prefix "cfg__${1}__")
+	NUM_VARS=$(( $EVARS ))
+	[[ "$NUM_VARS" -gt "0" ]] && echo "true" || echo "false"
+}
+
 get_target_env_config(){
 	# if -t was passed we overwrite the default project config or take that otherwise
 	if [ ! -z $TARGET_FILE ]; then
@@ -17,7 +23,8 @@ get_target_env_config(){
 		# if no explicit target file was specified, we check whether we already have the config loaded in the flavour (centralised configuration)
 		LOCVARS=$(count_vars_from_prefix "cfg__local__")
 		REMVARS=$(count_vars_from_prefix "cfg__remote__")
-		NUM_VARS=$(( $LOCVARS + $REMVARS ))
+		HYBVARS=$(count_vars_from_prefix "cfg__hybrid__")
+		NUM_VARS=$(( $LOCVARS + $REMVARS + $HYBVARS ))
 
 		# the config vars are not defined already (centralised in the flavour file)
 		# we rather need to load it from the component folder (distributed configuration)
