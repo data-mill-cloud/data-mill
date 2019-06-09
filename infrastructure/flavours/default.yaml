@@ -40,4 +40,5 @@ remote:
 
 hybrid:
   # use the local microk8s config to test it
-  config: "~/Documents/data-mill/infrastructure/k8s/microk8s.config"
+  #config: "~/Documents/data-mill/infrastructure/k8s/microk8s.config"
+  config: "~/Documents/k8s-setup/shell-setup/admin.conf"

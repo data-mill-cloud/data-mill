@@ -322,7 +322,7 @@ else
 				# switch to this config file
 				export KUBECONFIG="$file_folder/${cfg__local__provider}.config"
 				echo "KUBECONFIG for the cluster stored at $KUBECONFIG"
-				echo "Please run: export KUBECONFIG=$file_folder/${cfg__local__provider}.config"
+				#echo "Please run: export KUBECONFIG=$file_folder/${cfg__local__provider}.config"
 			#fi
 			kubectl config view --flatten
 
@@ -416,5 +416,38 @@ else
 		esac
 	else
 		echo "You are running $ACTION on an existing cluster. Make sure the cluster is properly running since this tool does not operate externally created clusters."
+
+		# we assume we are already pointing to the hybrid cluster here
+                # create a namespace for us
+                kubectl get ns $cfg__project__k8s_namespace >/dev/null 2>&1 || kubectl create namespace $cfg__project__k8s_namespace
+
+		# installing helm client
+                command -v helm >/dev/null 2>&1 || {
+                        echo >&2 "Helm not available... installing";
+                        # helm installation
+                        helm_version="v2.12.1"
+                        wget "https://storage.googleapis.com/kubernetes-helm/helm-${helm_version}-linux-amd64.tar.gz"
+                        tar -zxvf helm-${helm_version}-linux-amd64.tar.gz
+                        sudo mv linux-amd64/helm /usr/local/bin/helm
+                        rm helm-*.tar.gz
+                }
+                # initializing helm and installing tiller on the cluster
+                # https://docs.helm.sh/using_helm/
+                if [[ -z $(check_if_pod_exists "tiller") ]]; then
+                        echo "Installing Tiller"
+                        kubectl -n kube-system create sa tiller
+                        kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+                        helm init --service-account tiller --wait --tiller-connection-timeout 300
+                        # 300 seconds (5 mins) is the default waiting time
+                        # --wait : block until Tiller is running and ready to receive requests
+                fi
+                # wait for tiller to be up and running (minikube is not respecting --wait)
+                while [[ -z $(check_if_pod_exists "tiller") || $(get_pod_status "tiller") != "Running" ]]; do
+                        echo "tiller not yet running, waiting..."
+                        sleep 1
+                done
+
+                # show where tiller was deployed
+                echo "Tiller deployed as pod "$(get_pod_name "tiller")
 	fi
 fi
