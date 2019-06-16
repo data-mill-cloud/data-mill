@@ -29,6 +29,7 @@ fi
 # 3) make sure if we passed a kubeconfig to use it
 if [[ "$LOCATION" = "hybrid" ]]; then
         echo "Using existing cluster whose kube-config file is defined at ${cfg__hybrid__config}"
+	echo "export KUBECONFIG=${cfg__hybrid__config}"
 	export KUBECONFIG=${cfg__hybrid__config}
 fi
 

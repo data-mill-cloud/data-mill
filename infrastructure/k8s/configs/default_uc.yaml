@@ -23,4 +23,4 @@ remote:
 
 hybrid:
   # use the local microk8s config to test it (change path to yours)
-  config: "~/Documents/data-mill/infrastructure/k8s/microk8s.config"
+  config: "/home/pilillo/Documents/data-mill/infrastructure/k8s/microk8s.config"

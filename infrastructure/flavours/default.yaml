@@ -41,4 +41,8 @@ remote:
 hybrid:
   # use the local microk8s config to test it
   #config: "~/Documents/data-mill/infrastructure/k8s/microk8s.config"
-  config: "~/Documents/k8s-setup/shell-setup/admin.conf"
+  # for some reason the path with ~ does not work and does not raise any error
+  # having multiple clusters this may end up on a different one, unless a specific context is selected
+  # we suggest using a full path
+  # config: "~/Documents/k8s-setup/shell-setup/admin.conf", does not work
+  config: "/home/pilillo/Documents/k8s-setup/shell-setup/admin.conf"
