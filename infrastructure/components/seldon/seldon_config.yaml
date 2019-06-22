@@ -19,3 +19,7 @@ ambassador:
 
 # (default true) whether to run all components local to a namespace. If false, then a single Seldon Core installation can control deployments across all namespaces
 single_namespace: true
+
+
+usageMetrics:
+  enabled: true
