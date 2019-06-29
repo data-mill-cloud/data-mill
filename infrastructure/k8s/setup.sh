@@ -208,7 +208,7 @@ else
 			# N.B there is a bug on debian that requires installing the core first
 			# https://github.com/ubuntu/microk8s/issues/165
 			# https://stackoverflow.com/questions/2172352/in-bash-how-can-i-check-if-a-string-begins-with-some-value
-			if [[ $(lsb_release -sd) = Debian* ]]; then
+			if [[ $(command -v lsb_release  >/dev/null 2>&1 && lsb_release -sd) = Debian* ]]; then
 				sudo snap install core
 			fi
 

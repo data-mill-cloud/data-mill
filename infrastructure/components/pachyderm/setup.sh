@@ -33,8 +33,8 @@ elif [ "$ACTION" = "install" ]; then
 	echo "Pachyderm set to use dalake $cfg__pachyderm__datalake__type"
 
 	# https://hub.helm.sh/charts/stable/pachyderm
+	# --version $cfg__pachyderm__version
 	helm upgrade $cfg__pachyderm__release stable/pachyderm \
-	 --version $cfg__pachyderm__version \
 	 --namespace $cfg__project__k8s_namespace \
 	 --values $(get_values_file "$cfg__pachyderm__config_file") \
 	 --set s3.accessKey=$ACCESS_KEY,s3.secretKey=$SECRET_KEY,s3.bucketName=$cfg__pachyderm__datalake__bucket,s3.endpoint=$ENDPOINT \

@@ -13,6 +13,11 @@ is_target_env_defined(){
 	[[ "$NUM_VARS" -gt "0" ]] && echo "true" || echo "false"
 }
 
+check_if_default_target_env_is_defined(){
+	DEFAULT_CONFIG="$root_folder/k8s/configs/${cfg__project__k8s_default_config}"
+	[[ -f $DEFAULT_CONFIG ]] && echo "true" || echo "false"
+}
+
 get_target_env_config(){
 	# if -t was passed we overwrite the default project config or take that otherwise
 	if [ ! -z $TARGET_FILE ]; then

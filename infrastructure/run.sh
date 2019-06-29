@@ -21,8 +21,8 @@ if [ -z $cfg__project__config_folder ]; then
 fi
 
 # 2) make sure we passed an environment and this is defined in the loaded flavour or target file
-if [[ $(is_target_env_defined "$LOCATION") = "false" ]]; then
-	echo "Cluster details for location ${LOCATION} are undefined! Please check your flavour file "$(basename "$FLAVOUR_FILE")", your target file and default cluster settings."
+if [[ $(is_target_env_defined "$LOCATION") = "false" && $(check_if_default_target_env_is_defined) = "false" ]]; then
+	echo "Cluster details for location ${LOCATION} are undefined! Please check your flavour file "$(basename "$FLAVOUR_FILE")", your target file and default cluster settings (i.e., k8s/configs/${cfg__project__k8s_default_config})."
 	exit 1
 fi
 
