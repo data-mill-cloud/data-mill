@@ -1,7 +1,7 @@
 project:
   k8s_namespace: data-mill
   proxy_port: 8088
-  flavour: minio, arangodb, influxdb, superset, dask, seldon, jupyterhub, mlflow
+  flavour: minio, pachyderm, arangodb, influxdb, superset, dask, seldon, jupyterhub, mlflow
   # k8s default config, can be overwritten with -t filename
   k8s_default_config: default_uc.yaml
   # component default config, can be overwritten with -f filename
