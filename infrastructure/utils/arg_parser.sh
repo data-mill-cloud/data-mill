@@ -89,7 +89,7 @@ while getopts $OPTIONS opt; do
 	exit 1
       }
       FLAVOUR_FILE=$(cleanup_path "$OPTARG")
-      echo "-f: overwriting default component configuration filename with $FLAVOUR_FILE"
+      echo "-f: using the configuration at $FLAVOUR_FILE"
       ;;
     c)
       COMPONENT=$(basename "$OPTARG")
@@ -106,25 +106,23 @@ while getopts $OPTIONS opt; do
   esac
 done
 
-# print usage if any of the variables is not set
-if [ "$ACTION" != "debug" ]; then
-  for var in "${VARS[@]}"
-  do
-    if [ -z ${!var} ]; then
-      echo "Usage: $0 [location] [action] [flavour] [options]"
-      echo "  params:"
-      echo "    LOCATION: -l (local cluster), -r (remote cluster), -h (kubeconfig cluster)"
-      echo "    ACTION:"
-      echo "      -p (start proxy), -d (debug mode)"
-      echo "      -s (start/create cluster), -a (alt cluster)"
-      echo "      -i (install flavour/component), -u (uninstall flavour/component), -x (uninstall and delete cluster)"
-      echo "    FLAVOUR_FILE: -f path/filename.yaml"
-      echo "      -> sets the project flavour file"
-      echo "  options:"
-      echo "    TARGET_FILE: -t path/filename.yaml"
-      echo "      -> overwrites the default k8s configuration filename"
-      echo "    COMPONENT: -c component_name"
-      exit 1
-    fi
-  done
-fi
+# flavour (defines the config) and cluster location should always be set, as this would otherwise lead to mistakes
+for var in "${VARS[@]}"
+do
+  if [ -z ${!var} ]; then
+    echo "Usage: $0 [location] [action] [flavour] [options]"
+    echo "  params:"
+    echo "    LOCATION: -l (local cluster), -r (remote cluster), -h (kubeconfig cluster)"
+    echo "    ACTION:"
+    echo "      -p (start proxy), -d (debug mode)"
+    echo "      -s (start/create cluster), -a (alt cluster)"
+    echo "      -i (install flavour/component), -u (uninstall flavour/component), -x (uninstall and delete cluster)"
+    echo "    FLAVOUR_FILE: -f path/filename.yaml"
+    echo "      -> sets the project flavour file"
+    echo "  options:"
+    echo "    TARGET_FILE: -t path/filename.yaml"
+    echo "      -> overwrites the default k8s configuration filename"
+    echo "    COMPONENT: -c component_name"
+    exit 1
+  fi
+done
