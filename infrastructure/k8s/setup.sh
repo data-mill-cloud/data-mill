@@ -318,7 +318,14 @@ else
 
 			#if [ $USE_MULTIPASS = true ]; then
 				# create a cluster context for our local kubectl tool
-				$(run_multipass "/snap/bin/microk8s.config") > $file_folder/${cfg__local__provider}.config
+				if [ $USE_MULTIPASS = true ]; then
+					# this points to the multipass VM IP
+					$(run_multipass "/snap/bin/microk8s.config") > $file_folder/${cfg__local__provider}.config
+				else
+					# this points to 127.0.0.1 (necessary when working in a proxy setting, or would not get resolved)
+					$(run_multipass "/snap/bin/microk8s.kubectl config view --raw") > $file_folder/${cfg__local__provider}.config
+				fi
+				# alternatively, we can save to > $HOME/.kube/config, but this may overwrite other existing files, best is to write new ones
 				# switch to this config file
 				export KUBECONFIG="$file_folder/${cfg__local__provider}.config"
 				echo "KUBECONFIG for the cluster stored at $KUBECONFIG"
