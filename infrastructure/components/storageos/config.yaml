@@ -1,0 +1,7 @@
+storageos:
+  release: storageos
+  namespace: storageos-operator
+  version: 1.1.3
+  cluster_name: storageos-cluster
+  storageclass_name: storageos-volumes
+  config: storageos_config.yaml

@@ -1,0 +1,10 @@
+apiVersion: storageos.com/v1
+kind: StorageOSCluster
+metadata:
+  name: storageos-cluster
+  namespace: default
+spec:
+  secretRefName: storageos-api
+  secretRefNamespace: default
+  csi:
+    enable: true
