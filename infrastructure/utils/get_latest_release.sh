@@ -7,5 +7,12 @@ get_latest_github_release() {
 	sed -E 's/.*"([^"]+)".*/\1/'
 }
 
+get_latest_github_tag() {
+	# for those repos that tag but do not use github releases
+	curl --silent "https://api.github.com/repos/${1}/tags" |
+	python -c "import sys; import json; raw=json.loads(sys.stdin.read()); print(raw[0]['name']) if len(raw)>0 else ''"
+}
+
 # e.g.
 #echo $(get_latest_github_release data-mill-cloud/data-mill)
+#echo $(get_latest_github_tag "NVIDIA/k8s-device-plugin")

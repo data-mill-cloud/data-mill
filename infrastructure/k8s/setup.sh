@@ -13,7 +13,7 @@ check_multipass(){
 	MIN_VERSION_DEBIAN=9
 	# use raw snap only if we are on a ubuntu/debian distro and after a certain version
 	command -v lsb_release >/dev/null 2>&1 && {
-        	# if lsb_release check the OS version
+		# if lsb_release check the OS version
 		os_version=$(lsb_release -sr | cut -f1 -d ".")
 		os_type=$(lsb_release -sd)
 		# check a different min version for ubuntu and debian
@@ -96,7 +96,7 @@ elif [[ "$ACTION" = "alt" || "$ACTION" = "delete_all" ]]; then
 				*)
 				  echo "Cloud provider not available. Exiting"
 				  exit 1
-                	esac
+			esac
 		fi
 	else
 		# deleting a cluster from kubectl is not allowed
@@ -130,22 +130,22 @@ else
 			fi
 
 			command -v minikube >/dev/null 2>&1 || {
-                		echo >&2 "minikube not available... installing";
+				echo >&2 "minikube not available... installing";
 				latest_minikube=$(get_latest_github_release "kubernetes/minikube")
 				echo  "latest minikube version available is $latest_minikube"
 				curl -Lo minikube https://storage.googleapis.com/minikube/releases/$latest_minikube/minikube-linux-amd64 && chmod +x minikube && sudo cp minikube /usr/local/bin/ && rm minikube
-        		}
+			}
 		elif [ "$cfg__local__provider" = "microk8s" ]; then
 			echo "Setting up Microk8s cluster"
 
 			# snap is necessary to install the cluster
 			command -v snap >/dev/null 2>&1 || {
 				echo "snap package manager is missing and required to install mikrok8s! Exiting.."
-                                echo "Please install snapd and enable the service (e.g. from systemctl)"
-                                echo "In case you get an error like the following please run 'sudo ln -s /var/lib/snapd/snap /snap':"
-                                echo "    error: cannot install 'microk8s': classic confinement requires snaps under /snap or symlink from /snap to /var/lib/snapd/snap"
-                                exit 1
-                        }
+				echo "Please install snapd and enable the service (e.g. from systemctl)"
+				echo "In case you get an error like the following please run 'sudo ln -s /var/lib/snapd/snap /snap':"
+				echo "    error: cannot install 'microk8s': classic confinement requires snaps under /snap or symlink from /snap to /var/lib/snapd/snap"
+				exit 1
+			}
 
 			# use raw snap only if we are on a ubuntu/debian distro and after a certain version
 			# by default use multipass, we tried it on other linux distro and snap was very messy
@@ -268,7 +268,7 @@ else
 					minikube addons enable nvidia-gpu-device-plugin
 				else
 					minikube addons disable nvidia-driver-installer
-                                        minikube addons disable nvidia-gpu-device-plugin
+					minikube addons disable nvidia-gpu-device-plugin
 				fi
 				if [ ! -z "$cfg__local__istio_support" ] && [ "$cfg__local__istio_support" = true ]; then
 					minikube addons enable ingress
@@ -296,11 +296,11 @@ else
 			fi
 
 			if [ ! -z "$cfg__local__istio_support" ] && [ "$cfg__local__istio_support" = true ]; then
-                        	$(run_multipass "/snap/bin/microk8s.status") | grep -e 'istio: enabled' >/dev/null 2>&1 || echo N | $(run_multipass "/snap/bin/microk8s.enable istio")
+				$(run_multipass "/snap/bin/microk8s.status") | grep -e 'istio: enabled' >/dev/null 2>&1 || echo N | $(run_multipass "/snap/bin/microk8s.enable istio")
 				# enables istio and creates a namespace istio-system
 			else
 				$(run_multipass "/snap/bin/microk8s.status") | grep -e 'istio: enabled' >/dev/null 2>&1 && $(run_multipass "/snap/bin/microk8s.disable istio")
-                        fi
+			fi
 
 			# make sure allow-privileged is enabled for microk8s (not by default)
 			echo "checking allow-privileged"
@@ -348,7 +348,7 @@ else
 
 		# installing helm client
 		command -v helm >/dev/null 2>&1 || {
-	                echo >&2 "Helm not available... installing";
+			echo >&2 "Helm not available... installing";
 			# helm installation
 			helm_version="v2.12.1"
 			wget "https://storage.googleapis.com/kubernetes-helm/helm-${helm_version}-linux-amd64.tar.gz"
@@ -360,11 +360,11 @@ else
 		# https://docs.helm.sh/using_helm/
 		if [[ -z $(check_if_pod_exists "tiller") ]]; then
 			echo "Installing Tiller"
-		        kubectl -n kube-system create sa tiller
-        		kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
-        		helm init --service-account tiller --wait --tiller-connection-timeout 300
-        		# 300 seconds (5 mins) is the default waiting time
-        		# --wait : block until Tiller is running and ready to receive requests
+			kubectl -n kube-system create sa tiller
+			kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+			helm init --service-account tiller --wait --tiller-connection-timeout 300
+			# 300 seconds (5 mins) is the default waiting time
+			# --wait : block until Tiller is running and ready to receive requests
 		fi
 		# wait for tiller to be up and running (minikube is not respecting --wait)
 		while [[ -z $(check_if_pod_exists "tiller") || $(get_pod_status "tiller") != "Running" ]]; do
@@ -425,36 +425,48 @@ else
 		echo "You are running $ACTION on an existing cluster. Make sure the cluster is properly running since this tool does not operate externally created clusters."
 
 		# we assume we are already pointing to the hybrid cluster here
-                # create a namespace for us
-                kubectl get ns $cfg__project__k8s_namespace >/dev/null 2>&1 || kubectl create namespace $cfg__project__k8s_namespace
+		# create a namespace for us
+		kubectl get ns $cfg__project__k8s_namespace >/dev/null 2>&1 || kubectl create namespace $cfg__project__k8s_namespace
 
 		# installing helm client
-                command -v helm >/dev/null 2>&1 || {
-                        echo >&2 "Helm not available... installing";
-                        # helm installation
-                        helm_version="v2.12.1"
-                        wget "https://storage.googleapis.com/kubernetes-helm/helm-${helm_version}-linux-amd64.tar.gz"
-                        tar -zxvf helm-${helm_version}-linux-amd64.tar.gz
-                        sudo mv linux-amd64/helm /usr/local/bin/helm
-                        rm helm-*.tar.gz
-                }
-                # initializing helm and installing tiller on the cluster
-                # https://docs.helm.sh/using_helm/
-                if [[ -z $(check_if_pod_exists "tiller") ]]; then
-                        echo "Installing Tiller"
-                        kubectl -n kube-system create sa tiller
-                        kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
-                        helm init --service-account tiller --wait --tiller-connection-timeout 300
-                        # 300 seconds (5 mins) is the default waiting time
-                        # --wait : block until Tiller is running and ready to receive requests
-                fi
-                # wait for tiller to be up and running (minikube is not respecting --wait)
-                while [[ -z $(check_if_pod_exists "tiller") || $(get_pod_status "tiller") != "Running" ]]; do
-                        echo "tiller not yet running, waiting..."
-                        sleep 1
-                done
+		command -v helm >/dev/null 2>&1 || {
+			echo >&2 "Helm not available... installing";
+			# helm installation
+			helm_version="v2.12.1"
+			wget "https://storage.googleapis.com/kubernetes-helm/helm-${helm_version}-linux-amd64.tar.gz"
+			tar -zxvf helm-${helm_version}-linux-amd64.tar.gz
+			sudo mv linux-amd64/helm /usr/local/bin/helm
+			rm helm-*.tar.gz
+		}
+		# initializing helm and installing tiller on the cluster
+		# https://docs.helm.sh/using_helm/
+		if [[ -z $(check_if_pod_exists "tiller") ]]; then
+			echo "Installing Tiller"
+			kubectl -n kube-system create sa tiller
+			kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+			helm init --service-account tiller --wait --tiller-connection-timeout 300
+			# 300 seconds (5 mins) is the default waiting time
+			# --wait : block until Tiller is running and ready to receive requests
+		fi
+		# wait for tiller to be up and running (minikube is not respecting --wait)
+		while [[ -z $(check_if_pod_exists "tiller") || $(get_pod_status "tiller") != "Running" ]]; do
+			echo "tiller not yet running, waiting..."
+			sleep 1
+		done
+		# show where tiller was deployed
+		echo "Tiller deployed as pod "$(get_pod_name "tiller")
 
-                # show where tiller was deployed
-                echo "Tiller deployed as pod "$(get_pod_name "tiller")
+		# for hybrid clusters, we may want to set the gpu
+		if [ ! -z "$cfg__hybrid__gpu_support" ] && [ "$cfg__hybrid__gpu_support" = true ]; then
+			# create a Nvidia Daemonset iff it was not yet created
+			[[ $(kubectl get pods --all-namespaces | grep nvidia-device-plugin-daemonset | wc -c) -eq 0 ]] && {
+				kubectl apply -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/$(get_latest_github_tag "NVIDIA/k8s-device-plugin")/nvidia-device-plugin.yml	
+			}
+		else
+			# delete the Nvidia Daemonset iff it was previously created
+			[[ $(kubectl get pods --all-namespaces | grep nvidia-device-plugin-daemonset | wc -c) -ne 0 ]] && {
+				kubectl delete -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/$(get_latest_github_tag "NVIDIA/k8s-device-plugin")/nvidia-device-plugin.yml	
+			}
+		fi
 	fi
 fi
