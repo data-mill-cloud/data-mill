@@ -1,6 +1,7 @@
 ## Mlflow
 
 MLflow is an open source tool introduced by DataBrick to manage the ML software lifecycle.
+
 MLflow offers 3 main components:
 * [Tracking](https://www.mlflow.org/docs/latest/tracking.html) - for tracking experiments in terms of parameters and results, to make them reproducible; This is an API to log metrics and results when running ML code. 
 Tracking can be done on a file (even remote, e.g. on S3) or an actual server.
@@ -13,11 +14,11 @@ A [CLI interface](https://mlflow.org/docs/latest/cli.html) is also provided for 
 
 A quickstart is provided here and a full tutorial [here](https://mlflow.org/docs/latest/tutorial.html).  
 
-The Mlflow server is provided with the path to a local or remote S3 URI where artifacts will be saved, along with a location where experiment information is saved, by default to a file. MLflow uses gunicorn to expose a REST interface, so the number of 
+The Mlflow tracking server is provided with the path to a local or remote S3 URI where artifacts will be saved, along with a location where experiment information is saved, by default to a file. MLflow uses gunicorn to expose a REST interface, so the number of 
 worker processes can be set here, along with the default port and host to listen on.
 
 ### Installation
-This components installs mlflow and starts the server.
+This components installs mlflow and starts the tracking server.
 
 ### Tracking
 The Tracking module works on the concept of run, i.e. code run, where it is possible to collect data concerning: code version, start and end time, source file being run, parameters passed as input, metrics collected explicitly in the code, artifacts auxiliary to 
