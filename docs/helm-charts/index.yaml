@@ -3,7 +3,7 @@ entries:
   flink:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-01-31T18:42:54.425650533+01:00
+    created: 2019-07-26T12:18:35.317579855+02:00
     description: A Helm chart for Flink
     digest: 19a4ea47fa049fc0164baf34f5ee402edfd34725da5bf46ded6429211e000546
     name: flink
@@ -13,7 +13,7 @@ entries:
   flink-job:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-01-31T18:42:54.425842794+01:00
+    created: 2019-07-26T12:18:35.318110765+02:00
     description: A Helm chart to deploy a Flink Job
     digest: 455f4c5ccb6dddff1e7a559594f0d569f0c2d03c68e123d413804eea982dd0db
     name: flink-job
@@ -23,11 +23,11 @@ entries:
   mlflow:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-01-31T18:42:54.426120826+01:00
+    created: 2019-07-26T12:18:35.318466624+02:00
     description: A Helm chart for MLflow
     digest: 86930d2203132d242c2dcde9c4e4c1afbb1a8f4e49a5920634c44c4ea4ce0479
     name: mlflow
     urls:
     - https://data-mill-cloud.github.io/data-mill/helm-charts/mlflow-0.1.0.tgz
     version: 0.1.0
-generated: 2019-01-31T18:42:54.425287693+01:00
+generated: 2019-07-26T12:18:35.31131344+02:00
