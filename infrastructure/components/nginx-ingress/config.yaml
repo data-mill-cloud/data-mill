@@ -1,0 +1,3 @@
+nginx_ingress:
+  release: nginx-ingress
+  config_file: nginx_config.yaml
