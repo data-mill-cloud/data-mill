@@ -6,7 +6,7 @@ image:
   pullPolicy: IfNotPresent
 
 service:
-  port: 5001
+  port: 5000
   containerport: 5000
 
 mount:
