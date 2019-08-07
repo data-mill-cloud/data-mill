@@ -35,3 +35,7 @@ get_pod_status() {
 	# NAMESPACE NAME READY STATUS RESTARTS AGE
 	kubectl get pods --all-namespaces | awk '/'$1'/ {print $4;exit}'
 }
+
+get_master_ip(){
+	kubectl get node -o wide --selector='!node-role.kubernetes.io/master' | awk 'FNR > 1 {print $6}'
+}

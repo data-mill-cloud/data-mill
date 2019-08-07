@@ -12,11 +12,13 @@ if [ -z "$ACTION" ] || [ "$ACTION" != "install" ] && [ "$ACTION" != "delete" ];t
         echo "usage: $0 {'install' | 'delete'}";
         exit 1
 elif [ "$ACTION" = "install" ]; then
+	nginx_ns=${cfg__nginx_ingress__k8s_namespace:=$cfg__project__k8s_namespace}
 	# https://kubernetes.github.io/ingress-nginx/deploy/baremetal/
 	helm upgrade $cfg__nginx_ingress__release stable/nginx-ingress \
-	 --namespace $cfg__project__k8s_namespace \
+	 --namespace $nginx_ns \
 	 --values $(get_values_file "$cfg__nginx_ingress__config_file") \
 	 --install --force
+	unset nginx_ns
 else
 	helm delete $cfg__nginx_ingress__release --purge
 fi

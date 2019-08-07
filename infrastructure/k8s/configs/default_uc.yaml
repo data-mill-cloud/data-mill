@@ -9,7 +9,7 @@ local:
   # if use_multipass is provided use it
   # otherwise uc is used without multipass only on the newer ubuntu and debian
   use_multipass: false
-  istio_support: true
+  istio_support: false
 
 # example config for a remote k8s cluster on AWS
 remote:

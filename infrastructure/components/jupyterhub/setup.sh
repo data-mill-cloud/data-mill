@@ -18,6 +18,7 @@ elif [ "$ACTION" = "install" ]; then
 	secretToken=$(get_random_secret_key)
 	echo "JupyterHub secret token: $secretToken"
 	echo "Deploying JupyterHub: it might take long as the images are being pulled..."
+	#MASTER_IP=$(kubectl get node -o wide --selector='!node-role.kubernetes.io/master' | awk 'FNR > 1 {print $6}')
 	helm upgrade $cfg__jhub__release jupyterhub/jupyterhub \
 	  --namespace $cfg__project__k8s_namespace \
 	  --version $cfg__jhub__version \
