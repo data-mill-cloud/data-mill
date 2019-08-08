@@ -2,11 +2,11 @@ replicaCount: 1
 
 image:
   repository: "datamillcloud/mlflow"
-  tag: latest
-  pullPolicy: IfNotPresent
+  tag: 0.1.1
+  pullPolicy: Always
 
 service:
-  port: 5001
+  port: 5000
   containerport: 5000
 
 mount:
