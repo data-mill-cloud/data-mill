@@ -1,9 +1,5 @@
 FROM python:3
 
-ARG proxy
-ENV http_proxy=${proxy:-""}
-ENV https_proxy=${proxy:-""}
-
 ARG ml_folder="/mnt/mlflow_data"
 ENV folder=$ml_folder
 
