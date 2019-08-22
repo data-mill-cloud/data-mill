@@ -27,7 +27,7 @@ spec:
           - name: BACKEND_STORE_URI
             value: {{ .Values.server.storeuri }}
           - name: DEFAULT_ARTIFACT_ROOT
-            value: {{ .Values.server.artifactroot }}
+            value: {{ .Values.server.artifacturi }}
           ports:
             - name: http
               containerPort: {{ .Values.service.containerport }}

@@ -16,7 +16,7 @@ datalake_run_command(){
 	#kubectl describe pod $pod_name -n=$namespace
 	#kubectl wait --for=condition=Completed pod/$pod_name -n=$namespace
 	# the kubectl wait gave lots of issues, so good old bash will quickly do the job
-	until [ $(kubectl get pods $pod_name -n=$namespace | awk 'FNR>1 {print $3}') = "Complete" ]; do sleep 3; done
+	until [ $(kubectl get pods $pod_name -n=$namespace | awk 'FNR>1 {print $3}') = "Completed" ]; do sleep 3; done
 	kubectl delete pod $pod_name -n=$namespace
 }
 

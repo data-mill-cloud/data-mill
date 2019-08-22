@@ -22,7 +22,7 @@ elif [ "$ACTION" = "install" ]; then
                 ACCESS_KEY=$(kubectl -n $cfg__project__k8s_namespace get secrets $cfg__mlflow__artifact_store__minio_release -o jsonpath="{.data.accesskey}" | base64 -d)
                 SECRET_KEY=$(kubectl -n $cfg__project__k8s_namespace get secrets $cfg__mlflow__artifact_store__minio_release -o jsonpath="{.data.secretkey}" | base64 -d)
                 ENDPOINT="http://${cfg__mlflow__artifact_store__minio_release}:9000"
-		echo $(datalake_run_command "$cfg__project__k8s_namespace" "mc config host add dl $ENDPOINT $ACCESS_KEY $SECRET_KEY --api S3v4 && mc mb dl/$cfg__pachyderm__datalake__bucket --ignore-existing")
+		echo $(datalake_run_command "$cfg__project__k8s_namespace" "mc config host add dl $ENDPOINT $ACCESS_KEY $SECRET_KEY --api S3v4 && mc mb dl/$cfg__mlflow__artifact_store__bucket --ignore-existing")
 
                 echo "Set minio bucket $cfg__mlflow__artifact_store__bucket"
         else
@@ -30,7 +30,7 @@ elif [ "$ACTION" = "install" ]; then
                 SECRET_KEY=$cfg__mlflow__artifact_store__secret_key
                 ENDPOINT=$cfg__mlflow__artifact_store__endpoint
                 # e.g. ENDPOIND=http://hosted-minio.com:9000
-                echo $(datalake_run_command "$cfg__project__k8s_namespace" "mc config host add dl $ENDPOINT $ACCESS_KEY $SECRET_KEY --api S3v4 && mc mb dl/$cfg__pachyderm__datalake__bucket --ignore-existing")
+                echo $(datalake_run_command "$cfg__project__k8s_namespace" "mc config host add dl $ENDPOINT $ACCESS_KEY $SECRET_KEY --api S3v4 && mc mb dl/$cfg__mlflow__artifact_store__bucket --ignore-existing")
         fi
 
         echo "Mlflow set to use artifact store $cfg__mlflow__artifact_store__type"
@@ -43,7 +43,7 @@ elif [ "$ACTION" = "install" ]; then
 	helm upgrade $cfg__mlflow__release data-mill/mlflow \
          --namespace $cfg__project__k8s_namespace \
          --values $(get_values_file "$cfg__mlflow__config_file") \
-	 --set server.artifacturi="s3://:5000/mlflow"
+	 --set server.artifacturi="s3://:5000/mlflow" \
          --install --force
 else
         helm delete $cfg__mlflow__release --purge
