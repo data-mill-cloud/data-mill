@@ -2,3 +2,9 @@ mlflow:
   release: mlflow
   config_file: mlflow_config.yaml
   pvc_name: mlflow-pvc
+
+  artifact_store:
+    type: minio
+    bucket: mlflow
+    minio_release: minio-datalake
+

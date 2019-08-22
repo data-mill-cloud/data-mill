@@ -6,7 +6,6 @@ pachyderm:
     type: minio
     bucket: pachyderm
     minio_release: minio-datalake
-    bucket: pachyderm
     #access_key: ""
     #secret_key: ""
     #endpoint: ""

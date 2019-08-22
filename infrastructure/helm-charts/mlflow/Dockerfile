@@ -1,21 +1,16 @@
 FROM python:3
 
-ARG ml_folder="/mnt/mlflow_data"
-ENV folder=$ml_folder
+ARG TRACKING_STORE="/mnt/mlflow_data"
+ENV BACKEND_STORE_URI=$TRACKING_STORE
 
-ARG ml_artifact_folder="/mnt/mlflow_data"
-ENV artifact_folder=$ml_artifact_folder
+ARG ARTIFACT_STORE="/mnt/mlflow_data"
+ENV DEFAULT_ARTIFACT_ROOT=$ARTIFACT_STORE
 
-RUN pip install -U mlflow
+RUN pip install -U mlflow==1.2.0
 
 EXPOSE 5000
 
-# start the mlflow ui
-#CMD mlflow ui \
-#    --file-store $folder \
-#    --host 0.0.0.0 --port 5000
-
 CMD mlflow server \
-    --backend-store-uri $folder \
-    --default-artifact-root $artifact_folder \
+    --backend-store-uri $BACKEND_STORE_URI \
+    --default-artifact-root $DEFAULT_ARTIFACT_ROOT \
     --host 0.0.0.0 --port 5000

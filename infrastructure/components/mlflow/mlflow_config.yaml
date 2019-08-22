@@ -5,6 +5,10 @@ image:
   tag: 0.1.1
   pullPolicy: Always
 
+server:
+  storeuri: /mnt/mlflow_data
+  artifacturi: /mnt/mlflow_data
+
 service:
   port: 5000
   containerport: 5000
