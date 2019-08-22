@@ -5,17 +5,30 @@ image:
   tag: latest
   pullPolicy: Always
 
+# inject the following env vars to the server
 server:
-  storeuri: /mnt/mlflow_data
+  # location where to log the tracking information
+  storeuri: sqlite:///mnt/mlflow_data/mlflow.db
+  # location where to store the model artifacts
   artifacturi: /mnt/mlflow_data
+  # to be used only if artifact uri points to a s3 bucket (optional)
+  #s3endpoint: http://minio-datalake:9000
+  #accesskey: abcd
+  #secretkey: efgh
 
 service:
   port: 5000
   containerport: 5000
 
-mount:
-  path: /mnt/mlflow_data
-  pvc: mlflow-pvc
+
+persistence:
+  enabled: true
+  #storageClass: fast
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  name: mlflow-pvc
+  mount: /mnt/mlflow_data
+
 
 resources: {}
 nodeSelector: {}

@@ -28,6 +28,18 @@ spec:
             value: {{ .Values.server.storeuri }}
           - name: DEFAULT_ARTIFACT_ROOT
             value: {{ .Values.server.artifacturi }}
+          {{- with .Values.server.s3endpoint }}
+          - name: MLFLOW_S3_ENDPOINT_URL
+            value: {{ . }}
+          {{- end }}
+          {{- with .Values.server.accesskey }}
+          - name: AWS_ACCESS_KEY_ID
+            value: {{ . }}
+          {{- end }}
+          {{- with .Values.server.secretkey }}
+          - name: AWS_SECRET_ACCESS_KEY
+            value: {{ . }}
+          {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.containerport }}
@@ -40,16 +52,22 @@ spec:
             httpGet:
               path: /
               port: http
+          {{- with .Values.resources }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if .Values.persistence.enabled }}
           volumeMounts:
-          - mountPath: {{ .Values.mount.path }}
+          - mountPath: {{ .Values.persistence.mount }}
             name: mlflow-data
+          {{- end }}
       restartPolicy: Always
+      {{- if .Values.persistence.enabled }}
       volumes:
       - name: mlflow-data
         persistentVolumeClaim:
-          claimName: {{ .Values.mount.pvc }}
+          claimName: {{ .Values.persistence.name }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -6,8 +6,15 @@ image:
   pullPolicy: Always
 
 server:
-  storeuri: /mnt/mlflow_data
-  artifacturi: /mnt/mlflow_data
+  #storeuri: /mnt/mlflow_data
+  #storeuri: "file:///mnt/mlflow_data"
+  #storeuri: "postgresql://mlflow:secretpassword@mlflow-postgresql/mlflow-db"
+  storeuri: "sqlite:///mnt/mlflow_data/mlflow.db"
+  artifacturi: "file:///mnt/mlflow_data"
+  # to be used only if artifact uri points to a s3 bucket (optional)
+  #s3endpoint: http://minio-datalake:9000
+  #accesskey: abcd
+  #secretkey: efgh
 
 service:
   port: 5000
